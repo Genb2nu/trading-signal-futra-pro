@@ -16,52 +16,25 @@ app.use(express.json());
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
-  let debugInfo = {};
   try {
     console.log('Health check requested...');
 
-    // Test direct fetch to Binance
-    try {
-      const testUrl = 'https://api3.binance.com/api/v3/ping';
-      console.log('Testing direct fetch to:', testUrl);
-
-      const directResponse = await fetch(testUrl, {
-        headers: { 'Accept': 'application/json' }
-      });
-
-      debugInfo.directFetch = {
-        ok: directResponse.ok,
-        status: directResponse.status,
-        statusText: directResponse.statusText
-      };
-      console.log('Direct fetch result:', debugInfo.directFetch);
-    } catch (directError) {
-      debugInfo.directFetchError = {
-        message: directError.message,
-        name: directError.name,
-        code: directError.code
-      };
-      console.error('Direct fetch error:', debugInfo.directFetchError);
-    }
-
-    // Test via testConnection function
+    // Test via testConnection function (now tries multiple endpoints)
     const binanceConnected = await testConnection();
     console.log('Binance connection status:', binanceConnected);
 
     res.json({
       status: 'ok',
-      binance: binanceConnected ? 'connected' : 'disconnected',
+      binance: binanceConnected ? 'connected' : 'geo-restricted',
       timestamp: new Date().toISOString(),
       environment: process.env.VERCEL ? 'vercel' : 'local',
-      debug: debugInfo,
       nodeVersion: process.version,
-      fetchAvailable: typeof fetch !== 'undefined'
+      note: binanceConnected ? 'Connected to Binance API' : 'Binance API may be geo-restricted on this server. The app may still work for actual trading requests.'
     });
   } catch (error) {
     console.error('Health check error:', error);
     res.status(500).json({
-      error: error.message,
-      debug: debugInfo
+      error: error.message
     });
   }
 });

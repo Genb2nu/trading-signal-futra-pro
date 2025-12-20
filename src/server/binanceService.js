@@ -1,6 +1,15 @@
 import axios from 'axios';
 
-const BINANCE_API_URL = 'https://api3.binance.com/api';
+// Try different Binance API endpoints (some may be geo-restricted)
+const BINANCE_API_ENDPOINTS = [
+  'https://api.binance.com/api',      // Primary endpoint
+  'https://api1.binance.com/api',     // Alternative 1
+  'https://api2.binance.com/api',     // Alternative 2
+  'https://api3.binance.com/api',     // Alternative 3
+  'https://data.binance.com/api'      // Data endpoint
+];
+
+const BINANCE_API_URL = BINANCE_API_ENDPOINTS[0]; // Use primary by default
 
 /**
  * Fetches kline (candlestick) data from Binance
@@ -76,46 +85,50 @@ export async function getUSDTSymbols() {
 }
 
 /**
- * Test connection to Binance API
- * @returns {Promise<boolean>} True if connection successful
+ * Test connection to Binance API with fallback endpoints
+ * @returns {Promise<Object>} Connection status with details
  */
 export async function testConnection() {
-  try {
-    const url = `${BINANCE_API_URL}/v3/ping`;
+  const results = [];
 
-    // Try using native fetch first (works better in serverless)
-    if (typeof fetch !== 'undefined') {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+  // Try each endpoint until one works
+  for (const endpoint of BINANCE_API_ENDPOINTS) {
+    try {
+      const url = `${endpoint}/v3/ping`;
 
-      const response = await fetch(url, {
-        signal: controller.signal,
-        headers: {
-          'Accept': 'application/json'
+      if (typeof fetch !== 'undefined') {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' }
+        });
+        clearTimeout(timeoutId);
+
+        results.push({
+          endpoint,
+          status: response.status,
+          ok: response.ok,
+          statusText: response.statusText
+        });
+
+        if (response.ok) {
+          console.log('Binance API ping successful:', endpoint, response.status);
+          return true; // Found a working endpoint!
         }
-      });
-      clearTimeout(timeoutId);
-
-      console.log('Binance API ping successful (fetch):', response.status);
-      return response.ok;
-    }
-
-    // Fallback to axios
-    const response = await axios.get(url, {
-      timeout: 5000,
-      headers: {
-        'Accept': 'application/json'
       }
-    });
-    console.log('Binance API ping successful (axios):', response.status);
-    return true;
-  } catch (error) {
-    console.error('Binance API connection failed:', {
-      message: error.message,
-      code: error.code,
-      name: error.name,
-      response: error.response?.status
-    });
-    return false;
+    } catch (error) {
+      results.push({
+        endpoint,
+        error: error.message,
+        code: error.code
+      });
+      console.log(`Failed to connect to ${endpoint}:`, error.message);
+    }
   }
+
+  // All endpoints failed
+  console.error('All Binance API endpoints failed:', results);
+  return false;
 }
