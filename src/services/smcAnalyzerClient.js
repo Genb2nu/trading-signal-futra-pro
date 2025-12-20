@@ -99,9 +99,20 @@ export function formatSignalsForDisplay(scanResults) {
         timeframe: result.timeframe,
         type: signal.type,
         direction: signal.direction,
+        entry: typeof signal.entry === 'number' ? signal.entry.toFixed(8) : signal.entry,
+        stopLoss: typeof signal.stopLoss === 'number' ? signal.stopLoss.toFixed(8) : signal.stopLoss,
+        takeProfit: typeof signal.takeProfit === 'number' ? signal.takeProfit.toFixed(8) : signal.takeProfit,
+        riskReward: typeof signal.riskReward === 'number' ? signal.riskReward.toFixed(2) : signal.riskReward,
+        confidence: signal.confidence,
+        patterns: signal.patterns ? signal.patterns.join(', ') : '',
         price: result.lastPrice,
+        lastPrice: typeof result.lastPrice === 'number' ? result.lastPrice.toFixed(8) : result.lastPrice,
         strength: signal.strength || 'medium',
-        timestamp: result.timestamp,
+        timestamp: signal.timestamp || result.timestamp,
+        scanTime: result.timestamp,
+        patternDetails: signal.patternDetails,
+        confluenceReason: signal.confluenceReason,
+        riskRewardBreakdown: signal.riskRewardBreakdown,
         details: signal
       });
     }
