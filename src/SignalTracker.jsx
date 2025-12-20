@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import SignalDetailsModal from './components/SignalDetailsModal';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Auto-detect API URL based on environment
+const API_URL = import.meta.env.VITE_API_URL ||
+  (import.meta.env.MODE === 'production' ? '' : 'http://localhost:3000');
 
 function SignalTracker() {
   const [symbols, setSymbols] = useState([]);
