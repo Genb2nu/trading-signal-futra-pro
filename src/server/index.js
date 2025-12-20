@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import axios from 'axios';
 import { getUSDTSymbols, testConnection } from './binanceService.js';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './smcAnalyzer.js';
 
@@ -141,6 +142,28 @@ app.post('/api/scan', async (req, res) => {
     });
   } catch (error) {
     console.error('Scan error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get klines/candlestick data for charting
+ */
+app.get('/api/klines', async (req, res) => {
+  try {
+    const { symbol, interval, limit } = req.query;
+
+    if (!symbol || !interval) {
+      return res.status(400).json({ error: 'Symbol and interval are required' });
+    }
+
+    const klinesLimit = limit || 200;
+    const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${klinesLimit}`;
+
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Klines fetch error:', error);
     res.status(500).json({ error: error.message });
   }
 });

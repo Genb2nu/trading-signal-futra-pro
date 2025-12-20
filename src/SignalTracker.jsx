@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SignalDetailsModal from './components/SignalDetailsModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -14,6 +15,8 @@ function SignalTracker() {
   const [isScanning, setIsScanning] = useState(false);
   const [nextScanTime, setNextScanTime] = useState(null);
   const [scanIntervalId, setScanIntervalId] = useState(null);
+  const [selectedSignal, setSelectedSignal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const timeframes = ['1m', '5m', '15m', '1h', '4h', '1d', '1w', '1M'];
   const strategies = ['SMC']; // Extensible for future strategies
@@ -209,6 +212,17 @@ function SignalTracker() {
     window.open(url, '_blank');
   };
 
+  // Modal handlers
+  const handleRowClick = (signal) => {
+    setSelectedSignal(signal);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedSignal(null), 200); // Delay for exit animation
+  };
+
   return (
     <div>
       <div className="card">
@@ -378,12 +392,18 @@ function SignalTracker() {
                 </thead>
                 <tbody>
                   {signals.map((signal, index) => (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      onClick={() => handleRowClick(signal)}
+                      style={{ cursor: 'pointer' }}
+                      className="signal-row"
+                    >
                       <td style={{ fontWeight: '600' }}>
                         <a
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
+                            e.stopPropagation();
                             openTradingView(signal.symbol, signal.timeframe);
                           }}
                           style={{
@@ -434,6 +454,13 @@ function SignalTracker() {
           )}
         </div>
       )}
+
+      {/* Signal Details Modal */}
+      <SignalDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        signal={selectedSignal}
+      />
     </div>
   );
 }

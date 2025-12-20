@@ -408,7 +408,69 @@ function generateSignals(analysis) {
           recentBullishSweep.length > 0 ? 'Liquidity Sweep' : null,
           recentBullishBMS.length > 0 ? 'BMS' : null
         ].filter(p => p !== null),
-        timestamp: latestCandle.timestamp
+        timestamp: latestCandle.timestamp,
+
+        // Pattern details for modal display
+        patternDetails: {
+          fvg: recentBullishFVG.length > 0 ? {
+            type: recentBullishFVG[0].type,
+            top: recentBullishFVG[0].top,
+            bottom: recentBullishFVG[0].bottom,
+            gap: recentBullishFVG[0].gap,
+            index: recentBullishFVG[0].index,
+            timestamp: recentBullishFVG[0].timestamp
+          } : null,
+          orderBlock: recentBullishOB.length > 0 ? {
+            type: recentBullishOB[0].type,
+            top: recentBullishOB[0].top,
+            bottom: recentBullishOB[0].bottom,
+            strength: recentBullishOB[0].strength,
+            index: recentBullishOB[0].index,
+            timestamp: recentBullishOB[0].timestamp
+          } : null,
+          liquiditySweep: recentBullishSweep.length > 0 ? {
+            direction: recentBullishSweep[0].direction,
+            swingLevel: recentBullishSweep[0].swingLevel,
+            index: recentBullishSweep[0].index,
+            timestamp: recentBullishSweep[0].timestamp
+          } : null,
+          bms: recentBullishBMS.length > 0 ? {
+            type: recentBullishBMS[0].type,
+            breakLevel: recentBullishBMS[0].breakLevel,
+            previousTrend: recentBullishBMS[0].previousTrend,
+            index: recentBullishBMS[0].index,
+            timestamp: recentBullishBMS[0].timestamp
+          } : null
+        },
+
+        // Confluence explanation
+        confluenceReason: generateConfluenceExplanation({
+          hasFVG: recentBullishFVG.length > 0,
+          hasOB: recentBullishOB.length > 0,
+          hasSweep: recentBullishSweep.length > 0,
+          hasBMS: recentBullishBMS.length > 0,
+          direction: 'bullish',
+          fvgData: recentBullishFVG.length > 0 ? recentBullishFVG[0] : null,
+          obData: recentBullishOB.length > 0 ? recentBullishOB[0] : null,
+          sweepData: recentBullishSweep.length > 0 ? recentBullishSweep[0] : null,
+          bmsData: recentBullishBMS.length > 0 ? recentBullishBMS[0] : null,
+          entry: entry
+        }),
+
+        // Risk/reward breakdown
+        riskRewardBreakdown: {
+          entry: entry,
+          stopLoss: stopLoss,
+          takeProfit: takeProfit,
+          riskAmount: Math.abs(entry - stopLoss),
+          rewardAmount: Math.abs(takeProfit - entry),
+          ratio: 2.0,
+          stopLossDistance: `${(Math.abs(entry - stopLoss) / entry * 100).toFixed(2)}%`,
+          takeProfitDistance: `${(Math.abs(takeProfit - entry) / entry * 100).toFixed(2)}%`,
+          reasoning: orderBlock
+            ? `Stop loss placed below Order Block support at ${stopLoss.toFixed(8)}`
+            : `Stop loss placed ${(Math.abs(entry - stopLoss) / entry * 100).toFixed(2)}% from entry`
+        }
       });
     }
   }
@@ -442,10 +504,116 @@ function generateSignals(analysis) {
           recentBearishSweep.length > 0 ? 'Liquidity Sweep' : null,
           recentBearishBMS.length > 0 ? 'BMS' : null
         ].filter(p => p !== null),
-        timestamp: latestCandle.timestamp
+        timestamp: latestCandle.timestamp,
+
+        // Pattern details for modal display
+        patternDetails: {
+          fvg: recentBearishFVG.length > 0 ? {
+            type: recentBearishFVG[0].type,
+            top: recentBearishFVG[0].top,
+            bottom: recentBearishFVG[0].bottom,
+            gap: recentBearishFVG[0].gap,
+            index: recentBearishFVG[0].index,
+            timestamp: recentBearishFVG[0].timestamp
+          } : null,
+          orderBlock: recentBearishOB.length > 0 ? {
+            type: recentBearishOB[0].type,
+            top: recentBearishOB[0].top,
+            bottom: recentBearishOB[0].bottom,
+            strength: recentBearishOB[0].strength,
+            index: recentBearishOB[0].index,
+            timestamp: recentBearishOB[0].timestamp
+          } : null,
+          liquiditySweep: recentBearishSweep.length > 0 ? {
+            direction: recentBearishSweep[0].direction,
+            swingLevel: recentBearishSweep[0].swingLevel,
+            index: recentBearishSweep[0].index,
+            timestamp: recentBearishSweep[0].timestamp
+          } : null,
+          bms: recentBearishBMS.length > 0 ? {
+            type: recentBearishBMS[0].type,
+            breakLevel: recentBearishBMS[0].breakLevel,
+            previousTrend: recentBearishBMS[0].previousTrend,
+            index: recentBearishBMS[0].index,
+            timestamp: recentBearishBMS[0].timestamp
+          } : null
+        },
+
+        // Confluence explanation
+        confluenceReason: generateConfluenceExplanation({
+          hasFVG: recentBearishFVG.length > 0,
+          hasOB: recentBearishOB.length > 0,
+          hasSweep: recentBearishSweep.length > 0,
+          hasBMS: recentBearishBMS.length > 0,
+          direction: 'bearish',
+          fvgData: recentBearishFVG.length > 0 ? recentBearishFVG[0] : null,
+          obData: recentBearishOB.length > 0 ? recentBearishOB[0] : null,
+          sweepData: recentBearishSweep.length > 0 ? recentBearishSweep[0] : null,
+          bmsData: recentBearishBMS.length > 0 ? recentBearishBMS[0] : null,
+          entry: entry
+        }),
+
+        // Risk/reward breakdown
+        riskRewardBreakdown: {
+          entry: entry,
+          stopLoss: stopLoss,
+          takeProfit: takeProfit,
+          riskAmount: Math.abs(stopLoss - entry),
+          rewardAmount: Math.abs(entry - takeProfit),
+          ratio: 2.0,
+          stopLossDistance: `${(Math.abs(stopLoss - entry) / entry * 100).toFixed(2)}%`,
+          takeProfitDistance: `${(Math.abs(entry - takeProfit) / entry * 100).toFixed(2)}%`,
+          reasoning: orderBlock
+            ? `Stop loss placed above Order Block resistance at ${stopLoss.toFixed(8)}`
+            : `Stop loss placed ${(Math.abs(stopLoss - entry) / entry * 100).toFixed(2)}% from entry`
+        }
       });
     }
   }
 
   return signals;
+}
+
+/**
+ * Generates human-readable confluence explanation for signal
+ * @param {Object} confluence - Pattern confluence information
+ * @returns {string} Explanation text
+ */
+function generateConfluenceExplanation(confluence) {
+  const { hasFVG, hasOB, hasSweep, hasBMS, direction, fvgData, obData, sweepData, bmsData, entry } = confluence;
+  const directionText = direction === 'bullish' ? 'bullish' : 'bearish';
+
+  let explanation = `This ${directionText} signal was triggered at ${entry.toFixed(2)} due to multiple confirming patterns:\n\n`;
+  const reasons = [];
+
+  if (hasFVG && fvgData) {
+    const fvgRange = `${fvgData.bottom.toFixed(2)} - ${fvgData.top.toFixed(2)}`;
+    const gapSize = ((fvgData.gap / entry) * 100).toFixed(2);
+    reasons.push(`📊 **Fair Value Gap (${directionText})**: A ${gapSize}% price imbalance was detected between ${fvgRange}, indicating strong momentum as price moved too quickly leaving an inefficiency that often gets filled.`);
+  }
+
+  if (hasOB && obData) {
+    const obRange = `${obData.bottom.toFixed(2)} - ${obData.top.toFixed(2)}`;
+    const strength = obData.strength.toFixed(1);
+    reasons.push(`🏢 **Order Block (${directionText})**: Institutional zone identified at ${obRange} with ${strength}% impulse strength. This represents where large orders were placed before a significant price move, making it a high-probability reaction zone.`);
+  }
+
+  if (hasSweep && sweepData) {
+    const sweepLevel = sweepData.swingLevel.toFixed(2);
+    reasons.push(`💧 **Liquidity Sweep**: Price swept through swing level at ${sweepLevel} to trigger stop losses (liquidity grab), then reversed. This "stop hunt" pattern often precedes strong moves as smart money collects liquidity before the real move.`);
+  }
+
+  if (hasBMS && bmsData) {
+    const breakLevel = bmsData.breakLevel.toFixed(2);
+    const prevTrend = bmsData.previousTrend;
+    reasons.push(`📈 **Break of Market Structure**: Price broke above/below the previous structure at ${breakLevel}, confirming a shift from ${prevTrend} to a new trend phase. This validates the momentum change.`);
+  }
+
+  explanation += reasons.join('\n\n');
+
+  // Add confluence strength summary
+  const patternCount = [hasFVG, hasOB, hasSweep, hasBMS].filter(Boolean).length;
+  explanation += `\n\n✅ **Confluence Strength**: ${patternCount}/4 major patterns aligned, creating a ${patternCount >= 3 ? 'HIGH' : 'MEDIUM'} probability setup.`;
+
+  return explanation;
 }

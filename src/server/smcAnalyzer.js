@@ -106,7 +106,11 @@ export function formatSignalsForDisplay(results) {
         confidence: signal.confidence,
         patterns: signal.patterns.join(', '),
         timestamp: signal.timestamp,
-        lastPrice: result.lastPrice.toFixed(8)
+        lastPrice: result.lastPrice.toFixed(8),
+        // Include detailed pattern information for modal display
+        patternDetails: signal.patternDetails,
+        confluenceReason: signal.confluenceReason,
+        riskRewardBreakdown: signal.riskRewardBreakdown
       });
     }
   }
