@@ -82,10 +82,40 @@ export async function getUSDTSymbols() {
 export async function testConnection() {
   try {
     const url = `${BINANCE_API_URL}/v3/ping`;
-    await axios.get(url);
+
+    // Try using native fetch first (works better in serverless)
+    if (typeof fetch !== 'undefined') {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      clearTimeout(timeoutId);
+
+      console.log('Binance API ping successful (fetch):', response.status);
+      return response.ok;
+    }
+
+    // Fallback to axios
+    const response = await axios.get(url, {
+      timeout: 5000,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    console.log('Binance API ping successful (axios):', response.status);
     return true;
   } catch (error) {
-    console.error('Binance API connection failed:', error.message);
+    console.error('Binance API connection failed:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      response: error.response?.status
+    });
     return false;
   }
 }

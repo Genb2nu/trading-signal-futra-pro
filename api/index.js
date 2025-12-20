@@ -17,13 +17,17 @@ app.use(express.json());
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
   try {
+    console.log('Health check requested...');
     const binanceConnected = await testConnection();
+    console.log('Binance connection status:', binanceConnected);
     res.json({
       status: 'ok',
       binance: binanceConnected ? 'connected' : 'disconnected',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      environment: process.env.VERCEL ? 'vercel' : 'local'
     });
   } catch (error) {
+    console.error('Health check error:', error);
     res.status(500).json({ error: error.message });
   }
 });
