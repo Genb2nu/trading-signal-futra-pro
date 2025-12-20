@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import SignalDetailsModal from './components/SignalDetailsModal';
+import { scanMultipleSymbols, formatSignalsForDisplay } from './services/smcAnalyzerClient.js';
 
-// Auto-detect API URL based on environment
+// Auto-detect API URL based on environment (for settings only)
 const API_URL = import.meta.env.VITE_API_URL ||
   (import.meta.env.MODE === 'production' ? '' : 'http://localhost:3000');
 
@@ -73,7 +74,7 @@ function SignalTracker() {
     return delays[timeframe] || 60 * 1000; // Default 1 minute
   };
 
-  // Perform a single scan
+  // Perform a single scan (client-side)
   const performScan = async () => {
     if (selectedSymbols.length === 0) {
       setError('Please select at least one symbol');
@@ -84,19 +85,20 @@ function SignalTracker() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/scan`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          symbols: selectedSymbols,
-          timeframe,
-          strategy
-        })
+      // Scan using client-side Binance API (from user's browser)
+      const results = await scanMultipleSymbols(selectedSymbols, timeframe, (progress) => {
+        console.log(`Scanning: ${progress.percentage}% (${progress.current}/${progress.total}) - ${progress.symbol}`);
       });
 
-      const data = await response.json();
+      // Format signals for display
+      const formattedSignals = formatSignalsForDisplay(results);
+
+      const data = {
+        success: true,
+        signals: formattedSignals,
+        scanned: selectedSymbols.length,
+        found: formattedSignals.length
+      };
 
       if (data.success) {
         // Replace existing signals for same symbols with new signals

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { getUSDTSymbols } from './services/binanceClient.js';
 
-// Auto-detect API URL based on environment
+// Auto-detect API URL based on environment (for settings storage only)
 const API_URL = import.meta.env.VITE_API_URL ||
   (import.meta.env.MODE === 'production' ? '' : 'http://localhost:3000');
 
@@ -36,11 +37,12 @@ function Settings() {
 
   const loadAllSymbols = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/symbols/all`);
-      const data = await response.json();
-      setAllSymbols(data.symbols || []);
+      // Get symbols directly from Binance (client-side)
+      const symbols = await getUSDTSymbols();
+      setAllSymbols(symbols || []);
     } catch (err) {
       console.error('Error loading all symbols:', err);
+      setMessage({ type: 'error', text: 'Failed to load symbols from Binance' });
     }
   };
 
