@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart } from 'lightweight-charts';
+import { getBinanceKlines } from '../services/binanceClient.js';
 
 const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, takeProfit, direction }) => {
   const chartContainerRef = useRef(null);
@@ -34,26 +35,19 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         console.log('BMS present?', patternDetails?.bms ? 'YES' : 'NO');
         console.log('============================');
 
-        // Fetch candlestick data from our server API (avoids CORS issues)
+        // Fetch candlestick data directly from Binance (client-side)
         const interval = getInterval(timeframe);
         const limit = 200; // Get last 200 candles
-        const response = await fetch(
-          `/api/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`
-        );
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch chart data');
-        }
+        const klineData = await getBinanceKlines(symbol, interval, limit);
 
-        const data = await response.json();
-
-        // Convert Binance data to lightweight-charts format
-        const candlestickData = data.map((candle) => ({
-          time: candle[0] / 1000, // Convert to seconds
-          open: parseFloat(candle[1]),
-          high: parseFloat(candle[2]),
-          low: parseFloat(candle[3]),
-          close: parseFloat(candle[4])
+        // Convert to lightweight-charts format
+        const candlestickData = klineData.map((candle) => ({
+          time: candle.openTime / 1000, // Convert to seconds
+          open: candle.open,
+          high: candle.high,
+          low: candle.low,
+          close: candle.close
         }));
 
         // Get latest candle OHLC data
@@ -110,10 +104,10 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         candlestickSeries.setData(candlestickData);
 
         // Add volume series
-        const volumeData = data.map((candle) => ({
-          time: candle[0] / 1000,
-          value: parseFloat(candle[5]), // Volume is at index 5
-          color: parseFloat(candle[4]) >= parseFloat(candle[1]) ? '#10b98180' : '#ef444480' // Green if close >= open, red otherwise
+        const volumeData = klineData.map((candle) => ({
+          time: candle.openTime / 1000,
+          value: candle.volume,
+          color: candle.close >= candle.open ? '#10b98180' : '#ef444480' // Green if close >= open, red otherwise
         }));
 
         const volumeSeries = chart.addHistogramSeries({
