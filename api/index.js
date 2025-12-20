@@ -3,6 +3,8 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import { testConnection, getUSDTSymbols } from './binanceService.js';
+import { scanMultipleSymbols, formatSignalsForDisplay } from './smcAnalyzer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,32 +14,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Import server modules
-const binanceServicePath = path.join(__dirname, '../dist/server/binanceService.js');
-const smcAnalyzerPath = path.join(__dirname, '../dist/server/smcAnalyzer.js');
-
-let binanceService, smcAnalyzer;
-
-// Dynamic imports for ES modules
-const loadModules = async () => {
-  if (!binanceService) {
-    const { testBinanceConnection, getAvailableSymbols } = await import(binanceServicePath);
-    binanceService = { testBinanceConnection, getAvailableSymbols };
-  }
-  if (!smcAnalyzer) {
-    const { scanSymbols } = await import(smcAnalyzerPath);
-    smcAnalyzer = { scanSymbols };
-  }
-};
-
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
   try {
-    await loadModules();
-    const binanceStatus = await binanceService.testBinanceConnection();
+    const binanceConnected = await testConnection();
     res.json({
       status: 'ok',
-      binance: binanceStatus,
+      binance: binanceConnected ? 'connected' : 'disconnected',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -60,8 +43,7 @@ app.get('/api/symbols', async (req, res) => {
 // Get all available symbols from Binance
 app.get('/api/symbols/all', async (req, res) => {
   try {
-    await loadModules();
-    const symbols = await binanceService.getAvailableSymbols();
+    const symbols = await getUSDTSymbols();
     res.json({ symbols });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -71,18 +53,35 @@ app.get('/api/symbols/all', async (req, res) => {
 // Scan endpoint
 app.post('/api/scan', async (req, res) => {
   try {
-    await loadModules();
     const { symbols, timeframe, strategy } = req.body;
 
-    if (!symbols || !timeframe || !strategy) {
-      return res.status(400).json({
-        error: 'Missing required parameters: symbols, timeframe, strategy'
-      });
+    if (!symbols || !Array.isArray(symbols) || symbols.length === 0) {
+      return res.status(400).json({ error: 'Symbols array is required' });
     }
 
-    const results = await smcAnalyzer.scanSymbols(symbols, timeframe);
-    res.json({ signals: results });
+    if (!timeframe) {
+      return res.status(400).json({ error: 'Timeframe is required' });
+    }
+
+    console.log(`Scanning ${symbols.length} symbols on ${timeframe} timeframe...`);
+
+    const results = await scanMultipleSymbols(symbols, timeframe, (progress) => {
+      console.log(`Progress: ${progress.percentage}% (${progress.completed}/${progress.total})`);
+    });
+
+    const signals = formatSignalsForDisplay(results);
+
+    console.log(`Scan complete. Found ${signals.length} signals.`);
+
+    res.json({
+      success: true,
+      signals,
+      scanned: symbols.length,
+      found: signals.length,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
+    console.error('Scan error:', error);
     res.status(500).json({ error: error.message });
   }
 });
