@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SignalDetailsModal from './components/SignalDetailsModal';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './services/smcAnalyzerClient.js';
+import { trackingService } from './services/signalTrackingService';
 
 // Auto-detect API URL based on environment (for settings only)
 const API_URL = import.meta.env.VITE_API_URL ||
@@ -227,6 +228,16 @@ function SignalTracker() {
     setTimeout(() => setSelectedSignal(null), 200); // Delay for exit animation
   };
 
+  const handleTrackSignal = (signal) => {
+    try {
+      trackingService.trackSignal(signal);
+      alert(`✅ Signal tracked! Monitoring ${signal.symbol} in real-time.\n\nView tracked signals in the "Tracked Signals" tab.`);
+    } catch (error) {
+      console.error('Error tracking signal:', error);
+      alert('❌ Failed to track signal. Please try again.');
+    }
+  };
+
   return (
     <div>
       <div className="card">
@@ -385,6 +396,7 @@ function SignalTracker() {
                     <th>Symbol</th>
                     <th>Timeframe</th>
                     <th>Type</th>
+                    <th>Entry Status</th>
                     <th>Entry</th>
                     <th>Stop Loss</th>
                     <th>Take Profit</th>
@@ -392,6 +404,7 @@ function SignalTracker() {
                     <th>Confidence</th>
                     <th>Patterns</th>
                     <th>Detected At</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -429,6 +442,23 @@ function SignalTracker() {
                           {signal.type}
                         </span>
                       </td>
+                      <td>
+                        {signal.entryTiming ? (
+                          signal.entryTiming.status === 'immediate' ? (
+                            <span className="badge badge-success" title="Price is in Order Block - can enter now">
+                              ⚡ READY
+                            </span>
+                          ) : (
+                            <span className="badge badge-warning" title="Waiting for price to reach Order Block">
+                              ⏳ PENDING
+                            </span>
+                          )
+                        ) : (
+                          <span className="badge badge-secondary" title="Entry status unknown">
+                            - N/A
+                          </span>
+                        )}
+                      </td>
                       <td>{signal.entry}</td>
                       <td>{signal.stopLoss}</td>
                       <td>{signal.takeProfit}</td>
@@ -438,9 +468,24 @@ function SignalTracker() {
                           {signal.confidence}
                         </span>
                       </td>
-                      <td style={{ fontSize: '12px' }}>{signal.patterns}</td>
+                      <td style={{ fontSize: '12px' }}>{signal.patternsText}</td>
                       <td style={{ fontSize: '12px' }}>
                         {signal.scanTime ? new Date(signal.scanTime).toLocaleString() : new Date(signal.timestamp).toLocaleString()}
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <button
+                          className="btn btn-success"
+                          style={{
+                            fontSize: '12px',
+                            padding: '6px 12px'
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTrackSignal(signal);
+                          }}
+                        >
+                          Track
+                        </button>
                       </td>
                     </tr>
                   ))}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SignalTracker from './SignalTracker';
 import Settings from './Settings';
+import TrackedSignals from './TrackedSignals';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('tracker');
@@ -20,6 +21,12 @@ function App() {
           Signal Tracker
         </button>
         <button
+          className={`nav-link ${currentPage === 'tracked' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('tracked')}
+        >
+          Tracked Signals
+        </button>
+        <button
           className={`nav-link ${currentPage === 'settings' ? 'active' : ''}`}
           onClick={() => setCurrentPage('settings')}
         >
@@ -28,6 +35,7 @@ function App() {
       </div>
 
       {currentPage === 'tracker' && <SignalTracker />}
+      {currentPage === 'tracked' && <TrackedSignals />}
       {currentPage === 'settings' && <Settings />}
     </div>
   );

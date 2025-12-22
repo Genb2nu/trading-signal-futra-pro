@@ -104,7 +104,8 @@ export function formatSignalsForDisplay(scanResults) {
         takeProfit: typeof signal.takeProfit === 'number' ? signal.takeProfit.toFixed(8) : signal.takeProfit,
         riskReward: typeof signal.riskReward === 'number' ? signal.riskReward.toFixed(2) : signal.riskReward,
         confidence: signal.confidence,
-        patterns: signal.patterns ? signal.patterns.join(', ') : '',
+        patterns: signal.patterns || [],
+        patternsText: signal.patterns ? signal.patterns.join(', ') : '',
         price: result.lastPrice,
         lastPrice: typeof result.lastPrice === 'number' ? result.lastPrice.toFixed(8) : result.lastPrice,
         strength: signal.strength || 'medium',
@@ -113,6 +114,17 @@ export function formatSignalsForDisplay(scanResults) {
         patternDetails: signal.patternDetails,
         confluenceReason: signal.confluenceReason,
         riskRewardBreakdown: signal.riskRewardBreakdown,
+        // NEW ENHANCED FIELDS
+        premiumDiscount: signal.premiumDiscount,
+        ote: signal.ote,
+        structureAnalysis: signal.structureAnalysis,
+        liquidityAnalysis: signal.liquidityAnalysis,
+        fvgStatus: signal.fvgStatus,
+        orderBlockDetails: signal.orderBlockDetails,
+        volumeAnalysis: signal.volumeAnalysis,
+        entryTiming: signal.entryTiming,
+        confluenceScore: signal.confluenceScore,
+        riskManagement: signal.riskManagement,
         details: signal
       });
     }
