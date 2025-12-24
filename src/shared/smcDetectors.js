@@ -3,6 +3,8 @@
  * This module contains all the pattern detection logic for SMC trading strategy
  */
 
+import { getCurrentConfig } from './strategyConfig.js';
+
 /**
  * Identifies swing highs and swing lows in price data
  * A swing high has a higher high than surrounding candles
@@ -113,7 +115,12 @@ export function detectFairValueGaps(candles) {
  * @param {number} impulseThreshold - Minimum % move to consider an impulse (default: 1%)
  * @returns {Array} Array of order block objects
  */
-export function detectOrderBlocks(candles, impulseThreshold = 0.01) {
+export function detectOrderBlocks(candles, impulseThreshold = null) {
+  // Use strategy config if no threshold provided
+  if (impulseThreshold === null) {
+    const config = getCurrentConfig();
+    impulseThreshold = config.obImpulseThreshold;
+  }
   const orderBlocks = [];
 
   for (let i = 1; i < candles.length - 3; i++) {
@@ -329,12 +336,85 @@ export function detectBreakOfStructure(candles, structure) {
 }
 
 /**
+ * Detect higher timeframe trend using multiple methods
+ * @param {Array} htfCandles - Higher timeframe candles (e.g., 4h when trading 1h)
+ * @returns {string} 'bullish', 'bearish', or 'neutral'
+ */
+export function detectHigherTimeframeTrend(htfCandles) {
+  if (!htfCandles || htfCandles.length < 50) {
+    return 'neutral';
+  }
+
+  // Use last 50 candles for trend analysis
+  const recentCandles = htfCandles.slice(-50);
+
+  // Method 1: EMA 20 vs EMA 50
+  const calculateEMA = (data, period) => {
+    const k = 2 / (period + 1);
+    let ema = data[0].close;
+
+    for (let i = 1; i < data.length; i++) {
+      ema = (data[i].close * k) + (ema * (1 - k));
+    }
+
+    return ema;
+  };
+
+  const ema20 = calculateEMA(recentCandles, 20);
+  const ema50 = calculateEMA(recentCandles, 50);
+
+  // Method 2: Higher Highs and Higher Lows (bullish) vs Lower Highs and Lower Lows (bearish)
+  const swingPoints = detectSwingPoints(recentCandles, 3);
+  const recentSwingHighs = swingPoints.swingHighs.slice(-3);
+  const recentSwingLows = swingPoints.swingLows.slice(-3);
+
+  let hhhl = false; // Higher Highs Higher Lows
+  let lhll = false; // Lower Highs Lower Lows
+
+  if (recentSwingHighs.length >= 2 && recentSwingLows.length >= 2) {
+    // Check for Higher Highs and Higher Lows
+    const lastHigh = recentSwingHighs[recentSwingHighs.length - 1].price;
+    const prevHigh = recentSwingHighs[recentSwingHighs.length - 2].price;
+    const lastLow = recentSwingLows[recentSwingLows.length - 1].price;
+    const prevLow = recentSwingLows[recentSwingLows.length - 2].price;
+
+    hhhl = (lastHigh > prevHigh) && (lastLow > prevLow);
+    lhll = (lastHigh < prevHigh) && (lastLow < prevLow);
+  }
+
+  // Method 3: Price relative to EMAs
+  const currentPrice = recentCandles[recentCandles.length - 1].close;
+  const priceAboveEMAs = currentPrice > ema20 && currentPrice > ema50;
+  const priceBelowEMAs = currentPrice < ema20 && currentPrice < ema50;
+
+  // Combine methods for robust trend detection
+  let bullishSignals = 0;
+  let bearishSignals = 0;
+
+  if (ema20 > ema50) bullishSignals++;
+  if (ema20 < ema50) bearishSignals++;
+
+  if (hhhl) bullishSignals++;
+  if (lhll) bearishSignals++;
+
+  if (priceAboveEMAs) bullishSignals++;
+  if (priceBelowEMAs) bearishSignals++;
+
+  // Require at least 2 of 3 confirmations
+  if (bullishSignals >= 2) return 'bullish';
+  if (bearishSignals >= 2) return 'bearish';
+
+  return 'neutral';
+}
+
+/**
  * Main SMC analyzer that combines all detection methods
  * and generates trading signals
  * @param {Array} candles - Array of kline objects
+ * @param {Array} htfCandles - Optional higher timeframe candles for trend filter
  * @returns {Object} Complete SMC analysis with signals
  */
-export function analyzeSMC(candles) {
+export function analyzeSMC(candles, htfCandles = null) {
   if (!candles || candles.length < 50) {
     return {
       error: 'Insufficient data',
@@ -344,7 +424,14 @@ export function analyzeSMC(candles) {
 
   // ===== EXISTING DETECTIONS =====
   const swingPoints = detectSwingPoints(candles);
-  const fvgs = detectFairValueGaps(candles);
+  const fvgsFlat = detectFairValueGaps(candles);
+
+  // Transform flat FVG array into structured object for trackFVGMitigation
+  const fvgs = {
+    bullish: fvgsFlat.filter(f => f.type === 'bullish'),
+    bearish: fvgsFlat.filter(f => f.type === 'bearish')
+  };
+
   const orderBlocks = detectOrderBlocks(candles);
   const structure = analyzeMarketStructure(swingPoints);
   const liquiditySweeps = detectLiquiditySweeps(candles, swingPoints);
@@ -361,6 +448,9 @@ export function analyzeSMC(candles) {
   const breakerBlocks = detectBreakerBlocks(orderBlocks, candles);
   const latestCandle = candles[candles.length - 1];
   const premiumDiscount = calculatePremiumDiscount(candles, swingPoints, latestCandle.close);
+
+  // ===== DETECT HIGHER TIMEFRAME TREND =====
+  const htfTrend = htfCandles ? detectHigherTimeframeTrend(htfCandles) : 'neutral';
 
   // ===== GENERATE SIGNALS WITH ALL DATA =====
   const signals = generateSignals({
@@ -380,7 +470,8 @@ export function analyzeSMC(candles) {
     inducement,
     volumeAnalysis,
     breakerBlocks,
-    premiumDiscount
+    premiumDiscount,
+    htfTrend // Multi-timeframe confirmation
   });
 
   // ===== RETURN ALL DATA =====
@@ -436,8 +527,12 @@ function generateSignals(analysis) {
     inducement = { bullish: [], bearish: [] },
     volumeAnalysis = null,
     breakerBlocks = { bullish: [], bearish: [] },
-    premiumDiscount = null
+    premiumDiscount = null,
+    htfTrend = 'neutral' // Higher timeframe trend for multi-timeframe confirmation
   } = analysis;
+
+  // Get strategy configuration FIRST
+  const config = getCurrentConfig();
 
   // PREPROCESSING: Calculate all enhanced data
   const latestCandle = candles[candles.length - 1];
@@ -448,57 +543,176 @@ function generateSignals(analysis) {
   // Analyze volume (if not provided)
   const volumeData = volumeAnalysis || analyzeVolume(candles);
 
-  // Track FVG mitigation status
-  const mitigatedFVGs = trackFVGMitigation(fvgs, candles);
+  // Use the FVGs passed in (already mitigated in analyzeSMC)
+  const mitigatedFVGs = fvgs; // Already tracked, don't call trackFVGMitigation again!
 
   // Calculate ATR for stops
   const atr = calculateATR(candles, 14);
 
+  // ===== ENTRY TIMING HELPER FUNCTIONS =====
+  /**
+   * Check if price is currently within an Order Block zone
+   */
+  const isPriceInOBZone = (price, ob) => {
+    return price >= ob.bottom && price <= ob.top;
+  };
+
+  /**
+   * Detect bullish rejection pattern on latest candle
+   * Returns true if candle shows strong bullish rejection
+   */
+  const isBullishRejection = (candle, prevCandle) => {
+    const body = Math.abs(candle.close - candle.open);
+    const upperWick = candle.high - Math.max(candle.close, candle.open);
+    const lowerWick = Math.min(candle.close, candle.open) - candle.low;
+    const totalRange = candle.high - candle.low;
+
+    if (totalRange === 0) return false;
+
+    // Bullish candle (close > open)
+    const isBullish = candle.close > candle.open;
+
+    // Pattern 1: Hammer (long lower wick, small body, small upper wick)
+    const isHammer = lowerWick > body * 2 && upperWick < body && isBullish;
+
+    // Pattern 2: Bullish Engulfing
+    const isBullishEngulfing = prevCandle &&
+                                candle.close > prevCandle.open &&
+                                candle.open < prevCandle.close &&
+                                isBullish &&
+                                body > (prevCandle.high - prevCandle.low) * 0.7;
+
+    // Pattern 3: Strong bullish candle with rejection (lower wick > 40% of range)
+    const hasLowerWickRejection = lowerWick / totalRange > 0.4 && isBullish;
+
+    return isHammer || isBullishEngulfing || hasLowerWickRejection;
+  };
+
+  /**
+   * Detect bearish rejection pattern on latest candle
+   * Returns true if candle shows strong bearish rejection
+   */
+  const isBearishRejection = (candle, prevCandle) => {
+    const body = Math.abs(candle.close - candle.open);
+    const upperWick = candle.high - Math.max(candle.close, candle.open);
+    const lowerWick = Math.min(candle.close, candle.open) - candle.low;
+    const totalRange = candle.high - candle.low;
+
+    if (totalRange === 0) return false;
+
+    // Bearish candle (close < open)
+    const isBearish = candle.close < candle.open;
+
+    // Pattern 1: Shooting Star (long upper wick, small body, small lower wick)
+    const isShootingStar = upperWick > body * 2 && lowerWick < body && isBearish;
+
+    // Pattern 2: Bearish Engulfing
+    const isBearishEngulfing = prevCandle &&
+                                candle.close < prevCandle.open &&
+                                candle.open > prevCandle.close &&
+                                isBearish &&
+                                body > (prevCandle.high - prevCandle.low) * 0.7;
+
+    // Pattern 3: Strong bearish candle with rejection (upper wick > 40% of range)
+    const hasUpperWickRejection = upperWick / totalRange > 0.4 && isBearish;
+
+    return isShootingStar || isBearishEngulfing || hasUpperWickRejection;
+  };
+
   // Get recent patterns
   // NOTE: fvgs (mitigatedFVGs) has structure: { unfilled: {bullish:[], bearish:[]}, touched: {...}, partial: {...}, filled: {...} }
-  const allBullishFVGs = [
+  // In moderate/aggressive mode, we accept touched and partial FVGs
+  const includeTouchedFVGs = !config.requireAllConfirmations; // Moderate/Aggressive modes
+
+  const allBullishFVGs = includeTouchedFVGs ? [
     ...(mitigatedFVGs.unfilled?.bullish || []),
     ...(mitigatedFVGs.touched?.bullish || []),
     ...(mitigatedFVGs.partial?.bullish || [])
+  ] : [
+    ...(mitigatedFVGs.unfilled?.bullish || [])
   ];
-  const allBearishFVGs = [
+
+  const allBearishFVGs = includeTouchedFVGs ? [
     ...(mitigatedFVGs.unfilled?.bearish || []),
     ...(mitigatedFVGs.touched?.bearish || []),
     ...(mitigatedFVGs.partial?.bearish || [])
+  ] : [
+    ...(mitigatedFVGs.unfilled?.bearish || [])
   ];
 
-  const recentBullishFVG = allBullishFVGs.filter(f => f.index >= candles.length - 10);
+  // Moderate mode uses wider lookback windows for more signals
+  // For FVGs: if unfilled, they're valid regardless of age (no recency filter in moderate mode)
+  const fvgLookback = config.requireAllConfirmations ? 10 : Infinity; // Conservative: recent only, Moderate: all unfilled
+  const sweepLookback = config.requireAllConfirmations ? 5 : 15; // Conservative: 5, Moderate: 15
+
+  const recentBullishFVG = fvgLookback === Infinity ? allBullishFVGs : allBullishFVGs.filter(f => f.index >= candles.length - fvgLookback);
   const recentBullishOB = orderBlocks.bullish ? orderBlocks.bullish.filter(ob => ob.index >= candles.length - 20) : [];
-  const recentBullishSweep = liquiditySweeps.filter(s => s.direction === 'bullish' && s.index >= candles.length - 5);
-  const recentBullishBMS = bmsEvents.filter(b => b.type === 'bullish' && b.index >= candles.length - 5);
+  const recentBullishSweep = liquiditySweeps.filter(s => s.direction === 'bullish' && s.index >= candles.length - sweepLookback);
+  const recentBullishBMS = bmsEvents.filter(b => b.type === 'bullish' && b.index >= candles.length - sweepLookback);
   const recentBullishBreaker = breakerBlocks.bullish || [];
 
-  const recentBearishFVG = allBearishFVGs.filter(f => f.index >= candles.length - 10);
+  const recentBearishFVG = fvgLookback === Infinity ? allBearishFVGs : allBearishFVGs.filter(f => f.index >= candles.length - fvgLookback);
   const recentBearishOB = orderBlocks.bearish ? orderBlocks.bearish.filter(ob => ob.index >= candles.length - 20) : [];
-  const recentBearishSweep = liquiditySweeps.filter(s => s.direction === 'bearish' && s.index >= candles.length - 5);
-  const recentBearishBMS = bmsEvents.filter(b => b.type === 'bearish' && b.index >= candles.length - 5);
+  const recentBearishSweep = liquiditySweeps.filter(s => s.direction === 'bearish' && s.index >= candles.length - sweepLookback);
+  const recentBearishBMS = bmsEvents.filter(b => b.type === 'bearish' && b.index >= candles.length - sweepLookback);
   const recentBearishBreaker = breakerBlocks.bearish || [];
 
   // ========================================================================
   // BULLISH SIGNAL GENERATION
   // ========================================================================
 
-  // FILTER: Prefer discount zone, allow neutral zone (relaxed filtering)
-  if (zoneAnalysis.zone === 'discount' || zoneAnalysis.zone === 'neutral') {
+  // DEBUG
+
+  // FILTER: Zone check based on strategy mode
+  const validZoneForBullish = config.allowNeutralZone
+    ? (zoneAnalysis.zone === 'discount' || zoneAnalysis.zone === 'neutral')
+    : zoneAnalysis.zone === 'discount';
+
+
+  if (validZoneForBullish) {
     // Prefer breaker blocks over regular OBs
     const bullishOB = recentBullishBreaker.length > 0 ? recentBullishBreaker[0] : recentBullishOB[0];
 
+    // DEBUG
+    if (!bullishOB && recentBullishOB.length === 0) {
+    }
+
     if (bullishOB) {
-      // Check base pattern requirement: FVG OR OB
-      const hasBasePattern = (mitigatedFVGs.unfilled.bullish.length > 0) || bullishOB;
 
-      // Check confirmation: Sweep OR BMS OR Inducement OR BOS (relaxed)
-      const hasConfirmation = (recentBullishSweep.length > 0) ||
-                             (recentBullishBMS.length > 0) ||
-                             (inducement.bullish.length > 0) ||
-                             (bos.bullish.length > 0); // Added BOS as confirmation
+      // Check confirmations based on strategy mode
+      const hasLiquiditySweep = recentBullishSweep.length > 0;
+      const hasBOS = bos.bullish.length > 0;
+      const hasFVG = recentBullishFVG.length > 0; // Use recent FVGs (includes touched/partial in moderate mode)
+      const hasValidZone = validZoneForBullish;
 
-      if (hasBasePattern && hasConfirmation) {
+
+      // Determine if confirmations pass based on strategy
+      let confirmationsPassed = false;
+
+      if (config.requireAllConfirmations) {
+        // Conservative: ALL required confirmations must be present
+        const allRequired = config.requiredConfirmations.every(conf => {
+          if (conf === 'liquiditySweep') return hasLiquiditySweep;
+          if (conf === 'bos') return hasBOS;
+          if (conf === 'fvg') return hasFVG;
+          if (conf === 'validZone') return hasValidZone;
+          return false;
+        });
+        confirmationsPassed = allRequired;
+      } else {
+        // Moderate/Aggressive: Core required + optional bonuses
+        const requiredPassed = config.requiredConfirmations.every(conf => {
+          if (conf === 'bos') return hasBOS;
+          if (conf === 'fvg') return hasFVG;
+          if (conf === 'validZone') return hasValidZone;
+          return false;
+        });
+        confirmationsPassed = requiredPassed;
+        // Liquidity sweep is optional (adds bonus points but not required)
+      }
+
+
+      if (confirmationsPassed) {
         // Calculate OTE for this setup
         const ote = calculateOTE(
           structure.lastSwingHigh?.price || latestCandle.high,
@@ -510,101 +724,137 @@ function generateSignals(analysis) {
         // ===== ENTRY CALCULATION =====
         let entry;
         let entryTiming;
-
-        // Entry at OB mitigation - use current price if near OB, otherwise wait
         let validEntry = false;
 
-        // For BUY: Only valid if price is at or approaching OB from above
-        if (priceInRange(latestCandle.close, bullishOB.top, bullishOB.bottom)) {
-          // Price is IN the OB - immediate entry at current price
-          entry = latestCandle.close;
-          entryTiming = { status: 'immediate', inOB: true };
-          validEntry = true;
-        } else if (latestCandle.close > bullishOB.top && latestCandle.close < bullishOB.top * 1.02) {
-          // Price is slightly above OB (within 2%) - set entry at OB top
-          entry = bullishOB.top;
-          entryTiming = { status: 'pending', inOB: false };
-          validEntry = true;
+        if (config.requireBOSConfirmation) {
+          // Conservative: Only enter on Break of Structure confirmation
+          // Find BOS that occurred AFTER OB formation
+          const bosAfterOB = bos.bullish.find(b => {
+            const bosIndex = candles.findIndex(c => c.timestamp === b.timestamp);
+            const obIndex = candles.findIndex(c => c.timestamp === bullishOB.timestamp);
+            // BOS must be after OB and within last 10 candles for recent confirmation
+            return bosIndex > obIndex && bosIndex >= candles.length - config.bosLookback;
+          });
+
+          if (bosAfterOB) {
+            // Entry at BOS break level (structure break price)
+            entry = bosAfterOB.breakLevel;
+            entryTiming = {
+              status: 'confirmed',
+              bosConfirmed: true,
+              confirmationCandle: bosAfterOB.timestamp,
+              confirmationType: 'BOS'
+            };
+            validEntry = true;
+          }
+        } else {
+          // Moderate/Aggressive: Simplified entry for real-time
+          // Just require price to be at reasonable level relative to OB
+          const priceAboveOB = latestCandle.close >= bullishOB.bottom * 0.995; // Allow 0.5% below OB
+
+          if (priceAboveOB) {
+            // Entry at OB level
+            entry = bullishOB.top;
+            entryTiming = {
+              status: 'ob_level',
+              bosConfirmed: false,
+              confirmationType: 'OB_SETUP'
+            };
+            validEntry = true;
+          }
         }
-        // If price is far above OB or below OB, skip (invalid/missed entry)
+
+        // Multi-timeframe filter: Only take bullish signals when HTF is bullish or neutral
+        if (validEntry && htfTrend === 'bearish') {
+          validEntry = false; // Block bullish signals when HTF is bearish
+        }
 
         if (validEntry) {
 
         // ===== STOP LOSS CALCULATION =====
-        const buffer = atr * 0.5; // Half ATR for wick allowance
+        const buffer = atr * config.stopLossATRMultiplier;
         let stopLoss = bullishOB.bottom - buffer;
 
-        // Check for liquidity below OB (avoid stop hunt)
+        // Check for liquidity below OB - place stop BEYOND liquidity zone
+        // Liquidity sweeps are BULLISH for our trade (smart money absorbing)
         const liquidityBelow = externalLiquidity.buyLiquidity.find(
-          liq => liq.price < bullishOB.bottom && liq.price > stopLoss - (atr * 0.5)
+          liq => liq.price < bullishOB.bottom && liq.price > bullishOB.bottom - (atr * 3)
         );
 
         if (liquidityBelow) {
-          stopLoss = liquidityBelow.price - (buffer * 1.5);
+          // Place stop BELOW the liquidity zone, allowing sweep to happen WITHOUT hitting our stop
+          stopLoss = liquidityBelow.price - (buffer * 2.0);
         }
 
-        // Maximum 3% risk
-        const maxRisk = entry * 0.97;
-        if (stopLoss < maxRisk) stopLoss = maxRisk;
+        // Natural stop placement (removed 3% max risk cap - use position sizing for risk management)
 
         // ===== TAKE PROFIT CALCULATION =====
         let takeProfit;
         let takeProfitReasoning;
+        const minRiskDistance = Math.abs(entry - stopLoss);
+        const minRewardDistance = minRiskDistance * config.minimumRiskReward;
 
-        // First choice: External liquidity
+        // First choice: External liquidity (but must meet minimum R:R)
         const targetLiquidity = externalLiquidity.sellLiquidity.find(
-          liq => liq.price > entry && liq.strength !== 'weak'
+          liq => liq.price > entry && liq.strength !== 'weak' && (liq.price - entry) >= minRewardDistance
         );
 
         if (targetLiquidity) {
           takeProfit = targetLiquidity.price - (atr * 0.3);
           takeProfitReasoning = `Targeting sell-side liquidity at ${targetLiquidity.price.toFixed(8)}`;
         } else {
-          // Second choice: Next swing high
+          // Second choice: Next swing high (but must meet minimum R:R)
           const nextStructure = findNearestStructure(candles, swingPoints, 'bullish');
-          if (nextStructure) {
+          if (nextStructure && (nextStructure.price - entry) >= minRewardDistance) {
             takeProfit = nextStructure.price - (atr * 0.3);
             takeProfitReasoning = `Targeting next swing high at ${nextStructure.price.toFixed(8)}`;
           } else {
-            // Fallback: 2:1 RR minimum
-            takeProfit = entry + ((entry - stopLoss) * 2);
-            takeProfitReasoning = '2:1 RR (no clear structure target)';
+            // Fallback: Use minimum R:R
+            takeProfit = entry + minRewardDistance;
+            takeProfitReasoning = `${config.minimumRiskReward}:1 RR (no valid structure target)`;
           }
         }
 
         // Validate minimum RR
         const riskReward = (takeProfit - entry) / (entry - stopLoss);
-        if (riskReward >= 1.5) {
+
+        if (riskReward >= config.minimumRiskReward) {
           // Only proceed if R:R is acceptable
 
-        // ===== CONFLUENCE SCORING =====
+        // ===== CONFLUENCE SCORING (Using strategy config weights) =====
         let confluenceScore = 0;
 
-        // Core requirements (40 points)
-        if (zoneAnalysis.zone === 'discount') confluenceScore += 20;
-        else if (zoneAnalysis.zone === 'neutral') confluenceScore += 10; // Less points for neutral
-        if (volumeData.confirmation === 'strong') confluenceScore += 20;
-        else if (volumeData.confirmation === 'moderate') confluenceScore += 10;
+        // Apply weights from strategy config
+        if (hasFVG) confluenceScore += config.confluenceWeights.fvg;
+        if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
+        if (hasBOS) confluenceScore += config.confluenceWeights.bos;
 
-        // High-value confluence (45 points)
-        if (ote.currentPriceInOTE) confluenceScore += 15;
-        if (mitigatedFVGs.unfilled.bullish.length > 0) confluenceScore += 15;
-        if (recentBullishBMS.length > 0) confluenceScore += 15; // Reversal
+        // Zone scoring
+        if (zoneAnalysis.zone === 'discount') {
+          confluenceScore += config.confluenceWeights.validZone;
+        } else if (zoneAnalysis.zone === 'neutral' && config.allowNeutralZone) {
+          confluenceScore += config.confluenceWeights.neutralZone || config.neutralZoneScore;
+        }
 
-        // Moderate confluence (15 points each)
-        if (bos.bullish.length > 0) confluenceScore += 10; // Continuation
-        if (recentBullishSweep.length > 0) confluenceScore += 10;
-        if (inducement.bullish.length > 0) confluenceScore += 10;
-        if (recentBullishBreaker.length > 0) confluenceScore += 10;
+        // Volume confirmation
+        if (volumeData.confirmation === 'strong') confluenceScore += config.confluenceWeights.volume;
+        else if (volumeData.confirmation === 'moderate') confluenceScore += Math.floor(config.confluenceWeights.volume * 0.67);
 
-        // Assign confidence tier
+        // OTE
+        if (ote.currentPriceInOTE) confluenceScore += config.confluenceWeights.ote;
+
+        // Bonus factors
+        if (recentBullishBreaker.length > 0) confluenceScore += config.confluenceWeights.breakerBlock;
+        if (recentBullishBMS.length > 0) confluenceScore += config.confluenceWeights.bms;
+
+        // Assign confidence tier based on strategy minimum
         let confidence;
-        if (confluenceScore >= 70) confidence = 'premium';
-        else if (confluenceScore >= 50) confidence = 'high';
-        else if (confluenceScore >= 35) confidence = 'standard';
+        if (confluenceScore >= 85) confidence = 'premium';
+        else if (confluenceScore >= config.minimumConfluence + 10) confidence = 'high';
+        else confidence = 'standard';
 
-        if (confluenceScore >= 35) {
-          // Only create signal if score is acceptable
+
+        if (confluenceScore >= config.minimumConfluence) {
 
 
         // ===== CREATE SIGNAL =====
@@ -705,22 +955,47 @@ function generateSignals(analysis) {
   // BEARISH SIGNAL GENERATION
   // ========================================================================
 
-  // FILTER: Prefer premium zone, allow neutral zone (relaxed filtering)
-  if (zoneAnalysis.zone === 'premium' || zoneAnalysis.zone === 'neutral') {
+  // FILTER: Zone check based on strategy mode
+  const validZoneForBearish = config.allowNeutralZone
+    ? (zoneAnalysis.zone === 'premium' || zoneAnalysis.zone === 'neutral')
+    : zoneAnalysis.zone === 'premium';
+
+  if (validZoneForBearish) {
     // Prefer breaker blocks over regular OBs
     const bearishOB = recentBearishBreaker.length > 0 ? recentBearishBreaker[0] : recentBearishOB[0];
 
     if (bearishOB) {
-      // Check base pattern requirement: FVG OR OB
-      const hasBasePattern = (mitigatedFVGs.unfilled.bearish.length > 0) || bearishOB;
+      // Check confirmations based on strategy mode
+      const hasLiquiditySweep = recentBearishSweep.length > 0;
+      const hasBOS = bos.bearish.length > 0;
+      const hasFVG = recentBearishFVG.length > 0; // Use recent FVGs (includes touched/partial in moderate mode)
+      const hasValidZone = validZoneForBearish;
 
-      // Check confirmation: Sweep OR BMS OR Inducement OR BOS (relaxed)
-      const hasConfirmation = (recentBearishSweep.length > 0) ||
-                             (recentBearishBMS.length > 0) ||
-                             (inducement.bearish.length > 0) ||
-                             (bos.bearish.length > 0); // Added BOS as confirmation
+      // Determine if confirmations pass based on strategy
+      let confirmationsPassed = false;
 
-      if (hasBasePattern && hasConfirmation) {
+      if (config.requireAllConfirmations) {
+        // Conservative: ALL required confirmations must be present
+        const allRequired = config.requiredConfirmations.every(conf => {
+          if (conf === 'liquiditySweep') return hasLiquiditySweep;
+          if (conf === 'bos') return hasBOS;
+          if (conf === 'fvg') return hasFVG;
+          if (conf === 'validZone') return hasValidZone;
+          return false;
+        });
+        confirmationsPassed = allRequired;
+      } else {
+        // Moderate/Aggressive: Core required + optional bonuses
+        const requiredPassed = config.requiredConfirmations.every(conf => {
+          if (conf === 'bos') return hasBOS;
+          if (conf === 'fvg') return hasFVG;
+          if (conf === 'validZone') return hasValidZone;
+          return false;
+        });
+        confirmationsPassed = requiredPassed;
+      }
+
+      if (confirmationsPassed) {
         // Calculate OTE for this setup
         const ote = calculateOTE(
           structure.lastSwingHigh?.price || latestCandle.high,
@@ -732,65 +1007,94 @@ function generateSignals(analysis) {
         // ===== ENTRY CALCULATION =====
         let entry;
         let entryTiming;
-
-        // Entry at OB mitigation - use current price if near OB, otherwise wait
         let validEntry = false;
 
-        // For SELL: Only valid if price is at or approaching OB from below
-        if (priceInRange(latestCandle.close, bearishOB.top, bearishOB.bottom)) {
-          // Price is IN the OB - immediate entry at current price
-          entry = latestCandle.close;
-          entryTiming = { status: 'immediate', inOB: true };
-          validEntry = true;
-        } else if (latestCandle.close < bearishOB.bottom && latestCandle.close > bearishOB.bottom * 0.98) {
-          // Price is slightly below OB (within 2%) - set entry at OB bottom
-          entry = bearishOB.bottom;
-          entryTiming = { status: 'pending', inOB: false };
-          validEntry = true;
+        if (config.requireBOSConfirmation) {
+          // Conservative: Only enter on Break of Structure confirmation
+          // Find BOS that occurred AFTER OB formation
+          const bosAfterOB = bos.bearish.find(b => {
+            const bosIndex = candles.findIndex(c => c.timestamp === b.timestamp);
+            const obIndex = candles.findIndex(c => c.timestamp === bearishOB.timestamp);
+            // BOS must be after OB and within last 10 candles for recent confirmation
+            return bosIndex > obIndex && bosIndex >= candles.length - config.bosLookback;
+          });
+
+          if (bosAfterOB) {
+            // Entry at BOS break level (structure break price)
+            entry = bosAfterOB.breakLevel;
+            entryTiming = {
+              status: 'confirmed',
+              bosConfirmed: true,
+              confirmationCandle: bosAfterOB.timestamp,
+              confirmationType: 'BOS'
+            };
+            validEntry = true;
+          }
+        } else {
+          // Moderate/Aggressive: Simplified entry for real-time
+          // Just require price to be at reasonable level relative to OB
+          const priceBelowOB = latestCandle.close <= bearishOB.top * 1.005; // Allow 0.5% above OB
+
+          if (priceBelowOB) {
+            // Entry at OB level
+            entry = bearishOB.bottom;
+            entryTiming = {
+              status: 'ob_level',
+              bosConfirmed: false,
+              confirmationType: 'OB_SETUP'
+            };
+            validEntry = true;
+          }
         }
-        // If price is far below OB or above OB, skip (invalid/missed entry)
+
+        // Multi-timeframe filter: Only take bearish signals when HTF is bearish or neutral
+        if (validEntry && htfTrend === 'bullish') {
+          validEntry = false; // Block bearish signals when HTF is bullish
+        }
 
         if (validEntry) {
 
         // ===== STOP LOSS CALCULATION =====
-        const buffer = atr * 0.5; // Half ATR for wick allowance
+        const buffer = atr * config.stopLossATRMultiplier;
         let stopLoss = bearishOB.top + buffer;
 
-        // Check for liquidity above OB (avoid stop hunt)
+        // Check for liquidity above OB - place stop BEYOND liquidity zone
+        // Liquidity sweeps are BEARISH for our trade (smart money absorbing)
         const liquidityAbove = externalLiquidity.sellLiquidity.find(
-          liq => liq.price > bearishOB.top && liq.price < stopLoss + (atr * 0.5)
+          liq => liq.price > bearishOB.top && liq.price < bearishOB.top + (atr * 3)
         );
 
         if (liquidityAbove) {
-          stopLoss = liquidityAbove.price + (buffer * 1.5);
+          // Place stop ABOVE the liquidity zone, allowing sweep to happen WITHOUT hitting our stop
+          stopLoss = liquidityAbove.price + (buffer * 2.0);
         }
 
-        // Maximum 3% risk
-        const maxRisk = entry * 1.03;
-        if (stopLoss > maxRisk) stopLoss = maxRisk;
+        // Natural stop placement (removed 3% max risk cap - use position sizing for risk management)
 
         // ===== TAKE PROFIT CALCULATION =====
         let takeProfit;
         let takeProfitReasoning;
+        const minRiskDistance = Math.abs(stopLoss - entry);
+        const minRewardDistance = minRiskDistance * config.minimumRiskReward;
 
-        // First choice: External liquidity
+        // First choice: External liquidity (but must meet minimum R:R)
         const targetLiquidity = externalLiquidity.buyLiquidity.find(
-          liq => liq.price < entry && liq.strength !== 'weak'
+          liq => liq.price < entry && liq.strength !== 'weak' && (entry - liq.price) >= minRewardDistance
         );
 
         if (targetLiquidity) {
           takeProfit = targetLiquidity.price + (atr * 0.3);
           takeProfitReasoning = `Targeting buy-side liquidity at ${targetLiquidity.price.toFixed(8)}`;
         } else {
-          // Second choice: Next swing low
+          // Second choice: Next swing low (but must meet minimum R:R)
           const nextStructure = findNearestStructure(candles, swingPoints, 'bearish');
-          if (nextStructure) {
+          if (nextStructure && (entry - nextStructure.price) >= minRewardDistance) {
             takeProfit = nextStructure.price + (atr * 0.3);
             takeProfitReasoning = `Targeting next swing low at ${nextStructure.price.toFixed(8)}`;
           } else {
-            // Fallback: 2:1 RR minimum
-            takeProfit = entry - ((stopLoss - entry) * 2);
-            takeProfitReasoning = '2:1 RR (no clear structure target)';
+            // Fallback: Use minimum R:R
+            takeProfit = entry - minRewardDistance;
+            takeProfitReasoning = `${config.minimumRiskReward}:1 RR (no valid structure target)`;
           }
         }
 
@@ -798,33 +1102,39 @@ function generateSignals(analysis) {
         const riskReward = (entry - takeProfit) / (stopLoss - entry);
         if (riskReward >= 1.5) {
 
-        // ===== CONFLUENCE SCORING =====
+        // ===== CONFLUENCE SCORING (Using strategy config weights) =====
         let confluenceScore = 0;
 
-        // Core requirements (40 points)
-        if (zoneAnalysis.zone === 'premium') confluenceScore += 20;
-        else if (zoneAnalysis.zone === 'neutral') confluenceScore += 10; // Less points for neutral
-        if (volumeData.confirmation === 'strong') confluenceScore += 20;
-        else if (volumeData.confirmation === 'moderate') confluenceScore += 10;
+        // Apply weights from strategy config
+        if (hasFVG) confluenceScore += config.confluenceWeights.fvg;
+        if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
+        if (hasBOS) confluenceScore += config.confluenceWeights.bos;
 
-        // High-value confluence (45 points)
-        if (ote.currentPriceInOTE) confluenceScore += 15;
-        if (mitigatedFVGs.unfilled.bearish.length > 0) confluenceScore += 15;
-        if (recentBearishBMS.length > 0) confluenceScore += 15; // Reversal
+        // Zone scoring
+        if (zoneAnalysis.zone === 'premium') {
+          confluenceScore += config.confluenceWeights.validZone;
+        } else if (zoneAnalysis.zone === 'neutral' && config.allowNeutralZone) {
+          confluenceScore += config.confluenceWeights.neutralZone || config.neutralZoneScore;
+        }
 
-        // Moderate confluence (15 points each)
-        if (bos.bearish.length > 0) confluenceScore += 10; // Continuation
-        if (recentBearishSweep.length > 0) confluenceScore += 10;
-        if (inducement.bearish.length > 0) confluenceScore += 10;
-        if (recentBearishBreaker.length > 0) confluenceScore += 10;
+        // Volume confirmation
+        if (volumeData.confirmation === 'strong') confluenceScore += config.confluenceWeights.volume;
+        else if (volumeData.confirmation === 'moderate') confluenceScore += Math.floor(config.confluenceWeights.volume * 0.67);
 
-        // Assign confidence tier
+        // OTE
+        if (ote.currentPriceInOTE) confluenceScore += config.confluenceWeights.ote;
+
+        // Bonus factors
+        if (recentBearishBreaker.length > 0) confluenceScore += config.confluenceWeights.breakerBlock;
+        if (recentBearishBMS.length > 0) confluenceScore += config.confluenceWeights.bms;
+
+        // Assign confidence tier based on strategy minimum
         let confidence;
-        if (confluenceScore >= 70) confidence = 'premium';
-        else if (confluenceScore >= 50) confidence = 'high';
-        else if (confluenceScore >= 35) confidence = 'standard';
+        if (confluenceScore >= 85) confidence = 'premium';
+        else if (confluenceScore >= config.minimumConfluence + 10) confidence = 'high';
+        else confidence = 'standard';
 
-        if (confluenceScore >= 35) {
+        if (confluenceScore >= config.minimumConfluence) {
 
         // ===== CREATE SIGNAL =====
         signals.push({

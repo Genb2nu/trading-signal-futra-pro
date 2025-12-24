@@ -37,7 +37,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
         // Fetch candlestick data directly from Binance (client-side)
         const interval = getInterval(timeframe);
-        const limit = 200; // Get last 200 candles
+        const limit = 1000; // Get last 1000 candles for full context
 
         const klineData = await getBinanceKlines(symbol, interval, limit);
 

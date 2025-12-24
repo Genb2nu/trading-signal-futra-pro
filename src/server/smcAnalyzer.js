@@ -9,11 +9,20 @@ import { analyzeSMC } from '../shared/smcDetectors.js';
  */
 export async function scanSymbol(symbol, timeframe) {
   try {
-    // Fetch kline data
-    const candles = await getBinanceKlines(symbol, timeframe, 500);
+    // Fetch kline data - increased for better pattern detection
+    const candles = await getBinanceKlines(symbol, timeframe, 1000);
 
-    // Run SMC analysis
-    const analysis = analyzeSMC(candles);
+    // Fetch higher timeframe for multi-timeframe confirmation
+    let htfCandles = null;
+    try {
+      const htfTimeframe = timeframe === '1h' ? '4h' : timeframe === '4h' ? '1d' : '1d';
+      htfCandles = await getBinanceKlines(symbol, htfTimeframe, 500);
+    } catch (error) {
+      console.log(`Could not fetch HTF for ${symbol}, using single timeframe`);
+    }
+
+    // Run SMC analysis with multi-timeframe confirmation
+    const analysis = analyzeSMC(candles, htfCandles);
 
     // Return results with symbol and timeframe info
     return {
