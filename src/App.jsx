@@ -40,9 +40,15 @@ function App() {
         </button>
       </div>
 
-      {currentPage === 'tracker' && <SignalTracker />}
-      {currentPage === 'tracked' && <TrackedSignals />}
-      {currentPage === 'settings' && <Settings />}
+      <div style={{ display: currentPage === 'tracker' ? 'block' : 'none' }}>
+        <SignalTracker />
+      </div>
+      <div style={{ display: currentPage === 'tracked' ? 'block' : 'none' }}>
+        <TrackedSignals />
+      </div>
+      <div style={{ display: currentPage === 'settings' ? 'block' : 'none' }}>
+        <Settings />
+      </div>
     </div>
   );
 }

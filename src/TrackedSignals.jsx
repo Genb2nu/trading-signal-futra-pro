@@ -60,13 +60,43 @@ function TrackedSignals() {
     if (!currentPrice) return null;
 
     const entryPrice = parseFloat(signal.entry);
-    const distancePercent = Math.abs((currentPrice - entryPrice) / entryPrice) * 100;
+    const stopLoss = parseFloat(signal.stopLoss);
+    const takeProfit = parseFloat(signal.takeProfit);
 
-    return {
-      percent: distancePercent,
-      isReady: distancePercent <= 0.5,
-      isApproaching: distancePercent <= 1.5
-    };
+    // Check if entry was already hit (signal has been notified/entered)
+    const entryHit = signal.notified || signal.enteredAt;
+
+    if (entryHit) {
+      // Entry already hit - calculate P&L
+      let pnlPercent;
+
+      if (signal.direction === 'bullish') {
+        pnlPercent = ((currentPrice - entryPrice) / entryPrice) * 100;
+      } else {
+        pnlPercent = ((entryPrice - currentPrice) / entryPrice) * 100;
+      }
+
+      return {
+        percent: Math.abs((currentPrice - entryPrice) / entryPrice) * 100,
+        isReady: false,
+        isApproaching: false,
+        entryHit: true,
+        pnlPercent: pnlPercent,
+        inProfit: pnlPercent > 0.1,
+        inLoss: pnlPercent < -0.1,
+        atBreakeven: Math.abs(pnlPercent) <= 0.1
+      };
+    } else {
+      // Entry not yet hit - show distance to entry
+      const distancePercent = Math.abs((currentPrice - entryPrice) / entryPrice) * 100;
+
+      return {
+        percent: distancePercent,
+        isReady: distancePercent <= 0.5,
+        isApproaching: distancePercent <= 1.5,
+        entryHit: false
+      };
+    }
   };
 
   const getStatusBadge = (signal, distance) => {
@@ -74,6 +104,30 @@ function TrackedSignals() {
       return <span className="badge badge-secondary">Loading...</span>;
     }
 
+    // If entry was hit, show P&L status
+    if (distance.entryHit) {
+      if (distance.inProfit) {
+        return (
+          <span className="badge badge-success" title={`In profit: +${distance.pnlPercent.toFixed(2)}%`}>
+            💰 IN PROFIT +{distance.pnlPercent.toFixed(2)}%
+          </span>
+        );
+      } else if (distance.inLoss) {
+        return (
+          <span className="badge badge-danger" title={`In loss: ${distance.pnlPercent.toFixed(2)}%`}>
+            📉 IN LOSS {distance.pnlPercent.toFixed(2)}%
+          </span>
+        );
+      } else {
+        return (
+          <span className="badge badge-warning" title="At breakeven">
+            ⚖️ AT ENTRY
+          </span>
+        );
+      }
+    }
+
+    // Entry not yet hit - show distance
     if (distance.isReady) {
       return <span className="badge badge-success">🎯 ENTRY READY!</span>;
     } else if (distance.isApproaching) {
@@ -255,7 +309,7 @@ function TrackedSignals() {
                   <th>Direction</th>
                   <th>Entry</th>
                   <th>Current Price</th>
-                  <th>Distance</th>
+                  <th>Distance / P&L</th>
                   <th>Status</th>
                   <th>Stop Loss</th>
                   <th>Take Profit</th>
@@ -314,12 +368,23 @@ function TrackedSignals() {
                       </td>
                       <td>
                         {distance ? (
-                          <span style={{
-                            fontWeight: '600',
-                            color: distance.isReady ? '#10b981' : distance.isApproaching ? '#f59e0b' : '#6b7280'
-                          }}>
-                            {distance.percent.toFixed(2)}%
-                          </span>
+                          distance.entryHit ? (
+                            // Entry hit - show P&L
+                            <span style={{
+                              fontWeight: '600',
+                              color: distance.inProfit ? '#10b981' : distance.inLoss ? '#ef4444' : '#f59e0b'
+                            }}>
+                              {distance.pnlPercent >= 0 ? '+' : ''}{distance.pnlPercent.toFixed(2)}%
+                            </span>
+                          ) : (
+                            // Entry not hit - show distance
+                            <span style={{
+                              fontWeight: '600',
+                              color: distance.isReady ? '#10b981' : distance.isApproaching ? '#f59e0b' : '#6b7280'
+                            }}>
+                              {distance.percent.toFixed(2)}%
+                            </span>
+                          )
                         ) : (
                           <span style={{ color: '#9ca3af' }}>-</span>
                         )}
@@ -360,7 +425,10 @@ function TrackedSignals() {
             <ul style={{ marginTop: '8px', marginBottom: '0', paddingLeft: '20px' }}>
               <li>Prices update automatically every 10 seconds</li>
               <li>You'll get a notification when price is within 0.5% of entry</li>
-              <li>Signals auto-expire after 24 hours</li>
+              <li><strong>Before entry:</strong> Distance column shows % away from entry</li>
+              <li><strong>After entry:</strong> Distance column shows current P&L %</li>
+              <li>Status changes to show profit/loss once entry is hit</li>
+              <li>Signals auto-expire after 24 hours or when TP/SL is hit</li>
               <li>Click <strong>symbol</strong> to view on TradingView</li>
               <li>Click <strong>row</strong> to see full signal details</li>
               <li>Click <strong>Stop</strong> to remove a signal from tracking</li>

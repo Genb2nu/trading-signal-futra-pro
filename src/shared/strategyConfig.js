@@ -49,7 +49,7 @@ export const STRATEGY_CONFIG = {
     bosLookback: 10, // candles
 
     // Risk Management
-    minimumRiskReward: 1.5,
+    minimumRiskReward: 2.0,
 
     // Expected Performance
     expectedSignalsPerDay: '5-15 (across 50 symbols)',
@@ -95,7 +95,7 @@ export const STRATEGY_CONFIG = {
     bosLookback: 10,
 
     // Risk Management
-    minimumRiskReward: 1.5,
+    minimumRiskReward: 2.0,
 
     // Expected Performance
     expectedSignalsPerDay: '15-40 (across 50 symbols)',
@@ -141,7 +141,7 @@ export const STRATEGY_CONFIG = {
     bosLookback: 10,
 
     // Risk Management
-    minimumRiskReward: 1.3,
+    minimumRiskReward: 1.5,
 
     // Expected Performance
     expectedSignalsPerDay: '50-100+ (across 50 symbols)',

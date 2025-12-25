@@ -664,9 +664,12 @@ function generateSignals(analysis) {
   // DEBUG
 
   // FILTER: Zone check based on strategy mode
-  const validZoneForBullish = config.allowNeutralZone
-    ? (zoneAnalysis.zone === 'discount' || zoneAnalysis.zone === 'neutral')
-    : zoneAnalysis.zone === 'discount';
+  // In aggressive mode with very low confluence (25), allow signals in any zone
+  const validZoneForBullish = config.minimumConfluence <= 25
+    ? true // Aggressive: any zone
+    : config.allowNeutralZone
+      ? (zoneAnalysis.zone === 'discount' || zoneAnalysis.zone === 'neutral')
+      : zoneAnalysis.zone === 'discount';
 
 
   if (validZoneForBullish) {
@@ -956,9 +959,12 @@ function generateSignals(analysis) {
   // ========================================================================
 
   // FILTER: Zone check based on strategy mode
-  const validZoneForBearish = config.allowNeutralZone
-    ? (zoneAnalysis.zone === 'premium' || zoneAnalysis.zone === 'neutral')
-    : zoneAnalysis.zone === 'premium';
+  // In aggressive mode with very low confluence (25), allow signals in any zone
+  const validZoneForBearish = config.minimumConfluence <= 25
+    ? true // Aggressive: any zone
+    : config.allowNeutralZone
+      ? (zoneAnalysis.zone === 'premium' || zoneAnalysis.zone === 'neutral')
+      : zoneAnalysis.zone === 'premium';
 
   if (validZoneForBearish) {
     // Prefer breaker blocks over regular OBs
@@ -1100,7 +1106,7 @@ function generateSignals(analysis) {
 
         // Validate minimum RR
         const riskReward = (entry - takeProfit) / (stopLoss - entry);
-        if (riskReward >= 1.5) {
+        if (riskReward >= config.minimumRiskReward) {
 
         // ===== CONFLUENCE SCORING (Using strategy config weights) =====
         let confluenceScore = 0;
@@ -1224,7 +1230,7 @@ function generateSignals(analysis) {
           }
         });
         } // End if (confluenceScore >= 35)
-        } // End if (riskReward >= 1.5)
+        } // End if (riskReward >= config.minimumRiskReward)
       } // End if (validEntry)
     }
   }

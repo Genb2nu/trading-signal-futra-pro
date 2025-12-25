@@ -22,7 +22,7 @@ function Settings() {
 
     // Signal filtering
     minimumConfluence: 40,
-    minimumRiskReward: 1.5,
+    minimumRiskReward: 2.0,
     minimumConfidenceLevel: 'standard', // standard, high, premium
 
     // Advanced settings
@@ -101,7 +101,7 @@ function Settings() {
       conservative: {
         strategyMode: 'conservative',
         minimumConfluence: 65,
-        minimumRiskReward: 1.5,
+        minimumRiskReward: 2.0,
         stopLossATRMultiplier: 2.5,
         obImpulseThreshold: 0.007,
         allowNeutralZone: false,
@@ -110,7 +110,7 @@ function Settings() {
       moderate: {
         strategyMode: 'moderate',
         minimumConfluence: 40,
-        minimumRiskReward: 1.5,
+        minimumRiskReward: 2.0,
         stopLossATRMultiplier: 2.5,
         obImpulseThreshold: 0.005,
         allowNeutralZone: true,
@@ -119,7 +119,7 @@ function Settings() {
       aggressive: {
         strategyMode: 'aggressive',
         minimumConfluence: 25,
-        minimumRiskReward: 1.3,
+        minimumRiskReward: 1.5,
         stopLossATRMultiplier: 2.0,
         obImpulseThreshold: 0.003,
         allowNeutralZone: true,
