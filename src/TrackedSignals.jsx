@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import notificationService from './services/notificationService';
+import SignalDetailsModal from './components/SignalDetailsModal';
 
 function TrackedSignals() {
   const [signals, setSignals] = useState([]);
   const [prices, setPrices] = useState({});
   const [statistics, setStatistics] = useState(null);
+  const [selectedSignal, setSelectedSignal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load signals on mount and set up refresh interval
   useEffect(() => {
@@ -78,6 +81,39 @@ function TrackedSignals() {
     } else {
       return <span className="badge badge-secondary">📊 {distance.percent.toFixed(2)}% away</span>;
     }
+  };
+
+  // Convert timeframe to TradingView interval format
+  const getTradingViewInterval = (timeframe) => {
+    const intervalMap = {
+      '1m': '1',
+      '5m': '5',
+      '15m': '15',
+      '1h': '60',
+      '4h': '240',
+      '1d': 'D',
+      '1w': 'W',
+      '1M': 'M'
+    };
+    return intervalMap[timeframe] || 'D';
+  };
+
+  // Open TradingView chart for a symbol
+  const openTradingView = (symbol, timeframe) => {
+    const interval = getTradingViewInterval(timeframe);
+    const url = `https://www.tradingview.com/chart/?symbol=BINANCE:${symbol}&interval=${interval}`;
+    window.open(url, '_blank');
+  };
+
+  // Modal handlers
+  const handleRowClick = (signal) => {
+    setSelectedSignal(signal);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedSignal(null), 200); // Delay for exit animation
   };
 
   return (
@@ -234,8 +270,33 @@ function TrackedSignals() {
                   const currentPrice = prices[signal.symbol];
 
                   return (
-                    <tr key={index}>
-                      <td style={{ fontWeight: '600' }}>{signal.symbol}</td>
+                    <tr
+                      key={index}
+                      onClick={() => handleRowClick(signal)}
+                      style={{ cursor: 'pointer' }}
+                      className="signal-row"
+                    >
+                      <td style={{ fontWeight: '600' }}>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openTradingView(signal.symbol, signal.timeframe);
+                          }}
+                          style={{
+                            color: '#667eea',
+                            textDecoration: 'none',
+                            cursor: 'pointer',
+                            borderBottom: '1px dashed #667eea'
+                          }}
+                          onMouseOver={(e) => e.target.style.color = '#5568d3'}
+                          onMouseOut={(e) => e.target.style.color = '#667eea'}
+                          title="Click to view on TradingView"
+                        >
+                          {signal.symbol}
+                        </a>
+                      </td>
                       <td>
                         <span className={`badge ${signal.direction === 'bullish' ? 'badge-success' : 'badge-danger'}`}>
                           {signal.direction.toUpperCase()}
@@ -270,7 +331,7 @@ function TrackedSignals() {
                       <td style={{ fontSize: '12px', color: '#6b7280' }}>
                         {new Date(signal.trackedAt).toLocaleString()}
                       </td>
-                      <td>
+                      <td onClick={(e) => e.stopPropagation()}>
                         <button
                           className="btn btn-danger"
                           style={{
@@ -300,11 +361,20 @@ function TrackedSignals() {
               <li>Prices update automatically every 10 seconds</li>
               <li>You'll get a notification when price is within 0.5% of entry</li>
               <li>Signals auto-expire after 24 hours</li>
+              <li>Click <strong>symbol</strong> to view on TradingView</li>
+              <li>Click <strong>row</strong> to see full signal details</li>
               <li>Click <strong>Stop</strong> to remove a signal from tracking</li>
             </ul>
           </div>
         </div>
       )}
+
+      {/* Signal Details Modal */}
+      <SignalDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        signal={selectedSignal}
+      />
     </div>
   );
 }
