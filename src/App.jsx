@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignalTracker from './SignalTracker';
 import Settings from './Settings';
 import TrackedSignals from './TrackedSignals';
+import notificationService from './services/notificationService';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('tracker');
+
+  // Initialize notification service on mount
+  useEffect(() => {
+    notificationService.init();
+  }, []);
 
   return (
     <div className="container">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SignalDetailsModal from './components/SignalDetailsModal';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './services/smcAnalyzerClient.js';
-import { trackingService } from './services/signalTrackingService';
+import notificationService from './services/notificationService';
 
 // Auto-detect API URL based on environment (for settings only)
 const API_URL = import.meta.env.VITE_API_URL ||
@@ -228,10 +228,14 @@ function SignalTracker() {
     setTimeout(() => setSelectedSignal(null), 200); // Delay for exit animation
   };
 
-  const handleTrackSignal = (signal) => {
+  const handleTrackSignal = async (signal) => {
     try {
-      trackingService.trackSignal(signal);
-      alert(`✅ Signal tracked! Monitoring ${signal.symbol} in real-time.\n\nView tracked signals in the "Tracked Signals" tab.`);
+      const success = await notificationService.trackSignal(signal);
+      if (success) {
+        alert(`✅ Signal tracked! You'll be notified when price approaches entry.\n\nMonitoring ${signal.symbol} ${signal.direction} @ ${signal.entry}`);
+      } else {
+        alert('❌ Notification permission denied. Please enable notifications to track signals.');
+      }
     } catch (error) {
       console.error('Error tracking signal:', error);
       alert('❌ Failed to track signal. Please try again.');

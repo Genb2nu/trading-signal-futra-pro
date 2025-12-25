@@ -32,7 +32,21 @@ async function loadConfig() {
     return {
       symbols: [],
       limit: 50,
-      defaultTimeframes: ['1m', '5m', '15m', '1h', '4h', '1d', '1w', '1M']
+      defaultTimeframes: ['1m', '5m', '15m', '1h', '4h', '1d', '1w', '1M'],
+      // Default strategy settings
+      strategyMode: 'moderate',
+      // Default risk management
+      riskPerTrade: 2,
+      maxConcurrentTrades: 3,
+      stopLossATRMultiplier: 2.5,
+      // Default signal filtering
+      minimumConfluence: 40,
+      minimumRiskReward: 1.5,
+      minimumConfidenceLevel: 'standard',
+      // Default advanced settings
+      requireHTFAlignment: true,
+      allowNeutralZone: true,
+      obImpulseThreshold: 0.005
     };
   }
 }
@@ -185,21 +199,71 @@ app.get('/api/settings', async (req, res) => {
  */
 app.post('/api/settings', async (req, res) => {
   try {
-    const { symbols, limit, defaultTimeframes } = req.body;
+    const {
+      symbols,
+      limit,
+      defaultTimeframes,
+      // Strategy settings
+      strategyMode,
+      // Risk management
+      riskPerTrade,
+      maxConcurrentTrades,
+      stopLossATRMultiplier,
+      // Signal filtering
+      minimumConfluence,
+      minimumRiskReward,
+      minimumConfidenceLevel,
+      // Advanced settings
+      requireHTFAlignment,
+      allowNeutralZone,
+      obImpulseThreshold
+    } = req.body;
 
     const config = await loadConfig();
 
+    // Update symbol settings
     if (symbols !== undefined) config.symbols = symbols;
     if (limit !== undefined) config.limit = limit;
     if (defaultTimeframes !== undefined) config.defaultTimeframes = defaultTimeframes;
 
+    // Update strategy settings
+    if (strategyMode !== undefined) config.strategyMode = strategyMode;
+
+    // Update risk management settings
+    if (riskPerTrade !== undefined) config.riskPerTrade = riskPerTrade;
+    if (maxConcurrentTrades !== undefined) config.maxConcurrentTrades = maxConcurrentTrades;
+    if (stopLossATRMultiplier !== undefined) config.stopLossATRMultiplier = stopLossATRMultiplier;
+
+    // Update signal filtering settings
+    if (minimumConfluence !== undefined) config.minimumConfluence = minimumConfluence;
+    if (minimumRiskReward !== undefined) config.minimumRiskReward = minimumRiskReward;
+    if (minimumConfidenceLevel !== undefined) config.minimumConfidenceLevel = minimumConfidenceLevel;
+
+    // Update advanced settings
+    if (requireHTFAlignment !== undefined) config.requireHTFAlignment = requireHTFAlignment;
+    if (allowNeutralZone !== undefined) config.allowNeutralZone = allowNeutralZone;
+    if (obImpulseThreshold !== undefined) config.obImpulseThreshold = obImpulseThreshold;
+
     await saveConfig(config);
+
+    // Update strategy configuration in real-time
+    try {
+      const { updateStrategyFromSettings } = await import('../shared/strategyConfig.js');
+      if (updateStrategyFromSettings) {
+        updateStrategyFromSettings(config);
+      }
+    } catch (err) {
+      console.log('Could not update strategy dynamically:', err.message);
+    }
+
+    console.log('Settings updated successfully');
 
     res.json({
       success: true,
       config
     });
   } catch (error) {
+    console.error('Error updating settings:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -218,7 +282,16 @@ if (process.env.NODE_ENV === 'production') {
 async function startServer() {
   try {
     // Initialize configuration
-    await initializeConfig();
+    const config = await initializeConfig();
+
+    // Load settings into strategy configuration
+    try {
+      const { updateStrategyFromSettings } = await import('../shared/strategyConfig.js');
+      updateStrategyFromSettings(config);
+      console.log(`Strategy configuration loaded from settings (Mode: ${config.strategyMode || 'moderate'})`);
+    } catch (err) {
+      console.log('Using default strategy configuration');
+    }
 
     // Test Binance connection
     const connected = await testConnection();

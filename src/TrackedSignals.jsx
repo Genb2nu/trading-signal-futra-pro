@@ -1,165 +1,214 @@
 import React, { useState, useEffect } from 'react';
-import { trackingService } from './services/signalTrackingService';
-import { wsManager } from './services/binanceWebSocket';
+import notificationService from './services/notificationService';
 
 function TrackedSignals() {
   const [signals, setSignals] = useState([]);
+  const [prices, setPrices] = useState({});
   const [statistics, setStatistics] = useState(null);
-  const [filter, setFilter] = useState('ALL'); // ALL, IN_PROGRESS, TP_HIT, SL_HIT, INVALIDATED, MISSED
-  const [subscriptions, setSubscriptions] = useState(new Map());
 
-  // Load signals on mount
+  // Load signals on mount and set up refresh interval
   useEffect(() => {
     loadSignals();
 
-    // Listen for localStorage changes (multi-tab support)
-    const handleStorageChange = (e) => {
-      if (e.key === 'trackedSignals') {
-        loadSignals();
-      }
-    };
+    // Refresh every 10 seconds to show current prices
+    const interval = setInterval(() => {
+      loadSignals();
+      updatePrices();
+    }, 10000);
 
-    window.addEventListener('storage', handleStorageChange);
-
-    // Cleanup on unmount
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      // Unsubscribe from all WebSockets
-      subscriptions.forEach((unsub) => unsub());
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  // Subscribe to WebSocket updates for active signals
-  useEffect(() => {
-    const activeSignals = signals.filter(s => s.status === 'IN_PROGRESS');
-    const activeSymbols = new Set(activeSignals.map(s => s.symbol));
-
-    // Subscribe to new symbols
-    activeSignals.forEach(signal => {
-      if (!subscriptions.has(signal.symbol)) {
-        const unsub = wsManager.subscribe(signal.symbol, (update) => {
-          handlePriceUpdate(signal.id, update.price);
-        });
-        setSubscriptions(prev => new Map(prev).set(signal.symbol, unsub));
-      }
-    });
-
-    // Unsubscribe from removed symbols
-    subscriptions.forEach((unsub, symbol) => {
-      if (!activeSymbols.has(symbol)) {
-        unsub();
-        setSubscriptions(prev => {
-          const newMap = new Map(prev);
-          newMap.delete(symbol);
-          return newMap;
-        });
-      }
-    });
-  }, [signals]);
-
   const loadSignals = () => {
-    const allSignals = trackingService.getAllSignals();
-    setSignals(allSignals);
-    setStatistics(trackingService.getStatistics());
+    const trackedSignals = notificationService.getTrackedSignals();
+    const stats = notificationService.getStatistics();
+    setSignals(trackedSignals);
+    setStatistics(stats);
   };
 
-  const handlePriceUpdate = (signalId, currentPrice) => {
-    trackingService.updateSignalPrice(signalId, currentPrice);
-    loadSignals(); // Refresh UI
+  const updatePrices = async () => {
+    const trackedSignals = notificationService.getTrackedSignals();
+
+    for (const signal of trackedSignals) {
+      try {
+        const currentPrice = await notificationService.getCurrentPrice(signal.symbol);
+        if (currentPrice) {
+          setPrices(prev => ({
+            ...prev,
+            [signal.symbol]: currentPrice
+          }));
+        }
+      } catch (error) {
+        console.error(`Error fetching price for ${signal.symbol}:`, error);
+      }
+    }
   };
 
-  const handleUntrack = (id) => {
-    if (confirm('Remove this signal from tracking?')) {
-      trackingService.untrackSignal(id);
+  const handleStopTracking = (signal) => {
+    const signalId = `${signal.symbol}_${signal.timeframe}_${signal.entry}`;
+    if (confirm(`Stop tracking ${signal.symbol} ${signal.direction}?`)) {
+      notificationService.stopTracking(signalId);
       loadSignals();
     }
   };
 
-  const handleCleanup = () => {
-    if (confirm('Remove all completed signals older than 7 days?')) {
-      const removed = trackingService.cleanup();
-      loadSignals();
-      alert(`Removed ${removed} old signals`);
-    }
+  const getDistanceToEntry = (signal) => {
+    const currentPrice = prices[signal.symbol];
+    if (!currentPrice) return null;
+
+    const entryPrice = parseFloat(signal.entry);
+    const distancePercent = Math.abs((currentPrice - entryPrice) / entryPrice) * 100;
+
+    return {
+      percent: distancePercent,
+      isReady: distancePercent <= 0.5,
+      isApproaching: distancePercent <= 1.5
+    };
   };
 
-  const filteredSignals = filter === 'ALL'
-    ? signals
-    : signals.filter(s => s.status === filter);
+  const getStatusBadge = (signal, distance) => {
+    if (!distance) {
+      return <span className="badge badge-secondary">Loading...</span>;
+    }
+
+    if (distance.isReady) {
+      return <span className="badge badge-success">🎯 ENTRY READY!</span>;
+    } else if (distance.isApproaching) {
+      return <span className="badge badge-warning">⚡ Approaching</span>;
+    } else {
+      return <span className="badge badge-secondary">📊 {distance.percent.toFixed(2)}% away</span>;
+    }
+  };
 
   return (
     <div>
-      {/* Statistics Card */}
-      <div className="card">
-        <h2>Performance Statistics</h2>
-        {statistics && (
+      {/* Statistics Summary */}
+      {statistics && (statistics.completedSignals > 0 || statistics.activeSignals > 0) && (
+        <div className="card" style={{ marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '16px', color: '#1f2937', fontSize: '20px' }}>
+            📊 Performance Summary
+          </h2>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-            gap: '16px',
-            marginTop: '16px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '12px'
           }}>
-            <StatBox label="Total Tracked" value={statistics.totalTracked} />
-            <StatBox
-              label="Win Rate"
-              value={`${statistics.winRate.toFixed(1)}%`}
-              color={statistics.winRate >= 50 ? 'green' : 'red'}
-            />
-            <StatBox
-              label="Avg P&L"
-              value={`${statistics.avgProfitLoss >= 0 ? '+' : ''}${statistics.avgProfitLoss.toFixed(2)}%`}
-              color={statistics.avgProfitLoss >= 0 ? 'green' : 'red'}
-            />
-            <StatBox label="Wins" value={statistics.wins} color="green" />
-            <StatBox label="Losses" value={statistics.losses} color="red" />
-            <StatBox label="Invalidated" value={statistics.invalidated} />
-            <StatBox label="Missed" value={statistics.missed} />
-          </div>
-        )}
-      </div>
+            {/* Total Tracked */}
+            <div style={{
+              padding: '16px',
+              background: '#f0f9ff',
+              borderRadius: '8px',
+              borderLeft: '4px solid #3b82f6'
+            }}>
+              <div style={{ fontSize: '12px', color: '#1e40af', fontWeight: '600', marginBottom: '4px' }}>
+                Total Tracked
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937' }}>
+                {statistics.totalTracked}
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+                {statistics.activeSignals} active • {statistics.completedSignals} completed
+              </div>
+            </div>
 
-      {/* Filter & Actions */}
-      <div className="card">
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px'
-        }}>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <FilterButton label="All" value="ALL" current={filter} onClick={setFilter} />
-            <FilterButton label="In Progress" value="IN_PROGRESS" current={filter} onClick={setFilter} />
-            <FilterButton label="TP Hit" value="TP_HIT" current={filter} onClick={setFilter} />
-            <FilterButton label="SL Hit" value="SL_HIT" current={filter} onClick={setFilter} />
-            <FilterButton label="Invalidated" value="INVALIDATED" current={filter} onClick={setFilter} />
-            <FilterButton label="Missed" value="MISSED" current={filter} onClick={setFilter} />
+            {/* Win Rate */}
+            <div style={{
+              padding: '16px',
+              background: statistics.winRate >= 50 ? '#f0fdf4' : '#fef2f2',
+              borderRadius: '8px',
+              borderLeft: `4px solid ${statistics.winRate >= 50 ? '#10b981' : '#ef4444'}`
+            }}>
+              <div style={{ fontSize: '12px', color: statistics.winRate >= 50 ? '#065f46' : '#991b1b', fontWeight: '600', marginBottom: '4px' }}>
+                Win Rate
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937' }}>
+                {statistics.winRate.toFixed(1)}%
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+                {statistics.wins}W / {statistics.losses}L
+              </div>
+            </div>
+
+            {/* Total P&L */}
+            <div style={{
+              padding: '16px',
+              background: statistics.totalProfitLoss >= 0 ? '#f0fdf4' : '#fef2f2',
+              borderRadius: '8px',
+              borderLeft: `4px solid ${statistics.totalProfitLoss >= 0 ? '#10b981' : '#ef4444'}`
+            }}>
+              <div style={{ fontSize: '12px', color: statistics.totalProfitLoss >= 0 ? '#065f46' : '#991b1b', fontWeight: '600', marginBottom: '4px' }}>
+                Total P&L
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: statistics.totalProfitLoss >= 0 ? '#10b981' : '#ef4444' }}>
+                {statistics.totalProfitLoss >= 0 ? '+' : ''}{statistics.totalProfitLoss.toFixed(2)}%
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+                Avg: {statistics.avgProfitLoss >= 0 ? '+' : ''}{statistics.avgProfitLoss.toFixed(2)}%
+              </div>
+            </div>
+
+            {/* Best Trade */}
+            <div style={{
+              padding: '16px',
+              background: '#f0fdf4',
+              borderRadius: '8px',
+              borderLeft: '4px solid #10b981'
+            }}>
+              <div style={{ fontSize: '12px', color: '#065f46', fontWeight: '600', marginBottom: '4px' }}>
+                Best Trade
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#10b981' }}>
+                +{statistics.bestTrade.toFixed(2)}%
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+                Highest profit
+              </div>
+            </div>
+
+            {/* Worst Trade */}
+            <div style={{
+              padding: '16px',
+              background: '#fef2f2',
+              borderRadius: '8px',
+              borderLeft: '4px solid #ef4444'
+            }}>
+              <div style={{ fontSize: '12px', color: '#991b1b', fontWeight: '600', marginBottom: '4px' }}>
+                Worst Trade
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#ef4444' }}>
+                {statistics.worstTrade.toFixed(2)}%
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+                Largest loss
+              </div>
+            </div>
           </div>
-          <button className="btn btn-secondary" onClick={handleCleanup}>
-            Cleanup Old Signals
-          </button>
         </div>
+      )}
+
+      {/* Header */}
+      <div className="card">
+        <h2 style={{ marginBottom: '10px', color: '#1f2937' }}>
+          Active Signals ({signals.length})
+        </h2>
+        <p style={{ color: '#6b7280', fontSize: '14px', margin: 0 }}>
+          Real-time monitoring of your tracked signals. You'll receive notifications when price approaches entry.
+        </p>
       </div>
 
       {/* Signals Table */}
       <div className="card">
-        <h3>Tracked Signals ({filteredSignals.length})</h3>
-        {filteredSignals.length === 0 ? (
+        {signals.length === 0 ? (
           <div style={{
             textAlign: 'center',
-            padding: '40px',
-            color: '#6b7280',
-            fontSize: '14px'
+            padding: '60px 20px',
+            color: '#6b7280'
           }}>
-            {filter === 'ALL' ? (
-              <>
-                No signals to display. Start tracking signals from the <strong>Signal Tracker</strong> tab.
-              </>
-            ) : (
-              <>
-                No signals with status: <strong>{filter}</strong>
-              </>
-            )}
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
+            <h3 style={{ marginBottom: '8px', color: '#374151' }}>No Tracked Signals</h3>
+            <p style={{ fontSize: '14px', marginBottom: '0' }}>
+              Go to <strong>Signal Tracker</strong> tab and click <strong>Track</strong> on any signal to start monitoring.
+            </p>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
@@ -167,196 +216,97 @@ function TrackedSignals() {
               <thead>
                 <tr>
                   <th>Symbol</th>
-                  <th>Timeframe</th>
-                  <th>Type</th>
-                  <th>Status</th>
+                  <th>Direction</th>
                   <th>Entry</th>
                   <th>Current Price</th>
+                  <th>Distance</th>
+                  <th>Status</th>
                   <th>Stop Loss</th>
                   <th>Take Profit</th>
-                  <th>P&L</th>
-                  <th>Failure Reason</th>
+                  <th>R:R</th>
                   <th>Tracked Since</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredSignals.map(signal => (
-                  <SignalRow
-                    key={signal.id}
-                    signal={signal}
-                    onUntrack={handleUntrack}
-                  />
-                ))}
+                {signals.map((signal, index) => {
+                  const distance = getDistanceToEntry(signal);
+                  const currentPrice = prices[signal.symbol];
+
+                  return (
+                    <tr key={index}>
+                      <td style={{ fontWeight: '600' }}>{signal.symbol}</td>
+                      <td>
+                        <span className={`badge ${signal.direction === 'bullish' ? 'badge-success' : 'badge-danger'}`}>
+                          {signal.direction.toUpperCase()}
+                        </span>
+                      </td>
+                      <td>{signal.entry}</td>
+                      <td>
+                        {currentPrice ? (
+                          <span style={{ fontFamily: 'monospace' }}>
+                            {currentPrice.toFixed(8)}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#9ca3af' }}>Loading...</span>
+                        )}
+                      </td>
+                      <td>
+                        {distance ? (
+                          <span style={{
+                            fontWeight: '600',
+                            color: distance.isReady ? '#10b981' : distance.isApproaching ? '#f59e0b' : '#6b7280'
+                          }}>
+                            {distance.percent.toFixed(2)}%
+                          </span>
+                        ) : (
+                          <span style={{ color: '#9ca3af' }}>-</span>
+                        )}
+                      </td>
+                      <td>{getStatusBadge(signal, distance)}</td>
+                      <td>{signal.stopLoss}</td>
+                      <td>{signal.takeProfit}</td>
+                      <td>{signal.riskReward}</td>
+                      <td style={{ fontSize: '12px', color: '#6b7280' }}>
+                        {new Date(signal.trackedAt).toLocaleString()}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger"
+                          style={{
+                            fontSize: '11px',
+                            padding: '4px 8px'
+                          }}
+                          onClick={() => handleStopTracking(signal)}
+                        >
+                          Stop
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
+
+      {/* Info Card */}
+      {signals.length > 0 && (
+        <div className="card" style={{ background: '#f0fdf4', border: '1px solid #86efac' }}>
+          <div style={{ fontSize: '14px', color: '#166534' }}>
+            <strong>ℹ️ How it works:</strong>
+            <ul style={{ marginTop: '8px', marginBottom: '0', paddingLeft: '20px' }}>
+              <li>Prices update automatically every 10 seconds</li>
+              <li>You'll get a notification when price is within 0.5% of entry</li>
+              <li>Signals auto-expire after 24 hours</li>
+              <li>Click <strong>Stop</strong> to remove a signal from tracking</li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-// Helper Components
-
-function StatBox({ label, value, color }) {
-  const colorMap = {
-    green: '#10b981',
-    red: '#ef4444',
-    default: '#667eea'
-  };
-
-  return (
-    <div style={{
-      padding: '16px',
-      background: '#f9fafb',
-      borderRadius: '8px',
-      textAlign: 'center',
-      borderLeft: `4px solid ${colorMap[color] || colorMap.default}`
-    }}>
-      <div style={{
-        fontSize: '12px',
-        color: '#6b7280',
-        marginBottom: '4px',
-        fontWeight: '500'
-      }}>
-        {label}
-      </div>
-      <div style={{
-        fontSize: '24px',
-        fontWeight: 'bold',
-        color: '#1f2937'
-      }}>
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function FilterButton({ label, value, current, onClick }) {
-  const isActive = current === value;
-  return (
-    <button
-      className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
-      onClick={() => onClick(value)}
-      style={{
-        fontSize: '12px',
-        padding: '6px 12px'
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-const SignalRow = React.memo(({ signal, onUntrack }) => {
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      'IN_PROGRESS': { class: 'badge-warning', text: 'IN PROGRESS', icon: '⏳' },
-      'TP_HIT': { class: 'badge-success', text: 'TP HIT', icon: '✓' },
-      'SL_HIT': { class: 'badge-danger', text: 'SL HIT', icon: '✗' },
-      'INVALIDATED': { class: 'badge-secondary', text: 'INVALIDATED', icon: '⚠' },
-      'MISSED': { class: 'badge-warning', text: 'MISSED', icon: '⊘' }
-    };
-
-    const config = statusConfig[status] || { class: '', text: status, icon: '' };
-    return (
-      <span className={`badge ${config.class}`}>
-        {config.icon} {config.text}
-      </span>
-    );
-  };
-
-  const getPLDisplay = (signal) => {
-    // For active signals, show unrealized P&L
-    if (signal.status === 'IN_PROGRESS' && signal.currentPrice) {
-      let unrealizedPL;
-      const entry = parseFloat(signal.entry);
-      const currentPrice = parseFloat(signal.currentPrice);
-
-      if (signal.type === 'BUY') {
-        unrealizedPL = ((currentPrice - entry) / entry) * 100;
-      } else {
-        unrealizedPL = ((entry - currentPrice) / entry) * 100;
-      }
-
-      const color = unrealizedPL >= 0 ? '#10b981' : '#ef4444';
-      const arrow = unrealizedPL >= 0 ? '↑' : '↓';
-
-      return (
-        <span style={{ color, fontWeight: 'bold' }}>
-          {unrealizedPL >= 0 ? '+' : ''}{unrealizedPL.toFixed(2)}% {arrow}
-        </span>
-      );
-    }
-
-    // For completed signals, show realized P&L
-    if (signal.profitLoss !== null) {
-      const color = signal.profitLoss >= 0 ? '#10b981' : '#ef4444';
-      return (
-        <span style={{ color, fontWeight: 'bold' }}>
-          {signal.profitLoss >= 0 ? '+' : ''}{signal.profitLoss.toFixed(2)}%
-        </span>
-      );
-    }
-
-    return <span style={{ color: '#6b7280' }}>-</span>;
-  };
-
-  const getCurrentPriceDisplay = (signal) => {
-    if (signal.status === 'IN_PROGRESS' && signal.currentPrice) {
-      return parseFloat(signal.currentPrice).toFixed(8);
-    }
-    if (signal.exitPrice) {
-      return parseFloat(signal.exitPrice).toFixed(8);
-    }
-    return '-';
-  };
-
-  return (
-    <tr>
-      <td style={{ fontWeight: '600' }}>{signal.symbol}</td>
-      <td>{signal.timeframe}</td>
-      <td>
-        <span className={`badge ${signal.type === 'BUY' ? 'badge-success' : 'badge-danger'}`}>
-          {signal.type}
-        </span>
-      </td>
-      <td>{getStatusBadge(signal.status)}</td>
-      <td>{signal.entry}</td>
-      <td>{getCurrentPriceDisplay(signal)}</td>
-      <td>{signal.stopLoss}</td>
-      <td>{signal.takeProfit}</td>
-      <td>{getPLDisplay(signal)}</td>
-      <td style={{
-        fontSize: '12px',
-        maxWidth: '250px',
-        whiteSpace: 'normal',
-        color: '#6b7280'
-      }}>
-        {signal.failureReason || '-'}
-      </td>
-      <td style={{ fontSize: '12px' }}>
-        {new Date(signal.trackedAt).toLocaleString()}
-      </td>
-      <td>
-        <button
-          className="btn btn-danger"
-          style={{
-            fontSize: '11px',
-            padding: '4px 8px'
-          }}
-          onClick={() => onUntrack(signal.id)}
-        >
-          Remove
-        </button>
-      </td>
-    </tr>
-  );
-}, (prevProps, nextProps) => {
-  // Only re-render if signal data changed
-  return prevProps.signal.lastUpdate === nextProps.signal.lastUpdate &&
-         prevProps.signal.status === nextProps.signal.status;
-});
 
 export default TrackedSignals;

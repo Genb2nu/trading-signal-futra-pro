@@ -10,7 +10,7 @@ export const STRATEGY_MODES = {
 };
 
 // Current mode - change this to switch strategies
-export const CURRENT_MODE = STRATEGY_MODES.MODERATE; // Moderate mode optimized for real-time
+export const CURRENT_MODE = STRATEGY_MODES.MODERATE; // Moderate mode for 1h real-time trading
 
 export const STRATEGY_CONFIG = {
   [STRATEGY_MODES.CONSERVATIVE]: {
@@ -105,15 +105,15 @@ export const STRATEGY_CONFIG = {
 
   [STRATEGY_MODES.AGGRESSIVE]: {
     name: 'Aggressive (High Frequency)',
-    description: 'Lower requirements, more signals, lower win rate',
+    description: 'Optimized for faster timeframes (15m, 5m) - no FVG required',
 
     // Order Block Settings
-    obImpulseThreshold: 0.003, // 0.3%
+    obImpulseThreshold: 0.003, // 0.3% - more sensitive for faster timeframes
 
     // Confirmation Requirements
     requireAllConfirmations: false,
-    requiredConfirmations: ['bos', 'fvg'], // Only 2 required
-    optionalConfirmations: ['liquiditySweep', 'validZone'],
+    requiredConfirmations: [], // No hard requirements - OB + any confluence is enough
+    optionalConfirmations: ['liquiditySweep', 'bos', 'fvg', 'validZone'],
 
     // Zone Settings
     allowNeutralZone: true,
@@ -123,7 +123,7 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.0,
 
     // Confluence Settings
-    minimumConfluence: 40,
+    minimumConfluence: 25, // Lower threshold for faster timeframes
     confluenceWeights: {
       fvg: 20,
       liquiditySweep: 15,
@@ -150,11 +150,19 @@ export const STRATEGY_CONFIG = {
   }
 };
 
+// Runtime configuration overrides (loaded from settings)
+let runtimeConfig = null;
+
 /**
  * Gets the current strategy configuration
  * @returns {Object} Current strategy config
  */
 export function getCurrentConfig() {
+  // If runtime config is set (from settings), merge it with the base config
+  if (runtimeConfig) {
+    const baseConfig = STRATEGY_CONFIG[CURRENT_MODE];
+    return { ...baseConfig, ...runtimeConfig };
+  }
   return STRATEGY_CONFIG[CURRENT_MODE];
 }
 
@@ -197,6 +205,67 @@ export function getConfluenceScore(factor) {
   return config.confluenceWeights[factor] || 0;
 }
 
+/**
+ * Updates strategy configuration from settings
+ * @param {Object} settings - Settings object from config.json
+ */
+export function updateStrategyFromSettings(settings) {
+  if (!settings) {
+    runtimeConfig = null;
+    return;
+  }
+
+  // Build runtime config from settings
+  runtimeConfig = {};
+
+  if (settings.minimumConfluence !== undefined) {
+    runtimeConfig.minimumConfluence = settings.minimumConfluence;
+  }
+
+  if (settings.stopLossATRMultiplier !== undefined) {
+    runtimeConfig.stopLossATRMultiplier = settings.stopLossATRMultiplier;
+  }
+
+  if (settings.obImpulseThreshold !== undefined) {
+    runtimeConfig.obImpulseThreshold = settings.obImpulseThreshold;
+  }
+
+  if (settings.allowNeutralZone !== undefined) {
+    runtimeConfig.allowNeutralZone = settings.allowNeutralZone;
+  }
+
+  if (settings.minimumRiskReward !== undefined) {
+    runtimeConfig.minimumRiskReward = settings.minimumRiskReward;
+  }
+
+  console.log('Strategy configuration updated from settings:', runtimeConfig);
+}
+
+/**
+ * Loads and applies settings from config file (server-side only)
+ */
+export async function loadSettingsFromConfig() {
+  try {
+    // Only works on server-side (Node.js)
+    if (typeof window === 'undefined') {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const { fileURLToPath } = await import('url');
+
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      const configPath = path.join(__dirname, '../../config.json');
+
+      const data = await fs.readFile(configPath, 'utf-8');
+      const config = JSON.parse(data);
+
+      updateStrategyFromSettings(config);
+    }
+  } catch (error) {
+    console.log('Could not load settings from config:', error.message);
+  }
+}
+
 export default {
   STRATEGY_MODES,
   CURRENT_MODE,
@@ -205,5 +274,7 @@ export default {
   getConfig,
   isConfirmationRequired,
   isConfirmationOptional,
-  getConfluenceScore
+  getConfluenceScore,
+  updateStrategyFromSettings,
+  loadSettingsFromConfig
 };
