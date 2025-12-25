@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SignalTracker from './SignalTracker';
 import Settings from './Settings';
 import TrackedSignals from './TrackedSignals';
+import LiveTrading from './LiveTrading';
 import notificationService from './services/notificationService';
 
 function App() {
@@ -33,6 +34,12 @@ function App() {
           Tracked Signals
         </button>
         <button
+          className={`nav-link ${currentPage === 'live' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('live')}
+        >
+          Paper Trading
+        </button>
+        <button
           className={`nav-link ${currentPage === 'settings' ? 'active' : ''}`}
           onClick={() => setCurrentPage('settings')}
         >
@@ -45,6 +52,9 @@ function App() {
       </div>
       <div style={{ display: currentPage === 'tracked' ? 'block' : 'none' }}>
         <TrackedSignals />
+      </div>
+      <div style={{ display: currentPage === 'live' ? 'block' : 'none' }}>
+        <LiveTrading />
       </div>
       <div style={{ display: currentPage === 'settings' ? 'block' : 'none' }}>
         <Settings />
