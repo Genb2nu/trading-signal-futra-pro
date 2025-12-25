@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SignalDetailsModal from './components/SignalDetailsModal';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './services/smcAnalyzerClient.js';
 import notificationService from './services/notificationService';
+import { updateStrategyFromSettings } from './shared/strategyConfig.js';
 
 // Auto-detect API URL based on environment (for settings only)
 const API_URL = import.meta.env.VITE_API_URL ||
@@ -25,10 +26,40 @@ function SignalTracker() {
   const timeframes = ['1m', '5m', '15m', '1h', '4h', '1d', '1w', '1M'];
   const strategies = ['SMC']; // Extensible for future strategies
 
-  // Load symbols on mount
+  // Load symbols and settings on mount
   useEffect(() => {
     loadSymbols();
+    loadUserSettings();
+
+    // Listen for settings updates from Settings page
+    const handleSettingsUpdate = (event) => {
+      console.log('Settings updated, reloading...', event.detail);
+      updateStrategyFromSettings(event.detail);
+    };
+
+    window.addEventListener('smcSettingsUpdated', handleSettingsUpdate);
+
+    // Cleanup listener
+    return () => {
+      window.removeEventListener('smcSettingsUpdated', handleSettingsUpdate);
+    };
   }, []);
+
+  // Load user settings from localStorage and apply to strategy config
+  const loadUserSettings = () => {
+    try {
+      const localSettings = localStorage.getItem('smcSettings');
+      if (localSettings) {
+        const settings = JSON.parse(localSettings);
+        console.log('Applying user settings from localStorage:', settings);
+        updateStrategyFromSettings(settings);
+      } else {
+        console.log('No user settings in localStorage, using defaults');
+      }
+    } catch (error) {
+      console.error('Error loading user settings:', error);
+    }
+  };
 
   const loadSymbols = async () => {
     try {

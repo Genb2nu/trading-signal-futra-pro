@@ -45,12 +45,40 @@ function Settings() {
 
   const loadSettings = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/settings`);
-      const data = await response.json();
-      setSettings(prev => ({ ...prev, ...data }));
+      // First, try to load from localStorage
+      const localSettings = localStorage.getItem('smcSettings');
+      let savedSettings = null;
+
+      if (localSettings) {
+        try {
+          savedSettings = JSON.parse(localSettings);
+          console.log('Loaded settings from localStorage:', savedSettings);
+        } catch (e) {
+          console.error('Error parsing localStorage settings:', e);
+        }
+      }
+
+      // Then load defaults from server (as fallback or to merge)
+      try {
+        const response = await fetch(`${API_URL}/api/settings`);
+        const serverDefaults = await response.json();
+
+        // Merge: localStorage takes priority, server provides defaults for missing values
+        const mergedSettings = { ...serverDefaults, ...savedSettings };
+        setSettings(prev => ({ ...prev, ...mergedSettings }));
+      } catch (err) {
+        console.error('Error loading server defaults:', err);
+        // If server fails but we have localStorage, use that
+        if (savedSettings) {
+          setSettings(prev => ({ ...prev, ...savedSettings }));
+        } else {
+          setMessage({ type: 'error', text: 'Failed to load settings' });
+        }
+      }
+
       setLoading(false);
     } catch (err) {
-      console.error('Error loading settings:', err);
+      console.error('Error in loadSettings:', err);
       setMessage({ type: 'error', text: 'Failed to load settings' });
       setLoading(false);
     }
@@ -71,25 +99,51 @@ function Settings() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/settings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(settings)
-      });
+      // Save to localStorage (primary storage)
+      localStorage.setItem('smcSettings', JSON.stringify(settings));
+      console.log('Settings saved to localStorage');
 
-      const data = await response.json();
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('smcSettingsUpdated', { detail: settings }));
 
-      if (data.success) {
-        setMessage({ type: 'success', text: 'Settings saved successfully! Restart scanner for changes to take effect.' });
+      // Also update server runtime config (for current session)
+      try {
+        const response = await fetch(`${API_URL}/api/settings`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(settings)
+        });
+
+        const data = await response.json();
+
+        if (data.success || data.warning) {
+          setMessage({
+            type: 'success',
+            text: '✅ Settings saved! Changes will apply to new scans. Settings persist in your browser.'
+          });
+          setTimeout(() => setMessage(null), 5000);
+        } else {
+          // Even if server fails, localStorage succeeded
+          setMessage({
+            type: 'success',
+            text: '✅ Settings saved locally! Server update failed but settings are stored in your browser.'
+          });
+          setTimeout(() => setMessage(null), 5000);
+        }
+      } catch (err) {
+        console.error('Error updating server:', err);
+        // localStorage still succeeded, so show success
+        setMessage({
+          type: 'success',
+          text: '✅ Settings saved locally! Server is offline but settings are stored in your browser.'
+        });
         setTimeout(() => setMessage(null), 5000);
-      } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to save settings' });
       }
     } catch (err) {
-      console.error('Error saving settings:', err);
-      setMessage({ type: 'error', text: 'Failed to save settings' });
+      console.error('Error saving to localStorage:', err);
+      setMessage({ type: 'error', text: 'Failed to save settings to browser storage' });
     } finally {
       setSaving(false);
     }
