@@ -1,6 +1,6 @@
 {
   "id": "2026-01-03_elite_4h",
-  "timestamp": "2026-01-03T05:06:22.880Z",
+  "timestamp": "2026-01-03T05:35:45.576Z",
   "mode": "ELITE",
   "timeframe": "4h",
   "symbols": [
@@ -295,7 +295,7 @@
           "direction": "SELL",
           "htfTrend": "bullish",
           "mtfConsensus": "unknown",
-          "result": "BREAKEVEN",
+          "result": "BREAKEVEN_WIN",
           "exitPrice": 108813.55,
           "exitTime": "2025-06-16T16:00:00.000Z",
           "pnlPercent": 0,
@@ -594,10 +594,10 @@
       ],
       "metrics": {
         "totalTrades": 2,
-        "wins": 1,
+        "wins": 2,
         "losses": 0,
-        "winRate": "50.0",
-        "avgWinR": "0.23",
+        "winRate": "100.0",
+        "avgWinR": "0.12",
         "avgLossR": "0.00",
         "avgR": "0.12",
         "profitFactor": "Infinity",
@@ -1563,7 +1563,7 @@
           "result": "TRAILING_STOP_WIN",
           "exitPrice": 672.5957857142857,
           "exitTime": "2024-12-03T16:00:00.000Z",
-          "pnlPercent": 5.55323766329557,
+          "pnlPercent": 2.776618831647785,
           "pnlR": 0.30515134342700156,
           "barsInTrade": 5,
           "maxAdverseExcursion": -0.2476685597427719,
@@ -2233,7 +2233,7 @@
           "result": "TRAILING_STOP_WIN",
           "exitPrice": 0.7899799999999999,
           "exitTime": "2025-05-15T04:00:00.000Z",
-          "pnlPercent": 5.527385792872536,
+          "pnlPercent": 2.763692896436268,
           "pnlR": 0.30978552278820476,
           "barsInTrade": 8,
           "maxAdverseExcursion": 0,
@@ -2283,10 +2283,10 @@
   ],
   "combinedMetrics": {
     "totalTrades": 7,
-    "winningTrades": 6,
+    "winningTrades": 7,
     "losingTrades": 0,
-    "winRate": 85.71428571428571,
-    "avgProfit": 0.23857142857142857,
+    "winRate": 100,
+    "avgProfit": 0.24000000000000002,
     "profitFactor": 999,
     "maxDrawdown": 0
   }
