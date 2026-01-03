@@ -311,65 +311,6 @@ function SignalTracker() {
 
   return (
     <div>
-      {/* Deployment Configuration Info */}
-      {(() => {
-        const isDeploymentConfig =
-          timeframe === '1h' &&
-          selectedSymbols.length === 4 &&
-          ['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT'].every(s => selectedSymbols.includes(s));
-
-        return (
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '16px',
-              backgroundColor: isDeploymentConfig ? '#ecfdf5' : '#fef3c7',
-              border: `2px solid ${isDeploymentConfig ? '#10b981' : '#f59e0b'}`,
-              borderRadius: '8px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '1.5rem' }}>
-                {isDeploymentConfig ? '✅' : '💡'}
-              </span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: isDeploymentConfig ? '#065f46' : '#92400e', marginBottom: '4px' }}>
-                  {isDeploymentConfig
-                    ? '🏆 Deployment Configuration Active'
-                    : '💡 Recommended: Use Deployment Configuration'}
-                </div>
-                <div style={{ fontSize: '0.8125rem', color: isDeploymentConfig ? '#047857' : '#78350f' }}>
-                  {isDeploymentConfig
-                    ? 'Conservative mode + 1H timeframe + Top 4 symbols (100% WR, +8.79R in backtest)'
-                    : 'For best results: Select 1H timeframe and Top 4 symbols (AVAX, ADA, DOGE, BTC)'}
-                </div>
-                {!isDeploymentConfig && (
-                  <button
-                    onClick={() => {
-                      setTimeframe('1h');
-                      setSelectedSymbols(['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT']);
-                    }}
-                    style={{
-                      marginTop: '8px',
-                      padding: '6px 12px',
-                      backgroundColor: '#10b981',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '0.8125rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Apply Deployment Config
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
       <div className="card">
         <h2 style={{ marginBottom: '20px', color: '#1f2937' }}>Scan Configuration</h2>
 

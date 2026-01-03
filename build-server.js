@@ -10,12 +10,20 @@ const serverFiles = [
   'src/server/index.js',
   'src/server/binanceService.js',
   'src/server/smcAnalyzer.js',
-  'src/shared/smcDetectors.js'
+  'src/shared/smcDetectors.js',
+  'src/shared/strategyConfig.js',
+  'src/shared/marketRegime.js'
+];
+
+// Copy server routes
+const routesFiles = [
+  'src/server/routes/backtestRoutes.js'
 ];
 
 const distDir = path.join(__dirname, 'dist');
 const serverDir = path.join(distDir, 'server');
 const sharedDir = path.join(distDir, 'shared');
+const routesDir = path.join(distDir, 'server/routes');
 
 // Create directories
 if (!fs.existsSync(serverDir)) {
@@ -24,9 +32,26 @@ if (!fs.existsSync(serverDir)) {
 if (!fs.existsSync(sharedDir)) {
   fs.mkdirSync(sharedDir, { recursive: true });
 }
+if (!fs.existsSync(routesDir)) {
+  fs.mkdirSync(routesDir, { recursive: true });
+}
 
 // Copy server files
 serverFiles.forEach(file => {
+  const srcPath = path.join(__dirname, file);
+  const destPath = path.join(distDir, file.replace('src/', ''));
+  const destDir = path.dirname(destPath);
+
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+
+  fs.copyFileSync(srcPath, destPath);
+  console.log(`Copied: ${file} -> ${destPath}`);
+});
+
+// Copy routes files
+routesFiles.forEach(file => {
   const srcPath = path.join(__dirname, file);
   const destPath = path.join(distDir, file.replace('src/', ''));
   const destDir = path.dirname(destPath);

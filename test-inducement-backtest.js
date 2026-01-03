@@ -12,7 +12,7 @@ import fs from 'fs';
 const TEST_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT'];
 
 // All timeframes to test
-const TIMEFRAMES = ['15m', '1h', '4h'];
+const TIMEFRAMES = ['5m', '15m', '1h'];
 
 // Strategy modes to test (5 active modes, ULTRA removed due to bugs)
 const MODES = ['CONSERVATIVE', 'MODERATE', 'AGGRESSIVE', 'ELITE', 'SNIPER'];
@@ -204,7 +204,7 @@ function printFinalSummary(results) {
 
   // Create a comparison table
   console.log('\n📈 WIN RATE COMPARISON BY MODE AND TIMEFRAME:\n');
-  console.log('Mode         | 15m      | 1h       | 4h       | Average');
+  console.log('Mode         | 5m       | 15m      | 1h       | Average');
   console.log('-'.repeat(65));
 
   const modeAverages = {};
@@ -227,7 +227,7 @@ function printFinalSummary(results) {
   }
 
   console.log('\n📊 PROFIT FACTOR BY MODE AND TIMEFRAME:\n');
-  console.log('Mode         | 15m      | 1h       | 4h       | Average');
+  console.log('Mode         | 5m       | 15m      | 1h       | Average');
   console.log('-'.repeat(65));
 
   for (const mode of MODES) {
@@ -247,7 +247,7 @@ function printFinalSummary(results) {
   }
 
   console.log('\n📊 TOTAL TRADES BY MODE AND TIMEFRAME:\n');
-  console.log('Mode         | 15m      | 1h       | 4h       | Total');
+  console.log('Mode         | 5m       | 15m      | 1h       | Total');
   console.log('-'.repeat(65));
 
   for (const mode of MODES) {

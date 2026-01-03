@@ -16,7 +16,7 @@ function Settings() {
     strategyMode: 'conservative',
 
     // Risk management
-    riskPerTrade: 1, // 1% per trade for conservative approach
+    riskPerTrade: 2, // 2% per trade default
     maxConcurrentTrades: 3,
     stopLossATRMultiplier: 2.5,
     leverage: 20, // Paper trading leverage multiplier (20x, 50x, or 100x)

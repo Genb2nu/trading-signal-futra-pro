@@ -15,14 +15,10 @@ export default function BacktestResults() {
   const [selectedRunId, setSelectedRunId] = useState('latest');
   const [selectedMode, setSelectedMode] = useState('conservative');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1h');
-  const [filterTopSymbols, setFilterTopSymbols] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTrade, setSelectedTrade] = useState(null);
   const [chartSymbol, setChartSymbol] = useState(null);
-
-  // Top 4 performing symbols
-  const TOP_4_SYMBOLS = ['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT'];
 
   // Load available runs on mount
   useEffect(() => {
@@ -100,14 +96,13 @@ export default function BacktestResults() {
   const allTrades = useMemo(() => {
     const trades = extractAllTrades(backtestData);
 
-    // Filter by selected mode, timeframe, and symbols
+    // Filter by selected mode and timeframe only (show all symbols)
     return trades.filter(t => {
       const modeMatch = selectedMode === 'all' || t.mode === selectedMode;
       const timeframeMatch = selectedTimeframe === 'all' || t.timeframe === selectedTimeframe;
-      const symbolMatch = !filterTopSymbols || TOP_4_SYMBOLS.includes(t.symbol);
-      return modeMatch && timeframeMatch && symbolMatch;
+      return modeMatch && timeframeMatch;
     });
-  }, [backtestData, selectedMode, selectedTimeframe, filterTopSymbols, TOP_4_SYMBOLS]);
+  }, [backtestData, selectedMode, selectedTimeframe]);
 
   // Calculate metrics from filtered trades
   const calculatedMetrics = useMemo(() => {
@@ -421,37 +416,6 @@ export default function BacktestResults() {
                 </select>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '8px' }}>
-                <input
-                  type="checkbox"
-                  id="topSymbolsFilter"
-                  checked={filterTopSymbols}
-                  onChange={(e) => {
-                    setFilterTopSymbols(e.target.checked);
-                    setSelectedTrade(null);
-                  }}
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    cursor: 'pointer'
-                  }}
-                />
-                <label
-                  htmlFor="topSymbolsFilter"
-                  style={{
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#1f2937',
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                >
-                  <span style={{ color: '#10b981' }}>⭐ Top 4 Symbols Only</span>
-                  <span style={{ fontSize: '0.75rem', color: '#6b7280', marginLeft: '4px' }}>
-                    (AVAX, ADA, DOGE, BTC)
-                  </span>
-                </label>
-              </div>
             </div>
           )}
           <div style={{ fontSize: '0.875rem', color: '#1f2937' }}>
@@ -467,13 +431,7 @@ export default function BacktestResults() {
                 {' | '}
               </>
             )}
-            {filterTopSymbols && (
-              <>
-                Symbols: <span style={{ fontWeight: 600, color: '#10b981' }}>⭐ Top 4 (AVAX, ADA, DOGE, BTC)</span>
-                {' | '}
-              </>
-            )}
-            {selectedMode === 'all' && selectedTimeframe === 'all' && !filterTopSymbols && (
+            {selectedMode === 'all' && selectedTimeframe === 'all' && (
               <>
                 Showing: <span style={{ fontWeight: 600, color: '#3b82f6' }}>All Modes & Timeframes</span>
                 {' | '}
@@ -504,73 +462,6 @@ export default function BacktestResults() {
           🔄 Refresh
         </button>
       </div>
-
-      {/* Top 4 Deployment Alert */}
-      {filterTopSymbols && selectedMode === 'conservative' && selectedTimeframe === '1h' && calculatedMetrics.totalTrades > 0 && (
-        <div
-          style={{
-            marginBottom: '24px',
-            padding: '20px',
-            backgroundColor: calculatedMetrics.winRate >= 80 ? '#ecfdf5' : '#fef3c7',
-            border: `3px solid ${calculatedMetrics.winRate >= 80 ? '#10b981' : '#f59e0b'}`,
-            borderRadius: '12px'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-            <span style={{ fontSize: '2rem' }}>
-              {calculatedMetrics.winRate >= 80 ? '🏆' : '⚠️'}
-            </span>
-            <div>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: calculatedMetrics.winRate >= 80 ? '#065f46' : '#92400e' }}>
-                {calculatedMetrics.winRate >= 80 ? '✅ DEPLOYMENT READY' : '⚠️ Review Performance'}
-              </h3>
-              <div style={{ fontSize: '0.875rem', color: calculatedMetrics.winRate >= 80 ? '#047857' : '#78350f', marginTop: '4px' }}>
-                Conservative Mode + 1H Timeframe + Top 4 Symbols
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: '16px' }}>
-            <div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Win Rate</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: calculatedMetrics.winRate >= 80 ? '#10b981' : '#f59e0b' }}>
-                {calculatedMetrics.winRate.toFixed(1)}%
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total P&L</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: calculatedMetrics.totalPnlR > 0 ? '#10b981' : '#ef4444' }}>
-                {calculatedMetrics.totalPnlR >= 0 ? '+' : ''}{calculatedMetrics.totalPnlR.toFixed(2)}R
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Trades</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#3b82f6' }}>
-                {calculatedMetrics.totalTrades} ({calculatedMetrics.wins}W / {calculatedMetrics.losses}L)
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Profit Factor</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: calculatedMetrics.profitFactor >= 2 ? '#10b981' : '#6b7280' }}>
-                {calculatedMetrics.profitFactor >= 999 ? '999+' : calculatedMetrics.profitFactor.toFixed(2)}
-              </div>
-            </div>
-          </div>
-          {calculatedMetrics.winRate >= 80 && calculatedMetrics.totalPnlR > 5 && (
-            <div
-              style={{
-                marginTop: '16px',
-                padding: '12px',
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                color: '#065f46'
-              }}
-            >
-              <strong>💡 Recommendation:</strong> This configuration shows strong performance and is ready for deployment. Use 1% risk per trade with the top 4 symbols (AVAX, ADA, DOGE, BTC).
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Metrics Cards */}
       <BacktestMetricsCards

@@ -28,7 +28,15 @@ const BacktestChart = ({
   };
 
   useEffect(() => {
-    if (!chartContainerRef.current || !symbol || !timeframe) return;
+    if (!symbol || !timeframe) {
+      console.log('BacktestChart: Missing symbol or timeframe, skipping');
+      return;
+    }
+
+    if (!chartContainerRef.current) {
+      console.warn('BacktestChart: Container ref not ready yet, will retry');
+      return;
+    }
 
     const fetchData = async () => {
       try {
@@ -63,6 +71,11 @@ const BacktestChart = ({
         }
 
         console.log('BacktestChart: Received', klineData.length, 'candles for', symbol);
+
+        if (!klineData || klineData.length === 0) {
+          throw new Error('No candle data received from Binance');
+        }
+
         console.log('BacktestChart: Price range:',
           Math.min(...klineData.map(k => k.low)).toFixed(2),
           '-',
@@ -70,13 +83,43 @@ const BacktestChart = ({
         );
 
         // Convert to lightweight-charts format
-        const candlestickData = klineData.map((candle) => ({
+        const rawData = klineData.map((candle) => ({
           time: candle.openTime / 1000,
           open: candle.open,
           high: candle.high,
           low: candle.low,
           close: candle.close
         }));
+
+        // Sort by time ascending - CRITICAL for lightweight-charts
+        rawData.sort((a, b) => a.time - b.time);
+
+        // Remove duplicate timestamps (keep first occurrence)
+        const seenTimes = new Set();
+        const candlestickData = rawData.filter(candle => {
+          if (seenTimes.has(candle.time)) {
+            console.warn('BacktestChart: Duplicate timestamp removed:', candle.time, new Date(candle.time * 1000).toISOString());
+            return false;
+          }
+          seenTimes.add(candle.time);
+          return true;
+        });
+
+        console.log('BacktestChart: Data sorted, first time:',
+          new Date(candlestickData[0].time * 1000).toISOString(),
+          'last time:',
+          new Date(candlestickData[candlestickData.length - 1].time * 1000).toISOString()
+        );
+
+        // Validate data is properly sorted
+        for (let i = 1; i < candlestickData.length; i++) {
+          if (candlestickData[i].time <= candlestickData[i - 1].time) {
+            console.error('BacktestChart: Data NOT properly sorted at index', i,
+              'current:', candlestickData[i].time, new Date(candlestickData[i].time * 1000).toISOString(),
+              'previous:', candlestickData[i - 1].time, new Date(candlestickData[i - 1].time * 1000).toISOString()
+            );
+          }
+        }
 
         // Remove old chart if it exists
         if (chartRef.current) {

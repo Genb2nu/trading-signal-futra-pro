@@ -492,6 +492,41 @@ export const STRATEGY_CONFIG = {
 let runtimeConfig = null;
 
 /**
+ * Get timeframe-specific adjustments for 5m (very relaxed for scalping)
+ * @param {Object} baseConfig - Base strategy config
+ * @returns {Object} Adjusted config for 5m
+ */
+function get5mAdjustments(baseConfig) {
+  return {
+    ...baseConfig,
+    // CRITICAL: Even lower confluence for 5m (very choppy, scalping timeframe)
+    minimumConfluence: Math.max(10, baseConfig.minimumConfluence - 40),
+
+    // CRITICAL: Allow neutral zone (5m constantly sideways)
+    allowNeutralZone: true,
+    neutralZoneScore: 15, // More points for neutral zone on 5m
+
+    // CRITICAL: Don't require HTF alignment (5m is pure scalping)
+    strictHTFAlignment: false,
+
+    // CRITICAL: Don't require rejection (candles extremely fast on 5m)
+    requireRejectionPattern: false,
+
+    // CRITICAL: Remove required confirmations (way too restrictive for 5m)
+    requiredConfirmations: [],
+
+    // Even lower OB threshold for tiny 5m moves
+    obImpulseThreshold: 0.002, // 0.2% (vs 0.5% on higher TF) - scalping moves
+
+    // Much lower R:R target (5m has very small moves, quick scalps)
+    minimumRiskReward: Math.max(0.8, baseConfig.minimumRiskReward - 1.0),
+
+    // Very tight stop loss for 5m (tiny moves, very tight risk)
+    stopLossATRMultiplier: Math.max(1.2, baseConfig.stopLossATRMultiplier - 1.0)
+  };
+}
+
+/**
  * Get timeframe-specific adjustments for 15m (less strict)
  * @param {Object} baseConfig - Base strategy config
  * @returns {Object} Adjusted config for 15m
@@ -542,8 +577,10 @@ export function getCurrentConfig(timeframe = null) {
     config = { ...config, ...runtimeConfig };
   }
 
-  // Apply 15m adjustments if on 15m timeframe
-  if (timeframe === '15m') {
+  // Apply timeframe-specific adjustments
+  if (timeframe === '5m') {
+    config = get5mAdjustments(config);
+  } else if (timeframe === '15m') {
     config = get15mAdjustments(config);
   }
 
@@ -559,8 +596,10 @@ export function getCurrentConfig(timeframe = null) {
 export function getConfig(mode, timeframe = null) {
   let config = STRATEGY_CONFIG[mode] || STRATEGY_CONFIG[STRATEGY_MODES.MODERATE];
 
-  // Apply 15m adjustments if on 15m timeframe
-  if (timeframe === '15m') {
+  // Apply timeframe-specific adjustments
+  if (timeframe === '5m') {
+    config = get5mAdjustments(config);
+  } else if (timeframe === '15m') {
     config = get15mAdjustments(config);
   }
 

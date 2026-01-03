@@ -1,8 +1,8 @@
 {
-  "id": "2026-01-03_ultra_15m",
-  "timestamp": "2026-01-03T04:55:47.656Z",
-  "mode": "ULTRA",
-  "timeframe": "15m",
+  "id": "2026-01-03_aggressive_5m",
+  "timestamp": "2026-01-03T09:37:21.241Z",
+  "mode": "AGGRESSIVE",
+  "timeframe": "5m",
   "symbols": [
     "BTCUSDT",
     "ETHUSDT",
@@ -13,7 +13,7 @@
   "results": [
     {
       "symbol": "BTCUSDT",
-      "timeframe": "15m",
+      "timeframe": "5m",
       "candleCount": 3000,
       "lookforward": 100,
       "trades": [],
@@ -33,7 +33,7 @@
     },
     {
       "symbol": "ETHUSDT",
-      "timeframe": "15m",
+      "timeframe": "5m",
       "candleCount": 3000,
       "lookforward": 100,
       "trades": [],
@@ -53,7 +53,7 @@
     },
     {
       "symbol": "BNBUSDT",
-      "timeframe": "15m",
+      "timeframe": "5m",
       "candleCount": 3000,
       "lookforward": 100,
       "trades": [],
@@ -73,7 +73,7 @@
     },
     {
       "symbol": "SOLUSDT",
-      "timeframe": "15m",
+      "timeframe": "5m",
       "candleCount": 3000,
       "lookforward": 100,
       "trades": [],
@@ -93,7 +93,7 @@
     },
     {
       "symbol": "ADAUSDT",
-      "timeframe": "15m",
+      "timeframe": "5m",
       "candleCount": 3000,
       "lookforward": 100,
       "trades": [],

@@ -58,7 +58,7 @@ class PaperAccountManager {
       totalPnLPercent: 0,
 
       // Risk settings (loaded from config)
-      riskPerTrade: 2.5,
+      riskPerTrade: 2,
       maxConcurrentTrades: 3,
 
       createdAt: new Date().toISOString(),
@@ -86,7 +86,7 @@ class PaperAccountManager {
       if (settings) {
         const parsed = JSON.parse(settings);
         return {
-          riskPerTrade: parsed.riskPerTrade || 2.5,
+          riskPerTrade: parsed.riskPerTrade || 2,
           maxConcurrentTrades: parsed.maxConcurrentTrades || 3,
           stopLossATRMultiplier: parsed.stopLossATRMultiplier || 2.5
         };
@@ -97,7 +97,7 @@ class PaperAccountManager {
 
     // Default fallback
     return {
-      riskPerTrade: 2.5,
+      riskPerTrade: 2,
       maxConcurrentTrades: 3,
       stopLossATRMultiplier: 2.5
     };

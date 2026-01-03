@@ -1,0 +1,307 @@
+🚀 Starting Comprehensive Backtest
+
+================================================================================
+Testing Strategy: Enhanced SMC with Inducement Detection
+Test Symbols: BTCUSDT, ETHUSDT, BNBUSDT, SOLUSDT, ADAUSDT
+Timeframes: 5m, 15m, 1h
+Strategy Modes: CONSERVATIVE, MODERATE, AGGRESSIVE, ELITE, SNIPER (5 modes)
+Data Size: 3000 candles per symbol
+================================================================================
+
+
+📊 TESTING CONSERVATIVE MODE
+--------------------------------------------------------------------------------
+Strategy mode set to: conservative
+
+⏰ Timeframe: 5m
+  Testing BTCUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 5m Summary:
+     Total Trades: 0
+     Win Rate: 0.00%
+     Avg Profit: 0.00R
+     Profit Factor: 0.00
+     Max Drawdown: 0.00%
+  💾 Saved backtest results to: runs/2026-01-03_conservative_5m.json
+
+⏰ Timeframe: 15m
+  Testing BTCUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (1 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (3 trades, 100.0% win rate)
+
+  📈 15m Summary:
+     Total Trades: 8
+     Win Rate: 87.50%
+     Avg Profit: 0.50R
+     Profit Factor: 4.98
+     Max Drawdown: 1.00%
+  💾 Saved backtest results to: runs/2026-01-03_conservative_15m.json
+
+⏰ Timeframe: 1h
+  Testing BTCUSDT... ✓ (4 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing BNBUSDT... ✓ (4 trades, 25.0% win rate)
+  Testing SOLUSDT... ✓ (5 trades, 80.0% win rate)
+  Testing ADAUSDT... ✓ (2 trades, 100.0% win rate)
+
+  📈 1h Summary:
+     Total Trades: 16
+     Win Rate: 75.00%
+     Avg Profit: 0.90R
+     Profit Factor: 4.58
+     Max Drawdown: 3.00%
+  💾 Saved backtest results to: runs/2026-01-03_conservative_1h.json
+
+📊 TESTING MODERATE MODE
+--------------------------------------------------------------------------------
+Strategy mode set to: moderate
+
+⏰ Timeframe: 5m
+  Testing BTCUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 5m Summary:
+     Total Trades: 0
+     Win Rate: 0.00%
+     Avg Profit: 0.00R
+     Profit Factor: 0.00
+     Max Drawdown: 0.00%
+  💾 Saved backtest results to: runs/2026-01-03_moderate_5m.json
+
+⏰ Timeframe: 15m
+  Testing BTCUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (2 trades, 50.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (3 trades, 100.0% win rate)
+
+  📈 15m Summary:
+     Total Trades: 9
+     Win Rate: 88.89%
+     Avg Profit: 0.56R
+     Profit Factor: 6.08
+     Max Drawdown: 1.00%
+  💾 Saved backtest results to: runs/2026-01-03_moderate_15m.json
+
+⏰ Timeframe: 1h
+  Testing BTCUSDT... ✓ (4 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (4 trades, 50.0% win rate)
+  Testing SOLUSDT... ✓ (5 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (3 trades, 100.0% win rate)
+
+  📈 1h Summary:
+     Total Trades: 16
+     Win Rate: 87.50%
+     Avg Profit: 1.26R
+     Profit Factor: 11.05
+     Max Drawdown: 2.00%
+  💾 Saved backtest results to: runs/2026-01-03_moderate_1h.json
+
+📊 TESTING AGGRESSIVE MODE
+--------------------------------------------------------------------------------
+Strategy mode set to: aggressive
+
+⏰ Timeframe: 5m
+  Testing BTCUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 5m Summary:
+     Total Trades: 0
+     Win Rate: 0.00%
+     Avg Profit: 0.00R
+     Profit Factor: 0.00
+     Max Drawdown: 0.00%
+  💾 Saved backtest results to: runs/2026-01-03_aggressive_5m.json
+
+⏰ Timeframe: 15m
+  Testing BTCUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (2 trades, 50.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (3 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (3 trades, 100.0% win rate)
+
+  📈 15m Summary:
+     Total Trades: 10
+     Win Rate: 90.00%
+     Avg Profit: 0.53R
+     Profit Factor: 6.26
+     Max Drawdown: 1.00%
+  💾 Saved backtest results to: runs/2026-01-03_aggressive_15m.json
+
+⏰ Timeframe: 1h
+  Testing BTCUSDT... ✓ (4 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing BNBUSDT... ✓ (4 trades, 50.0% win rate)
+  Testing SOLUSDT... ✓ (3 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (2 trades, 100.0% win rate)
+
+  📈 1h Summary:
+     Total Trades: 14
+     Win Rate: 85.71%
+     Avg Profit: 1.13R
+     Profit Factor: 8.91
+     Max Drawdown: 2.00%
+  💾 Saved backtest results to: runs/2026-01-03_aggressive_1h.json
+
+📊 TESTING ELITE MODE
+--------------------------------------------------------------------------------
+Strategy mode set to: elite
+
+⏰ Timeframe: 5m
+  Testing BTCUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 5m Summary:
+     Total Trades: 0
+     Win Rate: 0.00%
+     Avg Profit: 0.00R
+     Profit Factor: 0.00
+     Max Drawdown: 0.00%
+  💾 Saved backtest results to: runs/2026-01-03_elite_5m.json
+
+⏰ Timeframe: 15m
+  Testing BTCUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (1 trades, 100.0% win rate)
+
+  📈 15m Summary:
+     Total Trades: 3
+     Win Rate: 100.00%
+     Avg Profit: 0.96R
+     Profit Factor: 999.00
+     Max Drawdown: 0.11%
+  💾 Saved backtest results to: runs/2026-01-03_elite_15m.json
+
+⏰ Timeframe: 1h
+  Testing BTCUSDT... ✓ (2 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (4 trades, 50.0% win rate)
+  Testing SOLUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 1h Summary:
+     Total Trades: 7
+     Win Rate: 71.43%
+     Avg Profit: 0.23R
+     Profit Factor: 1.82
+     Max Drawdown: 2.00%
+  💾 Saved backtest results to: runs/2026-01-03_elite_1h.json
+
+📊 TESTING SNIPER MODE
+--------------------------------------------------------------------------------
+Strategy mode set to: sniper
+
+⏰ Timeframe: 5m
+  Testing BTCUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 5m Summary:
+     Total Trades: 0
+     Win Rate: 0.00%
+     Avg Profit: 0.00R
+     Profit Factor: 0.00
+     Max Drawdown: 0.00%
+  💾 Saved backtest results to: runs/2026-01-03_sniper_5m.json
+
+⏰ Timeframe: 15m
+  Testing BTCUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing SOLUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing ADAUSDT... ✓ (1 trades, 100.0% win rate)
+
+  📈 15m Summary:
+     Total Trades: 2
+     Win Rate: 100.00%
+     Avg Profit: 1.38R
+     Profit Factor: 999.00
+     Max Drawdown: 0.05%
+  💾 Saved backtest results to: runs/2026-01-03_sniper_15m.json
+
+⏰ Timeframe: 1h
+  Testing BTCUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing ETHUSDT... ✓ (0 trades, 0.0% win rate)
+  Testing BNBUSDT... ✓ (3 trades, 33.3% win rate)
+  Testing SOLUSDT... ✓ (1 trades, 100.0% win rate)
+  Testing ADAUSDT... ✓ (0 trades, 0.0% win rate)
+
+  📈 1h Summary:
+     Total Trades: 5
+     Win Rate: 60.00%
+     Avg Profit: -0.14R
+     Profit Factor: 0.66
+     Max Drawdown: 2.00%
+  💾 Saved backtest results to: runs/2026-01-03_sniper_1h.json
+
+
+
+================================================================================
+📊 FINAL BACKTEST SUMMARY - INDUCEMENT ENHANCEMENT
+================================================================================
+
+📈 WIN RATE COMPARISON BY MODE AND TIMEFRAME:
+
+Mode         | 5m       | 15m      | 1h       | Average
+-----------------------------------------------------------------
+CONSERVATIVE | 0.0%    | 87.5%   | 75.0%   | 54.2%
+MODERATE     | 0.0%    | 88.9%   | 87.5%   | 58.8%
+AGGRESSIVE   | 0.0%    | 90.0%   | 85.7%   | 58.6%
+ELITE        | 0.0%    | 100.0%  | 71.4%   | 57.1%
+SNIPER       | 0.0%    | 100.0%  | 60.0%   | 53.3%
+
+📊 PROFIT FACTOR BY MODE AND TIMEFRAME:
+
+Mode         | 5m       | 15m      | 1h       | Average
+-----------------------------------------------------------------
+CONSERVATIVE | 0.00    | 4.98    | 4.58    | 3.19
+MODERATE     | 0.00    | 6.08    | 11.05   | 5.71
+AGGRESSIVE   | 0.00    | 6.26    | 8.91    | 5.06
+ELITE        | 0.00    | 999.00  | 1.82    | 333.61
+SNIPER       | 0.00    | 999.00  | 0.66    | 333.22
+
+📊 TOTAL TRADES BY MODE AND TIMEFRAME:
+
+Mode         | 5m       | 15m      | 1h       | Total
+-----------------------------------------------------------------
+CONSERVATIVE | 0       | 8       | 16      | 24
+MODERATE     | 0       | 9       | 16      | 25
+AGGRESSIVE   | 0       | 10      | 14      | 24
+ELITE        | 0       | 3       | 7       | 10
+SNIPER       | 0       | 2       | 5       | 7
+
+
+✅ KEY FINDINGS:
+
+🏆 Best Performing Mode: MODERATE (58.8% avg win rate)
+
+📋 TARGET VALIDATION:
+   ❌ CONSERVATIVE: 54.2% (target: 65%)
+   ✅ MODERATE: 58.8% (target: 55%)
+   ✅ AGGRESSIVE: 58.6% (target: 45%)
+   ✅ ELITE: 57.1% (target: 45%)
+   ✅ SNIPER: 53.3% (target: 45%)
+
+================================================================================
+✅ Backtest Complete!
+================================================================================

@@ -65,245 +65,49 @@ export function simulateTrade(signal, futureCandles, timeframe = '1h') {
     timedOut: false
   };
 
-  // Track price action
+  // MANUAL TRADING: Simple TP or SL hit logic
+  // No breakeven, no trailing, no partial closes
   for (let i = 0; i < futureCandles.length; i++) {
     const candle = futureCandles[i];
     outcome.barsInTrade = i + 1;
 
-    // Calculate current P&L in R-multiples
-    let currentPnlR;
+    // Track MAE/MFE for analysis
     if (isBuy) {
-      currentPnlR = (candle.close - entry) / riskDistance;
       const adverseMove = (entry - candle.low) / riskDistance;
       const favorableMove = (candle.high - entry) / riskDistance;
       if (-adverseMove < outcome.maxAdverseExcursion) outcome.maxAdverseExcursion = -adverseMove;
       if (favorableMove > outcome.maxFavorableExcursion) outcome.maxFavorableExcursion = favorableMove;
     } else {
-      currentPnlR = (entry - candle.close) / riskDistance;
       const adverseMove = (candle.high - entry) / riskDistance;
       const favorableMove = (entry - candle.low) / riskDistance;
       if (-adverseMove < outcome.maxAdverseExcursion) outcome.maxAdverseExcursion = -adverseMove;
       if (favorableMove > outcome.maxFavorableExcursion) outcome.maxFavorableExcursion = favorableMove;
     }
 
-    // Update peak P&L
-    if (currentPnlR > peakPnlR) peakPnlR = currentPnlR;
-
-    // ===== SCALPING FEATURE 1: Move to breakeven at +0.5R =====
-    if (isScalping && !breakEvenActivated && scalpingConfig.breakEvenR &&
-        currentPnlR >= scalpingConfig.breakEvenR) {
-      currentStopLoss = entry;
-      breakEvenActivated = true;
-      outcome.breakEvenActivated = true;
-    }
-
-    // ===== SCALPING FEATURE 2: Trailing stop at +1R =====
-    if (isScalping && scalpingConfig.trailingStopEnabled &&
-        scalpingConfig.trailingStartR && scalpingConfig.trailingDistanceR &&
-        peakPnlR >= scalpingConfig.trailingStartR) {
-
-      const trailStopR = peakPnlR - scalpingConfig.trailingDistanceR;
-      const newStopLoss = entry + (trailStopR * riskDistance * (isBuy ? 1 : -1));
-
-      if (isBuy) {
-        currentStopLoss = Math.max(currentStopLoss, newStopLoss);
-      } else {
-        currentStopLoss = Math.min(currentStopLoss, newStopLoss);
-      }
-
-      if (!trailingActivated) {
-        trailingActivated = true;
-        outcome.trailingActivated = true;
-      }
-    }
-
-    // ===== SCALPING FEATURE 3: Partial close at +1R =====
-    if (isScalping && !partialCloseExecuted && scalpingConfig.partialCloseEnabled &&
-        scalpingConfig.partialCloseR && scalpingConfig.partialClosePercent &&
-        currentPnlR >= scalpingConfig.partialCloseR) {
-
-      partialCloseExecuted = true;
-      positionSize = 100 - scalpingConfig.partialClosePercent; // Keep remaining %
-      outcome.partialCloseExecuted = true;
-    }
-
-    // ===== SCALPING FEATURE 4: Timeout exit =====
-    if (isScalping && i >= timeoutBars && scalpingConfig.timeoutThresholdR &&
-        currentPnlR < scalpingConfig.timeoutThresholdR) {
-
-      outcome.result = 'TIMEOUT';
-      outcome.exitPrice = candle.close;
+    // ===== Check Take Profit FIRST (TP has priority) =====
+    const tpHit = isBuy ? candle.high >= takeProfit : candle.low <= takeProfit;
+    if (tpHit) {
+      outcome.result = 'TAKE_PROFIT';
+      outcome.exitPrice = takeProfit;
       outcome.exitTime = candle.timestamp;
-      outcome.barsInTrade = i + 1;
-      outcome.timedOut = true;
 
-      const pnlPercent = currentPnlR * (riskDistance / entry) * 100;
-      outcome.pnlPercent = pnlPercent;
-      outcome.pnlR = currentPnlR * (positionSize / 100);
+      const tpPnlR = (takeProfit - entry) / riskDistance * (isBuy ? 1 : -1);
+      outcome.pnlR = tpPnlR;
+      outcome.pnlPercent = tpPnlR * (riskDistance / entry) * 100;
       return outcome;
-    }
-
-    // ===== GENERAL TRADE MANAGEMENT (ALL MODES) =====
-    // OPTIMIZED: Using SNIPER-style management (proven 2.85 PF)
-
-    // Move to breakeven at +0.8R (earlier protection)
-    if (!isScalping && !breakEvenActivated && currentPnlR >= 0.8) {
-      currentStopLoss = entry;
-      breakEvenActivated = true;
-      outcome.breakEvenActivated = true;
-    }
-
-    // Partial profit at +1.5R: Close 50% of position (was 1.0R - let winners run!)
-    if (!isScalping && !partialCloseExecuted && currentPnlR >= 1.5) {
-      partialCloseExecuted = true;
-      positionSize = 50; // Keep 50% of position
-      outcome.partialCloseExecuted = true;
-    }
-
-    // Trailing stop after +1.5R: Trail at 0.7R distance from peak (was 1.0R/0.5R - more room!)
-    if (!isScalping && peakPnlR >= 1.5) {
-      const trailingDistance = 0.7; // Trail 0.7R behind peak (wider for breathing room)
-      const trailStopR = peakPnlR - trailingDistance;
-      const newStopLoss = entry + (trailStopR * riskDistance * (isBuy ? 1 : -1));
-
-      if (isBuy) {
-        // Only move stop up, never down
-        if (newStopLoss > currentStopLoss) {
-          currentStopLoss = newStopLoss;
-          if (!trailingActivated) {
-            trailingActivated = true;
-            outcome.trailingActivated = true;
-          }
-        }
-      } else {
-        // Only move stop down, never up
-        if (newStopLoss < currentStopLoss) {
-          currentStopLoss = newStopLoss;
-          if (!trailingActivated) {
-            trailingActivated = true;
-            outcome.trailingActivated = true;
-          }
-        }
-      }
     }
 
     // ===== Check Stop Loss =====
-    const slHit = isBuy ? candle.low <= currentStopLoss : candle.high >= currentStopLoss;
+    const slHit = isBuy ? candle.low <= initialStopLoss : candle.high >= initialStopLoss;
     if (slHit) {
-      const slPnlR = (currentStopLoss - entry) / riskDistance * (isBuy ? 1 : -1);
-
-      // Binary outcome: WIN or LOSS (no breakeven)
-      // If stopped out at entry or better = WIN (protected capital)
-      // If stopped out below entry = LOSS
-      if (slPnlR >= -0.05) {
-        // Stopped at or near breakeven = count as WIN (0R or small profit)
-        outcome.result = slPnlR > 0.1 ? 'TRAILING_STOP_WIN' : 'BREAKEVEN_WIN';
-        outcome.pnlR = Math.max(0, slPnlR) * (positionSize / 100); // Minimum 0R
-      } else {
-        // Stopped below entry = LOSS
-        outcome.result = 'STOP_LOSS';
-        outcome.pnlR = slPnlR * (positionSize / 100);
-      }
-
-      outcome.exitPrice = currentStopLoss;
+      outcome.result = 'STOP_LOSS';
+      outcome.exitPrice = initialStopLoss;
       outcome.exitTime = candle.timestamp;
 
-      const pnlPercent = outcome.pnlR * (riskDistance / entry) * 100;
-      outcome.pnlPercent = pnlPercent;
+      const slPnlR = (initialStopLoss - entry) / riskDistance * (isBuy ? 1 : -1);
+      outcome.pnlR = slPnlR;
+      outcome.pnlPercent = slPnlR * (riskDistance / entry) * 100;
       return outcome;
-    }
-
-    // ===== Check Take Profit (PHASE 17: Multiple TP Levels) =====
-    if (signal.takeProfitLevels) {
-      // PHASE 17: Check multiple TP levels for partial closures
-      const tpLevels = signal.takeProfitLevels;
-      let tp1Hit = false, tp2Hit = false, tp3Hit = false;
-      let totalR = 0;
-      let remainingPosition = 100;
-
-      // Check TP1 (50% at 1:1 R:R)
-      if (isBuy ? candle.high >= tpLevels.tp1 : candle.low <= tpLevels.tp1) {
-        tp1Hit = true;
-        totalR += tpLevels.riskRewards.tp1 * tpLevels.allocations.tp1; // 1.0 * 0.50 = 0.50R
-        remainingPosition -= tpLevels.allocations.tp1 * 100; // 50% closed
-      }
-
-      // Check TP2 (30% at main target)
-      if (isBuy ? candle.high >= tpLevels.tp2 : candle.low <= tpLevels.tp2) {
-        tp2Hit = true;
-        totalR += tpLevels.riskRewards.tp2 * tpLevels.allocations.tp2;
-        remainingPosition -= tpLevels.allocations.tp2 * 100; // 30% closed
-      }
-
-      // Check TP3 (20% at 1:3 R:R)
-      if (isBuy ? candle.high >= tpLevels.tp3 : candle.low <= tpLevels.tp3) {
-        tp3Hit = true;
-        totalR += tpLevels.riskRewards.tp3 * tpLevels.allocations.tp3; // 3.0 * 0.20 = 0.60R
-        remainingPosition -= tpLevels.allocations.tp3 * 100; // 20% closed
-      }
-
-      // If all TPs hit, close full position
-      if (tp3Hit) {
-        outcome.result = 'TAKE_PROFIT_FULL';
-        outcome.exitPrice = tpLevels.tp3;
-        outcome.exitTime = candle.timestamp;
-        outcome.pnlR = totalR; // Total weighted R
-        outcome.pnlPercent = totalR * (riskDistance / entry) * 100;
-        outcome.tpLevelsHit = { tp1: true, tp2: true, tp3: true };
-        return outcome;
-      }
-      // If TP2 hit (but not TP3), partial win
-      else if (tp2Hit) {
-        outcome.result = 'TAKE_PROFIT_PARTIAL';
-        outcome.exitPrice = tpLevels.tp2;
-        outcome.exitTime = candle.timestamp;
-        outcome.pnlR = totalR; // Partial R (TP1 + TP2)
-        outcome.pnlPercent = totalR * (riskDistance / entry) * 100;
-        outcome.tpLevelsHit = { tp1: true, tp2: true, tp3: false };
-        positionSize = remainingPosition; // Keep 20% position for TP3
-        // Don't return - continue monitoring for TP3
-      }
-      // If only TP1 hit, continue monitoring
-      else if (tp1Hit) {
-        positionSize = remainingPosition; // Keep 50% position for TP2/TP3
-        // Don't return - continue monitoring
-      }
-    } else {
-      // Legacy single TP logic (fallback)
-      const tpHit = isBuy ? candle.high >= takeProfit : candle.low <= takeProfit;
-      if (tpHit) {
-        outcome.result = 'TAKE_PROFIT';
-        outcome.exitPrice = takeProfit;
-        outcome.exitTime = candle.timestamp;
-
-        const tpPnlR = (takeProfit - entry) / riskDistance * (isBuy ? 1 : -1);
-        const pnlPercent = tpPnlR * (riskDistance / entry) * 100;
-        outcome.pnlPercent = pnlPercent;
-        outcome.pnlR = tpPnlR * (positionSize / 100);
-        return outcome;
-      }
-    }
-
-    // ===== Check pattern invalidation (OB break) =====
-    if (signal.orderBlock) {
-      const obInvalidated = isBuy ?
-        candle.close < signal.orderBlock.bottom * 0.98 :
-        candle.close > signal.orderBlock.top * 1.02;
-
-      if (obInvalidated) {
-        outcome.result = 'INVALIDATED';
-        outcome.exitPrice = candle.close;
-        outcome.exitTime = candle.timestamp;
-        outcome.invalidated = true;
-        outcome.invalidationReason = isBuy ?
-          'Price broke below order block' :
-          'Price broke above order block';
-
-        const pnlPercent = currentPnlR * (riskDistance / entry) * 100;
-        outcome.pnlPercent = pnlPercent;
-        outcome.pnlR = currentPnlR * (positionSize / 100);
-        return outcome;
-      }
     }
   }
 
