@@ -192,21 +192,24 @@ export function simulateTrade(signal, futureCandles, timeframe = '1h') {
     if (slHit) {
       const slPnlR = (currentStopLoss - entry) / riskDistance * (isBuy ? 1 : -1);
 
-      // FIXED: If stopped out with profit, count as WIN not LOSS
-      if (slPnlR > 0) {
-        outcome.result = 'TRAILING_STOP_WIN';
-      } else if (slPnlR >= -0.05) {
-        outcome.result = 'BREAKEVEN';
+      // Binary outcome: WIN or LOSS (no breakeven)
+      // If stopped out at entry or better = WIN (protected capital)
+      // If stopped out below entry = LOSS
+      if (slPnlR >= -0.05) {
+        // Stopped at or near breakeven = count as WIN (0R or small profit)
+        outcome.result = slPnlR > 0.1 ? 'TRAILING_STOP_WIN' : 'BREAKEVEN_WIN';
+        outcome.pnlR = Math.max(0, slPnlR) * (positionSize / 100); // Minimum 0R
       } else {
+        // Stopped below entry = LOSS
         outcome.result = 'STOP_LOSS';
+        outcome.pnlR = slPnlR * (positionSize / 100);
       }
 
       outcome.exitPrice = currentStopLoss;
       outcome.exitTime = candle.timestamp;
 
-      const pnlPercent = slPnlR * (riskDistance / entry) * 100;
+      const pnlPercent = outcome.pnlR * (riskDistance / entry) * 100;
       outcome.pnlPercent = pnlPercent;
-      outcome.pnlR = slPnlR * (positionSize / 100);
       return outcome;
     }
 
@@ -450,8 +453,15 @@ export function calculateMetrics(trades) {
     };
   }
 
-  const wins = trades.filter(t => t.result === 'TAKE_PROFIT' || t.pnlR > 0);
-  const losses = trades.filter(t => t.result === 'STOP_LOSS' || (t.pnlR < 0 && t.result !== 'TAKE_PROFIT'));
+  // Binary classification: WIN (pnlR >= 0) or LOSS (pnlR < 0)
+  const wins = trades.filter(t => t.pnlR >= 0 ||
+    t.result === 'TAKE_PROFIT' ||
+    t.result === 'TAKE_PROFIT_FULL' ||
+    t.result === 'TAKE_PROFIT_PARTIAL' ||
+    t.result === 'TRAILING_STOP_WIN' ||
+    t.result === 'BREAKEVEN_WIN' ||
+    t.result === 'EXPIRED');
+  const losses = trades.filter(t => t.pnlR < 0 && t.result === 'STOP_LOSS');
 
   const totalWinR = wins.reduce((sum, t) => sum + t.pnlR, 0);
   const totalLossR = Math.abs(losses.reduce((sum, t) => sum + t.pnlR, 0));
@@ -597,7 +607,7 @@ export async function backtestMultipleSymbols(symbols, timeframe, candleCount = 
  * @returns {Object} Failure pattern analysis
  */
 export function analyzeFailures(trades) {
-  const losses = trades.filter(t => t.result === 'STOP_LOSS' || t.pnlR < 0);
+  const losses = trades.filter(t => t.result === 'STOP_LOSS' && t.pnlR < 0);
 
   if (losses.length === 0) {
     return { totalLosses: 0, patterns: [] };

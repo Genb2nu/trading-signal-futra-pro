@@ -205,14 +205,14 @@
   "defaultTimeframes": [
     "1h"
   ],
-  "strategyMode": "moderate",
+  "strategyMode": "sniper",
   "riskPerTrade": 2.5,
   "maxConcurrentTrades": 3,
   "stopLossATRMultiplier": 2.5,
-  "minimumConfluence": 40,
-  "minimumRiskReward": 2,
+  "minimumConfluence": 75,
+  "minimumRiskReward": 2.5,
   "minimumConfidenceLevel": "premium",
   "requireHTFAlignment": true,
-  "allowNeutralZone": true,
-  "obImpulseThreshold": 0.005
+  "allowNeutralZone": false,
+  "obImpulseThreshold": 0.008
 }

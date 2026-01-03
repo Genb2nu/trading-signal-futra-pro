@@ -101,7 +101,7 @@ export async function trackNewSignal(signal) {
 /**
  * Update signal outcome
  * @param {string} signalId - Signal ID
- * @param {Object} outcome - { result: 'WIN'|'LOSS'|'BREAKEVEN', pnlR: number, notes: string }
+ * @param {Object} outcome - { result: 'WIN'|'LOSS', pnlR: number, notes: string }
  */
 export async function updateSignalOutcome(signalId, outcome) {
   const tracking = await loadTracking();
@@ -121,14 +121,13 @@ export async function updateSignalOutcome(signalId, outcome) {
   tracking.stats.activeSignals--;
   tracking.stats.closedSignals++;
 
-  if (outcome.result === 'WIN') {
+  // Binary outcome: WIN (pnlR >= 0) or LOSS (pnlR < 0)
+  if (outcome.pnlR >= 0) {
     tracking.stats.wins++;
     tracking.stats.totalProfitR += outcome.pnlR;
-  } else if (outcome.result === 'LOSS') {
+  } else {
     tracking.stats.losses++;
     tracking.stats.totalLossR += outcome.pnlR; // pnlR will be negative
-  } else if (outcome.result === 'BREAKEVEN') {
-    tracking.stats.breakeven++;
   }
 
   // Recalculate stats
@@ -146,9 +145,10 @@ export async function updateSignalOutcome(signalId, outcome) {
 function calculateStats(signals) {
   const closed = signals.filter(s => s.status === 'CLOSED');
   const active = signals.filter(s => s.status === 'ACTIVE');
-  const wins = closed.filter(s => s.outcome === 'WIN');
-  const losses = closed.filter(s => s.outcome === 'LOSS');
-  const breakeven = closed.filter(s => s.outcome === 'BREAKEVEN');
+
+  // Binary classification: WIN (pnlR >= 0) or LOSS (pnlR < 0)
+  const wins = closed.filter(s => (s.pnlR || 0) >= 0);
+  const losses = closed.filter(s => (s.pnlR || 0) < 0);
 
   const totalProfitR = wins.reduce((sum, s) => sum + (s.pnlR || 0), 0);
   const totalLossR = losses.reduce((sum, s) => sum + (s.pnlR || 0), 0);
@@ -165,7 +165,6 @@ function calculateStats(signals) {
     activeSignals: active.length,
     wins: wins.length,
     losses: losses.length,
-    breakeven: breakeven.length,
     winRate: parseFloat(winRate.toFixed(2)),
     avgRMultiple: parseFloat(avgRMultiple.toFixed(2)),
     totalProfitR: parseFloat(totalProfitR.toFixed(2)),
