@@ -151,6 +151,111 @@ code {
   color: #92400e;
 }
 
+/* === CONFIDENCE TIER BADGES === */
+
+/* Premium Tier: Gold gradient with star (≥85 confluence) */
+.badge-premium {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #78350f;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+}
+
+.badge-premium:before {
+  content: '⭐ ';
+}
+
+/* High Tier: Green with checkmark (≥60 confluence) */
+.badge-high {
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.badge-high:before {
+  content: '✓ ';
+}
+
+/* Standard Tier: Gray/blue with dash (≥35 confluence) */
+.badge-standard {
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 500;
+}
+
+.badge-standard:before {
+  content: '− ';
+}
+
+/* === ZONE BADGES (Compact for table) === */
+
+.zone-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.zone-badge-discount {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.zone-badge-premium {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.zone-badge-neutral {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* === CONFLUENCE PROGRESS BAR === */
+
+.confluence-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.confluence-score {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.confluence-bar {
+  width: 100%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.confluence-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.confluence-fill-premium {
+  background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.confluence-fill-high {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.confluence-fill-standard {
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+}
+
 .loading {
   text-align: center;
   padding: 40px;
@@ -386,4 +491,14 @@ code {
 
 .btn-secondary:hover {
   background: #d1d5db;
+}
+
+/* Pulse animation for near-liquidation warnings */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }

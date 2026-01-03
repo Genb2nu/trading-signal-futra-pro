@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Modal from './Modal';
 import PatternChart from './PatternChart';
+import { getHTFTimeframe } from '../shared/strategyConfig';
+import html2canvas from 'html2canvas';
 
 const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
+  const modalContentRef = useRef(null);
+  const shareMenuRef = useRef(null);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target)) {
+        setShowShareMenu(false);
+      }
+    };
+
+    if (showShareMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showShareMenu]);
+
+  // Early return AFTER all hooks
   if (!signal) return null;
 
   const {
@@ -11,8 +35,81 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
     // NEW ENHANCED FIELDS
     premiumDiscount, ote, structureAnalysis, liquidityAnalysis,
     fvgStatus, orderBlockDetails, volumeAnalysis, entryTiming,
-    confluenceScore, riskManagement
+    confluenceScore, riskManagement,
+    // HTF FIELDS
+    htfAlignment, htfTimeframe, htfData
   } = signal;
+
+  // Generate canvas from modal content
+  const generateCanvas = async () => {
+    if (!modalContentRef.current) return null;
+
+    try {
+      const canvas = await html2canvas(modalContentRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2, // Higher quality
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        windowWidth: modalContentRef.current.scrollWidth,
+        windowHeight: modalContentRef.current.scrollHeight
+      });
+      return canvas;
+    } catch (error) {
+      console.error('Error generating canvas:', error);
+      alert('Failed to generate image. Please try again.');
+      return null;
+    }
+  };
+
+  // Download as image
+  const handleDownloadImage = async () => {
+    const canvas = await generateCanvas();
+    if (!canvas) return;
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+      link.download = `${symbol}_${type}_Signal_${timeframe}_${timestamp}.png`;
+      link.href = url;
+      link.click();
+
+      URL.revokeObjectURL(url);
+      setShowShareMenu(false);
+    }, 'image/png');
+  };
+
+  // Share to Telegram
+  const handleShareToTelegram = async () => {
+    const shareText = `📊 *${symbol} ${type} Signal*\n\nTimeframe: ${timeframe}\nConfluence Score: ${confluenceScore}/145\nTier: ${confidence?.toUpperCase() || 'STANDARD'}\nEntry: ${entry}\nStop Loss: ${stopLoss}\nTake Profit: ${takeProfit}\nR:R: 1:${signal.riskReward || 2.0}`;
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(shareText)}`;
+    window.open(telegramUrl, '_blank');
+    setShowShareMenu(false);
+  };
+
+  // Share to WhatsApp
+  const handleShareToWhatsApp = async () => {
+    const shareText = `📊 *${symbol} ${type} Signal*\n\nTimeframe: ${timeframe}\nConfluence: ${confluenceScore}/145 (${confidence?.toUpperCase()})\nEntry: ${entry}\nStop Loss: ${stopLoss}\nTake Profit: ${takeProfit}\nR:R: 1:${signal.riskReward || 2.0}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+    setShowShareMenu(false);
+  };
+
+  // Share to Facebook Messenger
+  const handleShareToMessenger = async () => {
+    const shareText = `📊 ${symbol} ${type} Signal\n\nTimeframe: ${timeframe}\nConfluence: ${confluenceScore}/145 (${confidence?.toUpperCase()})\nEntry: ${entry}\nStop Loss: ${stopLoss}\nTake Profit: ${takeProfit}\nR:R: 1:${signal.riskReward || 2.0}`;
+    // Facebook Messenger share dialog
+    const messengerUrl = `fb-messenger://share/?link=${encodeURIComponent(window.location.href)}&app_id=`;
+    // Fallback to Facebook dialog for web
+    const fbUrl = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(window.location.href)}&redirect_uri=${encodeURIComponent(window.location.href)}`;
+
+    // Try to open Messenger app first, fallback to web dialog
+    window.open(fbUrl, '_blank');
+    setShowShareMenu(false);
+  };
 
   // Ensure patterns is always an array (handle both string and array cases)
   const patternsArray = Array.isArray(patterns)
@@ -43,6 +140,28 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
       title={`${symbol} - ${type} Signal`}
       maxWidth="1100px"
     >
+      <div ref={modalContentRef}>
+        {/* Timeframe Info with HTF Badge */}
+        <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '13px', color: '#6b7280' }}>
+            Timeframe: <strong>{timeframe}</strong>
+          </span>
+          {htfTimeframe && (
+            <span style={{
+              fontSize: '11px',
+              padding: '3px 8px',
+              background: '#dbeafe',
+              color: '#1e40af',
+              borderRadius: '4px',
+              fontWeight: '600'
+            }}>
+              HTF: {htfTimeframe}
+            </span>
+          )}
+        </div>
+      </div>
+
       {/* Confluence Score Badge */}
       {confluenceScore !== undefined && (
         <div style={{ marginBottom: '20px', textAlign: 'center' }}>
@@ -50,17 +169,77 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
             display: 'inline-block',
             padding: '12px 24px',
             borderRadius: '8px',
-            background: confluenceScore >= 70 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
-                        confluenceScore >= 50 ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' :
+            background: confluenceScore >= 85 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
+                        confluenceScore >= 60 ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' :
                         'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
             color: 'white',
             fontWeight: 'bold',
-            fontSize: '18px'
+            fontSize: '18px',
+            boxShadow: confluenceScore >= 85 ? '0 4px 12px rgba(251, 191, 36, 0.4)' :
+                       confluenceScore >= 60 ? '0 4px 12px rgba(16, 185, 129, 0.3)' :
+                       '0 4px 12px rgba(59, 130, 246, 0.3)'
           }}>
-            ⭐ Confluence Score: {confluenceScore}/100
+            {confluenceScore >= 85 ? '⭐' : confluenceScore >= 60 ? '✓' : '−'} Confluence Score: {confluenceScore}/145
             <span style={{ marginLeft: '12px', fontSize: '14px', opacity: 0.9 }}>
-              ({confidence?.toUpperCase() || 'STANDARD'})
+              ({confidence?.toUpperCase() || 'STANDARD'} TIER)
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* HTF Confluence Breakdown */}
+      {confluenceScore !== undefined && (
+        <div style={{ marginBottom: '20px', padding: '20px', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+          <h4 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#111827' }}>
+            📊 Confluence Breakdown
+          </h4>
+
+          <div style={{ fontSize: '13px', lineHeight: '1.8' }}>
+            {/* Base Timeframe Components */}
+            <div style={{ marginBottom: '15px' }}>
+              <strong style={{ color: '#374151' }}>Base Timeframe ({timeframe}) Components:</strong>
+              <div style={{ marginLeft: '20px', marginTop: '8px', color: '#6b7280' }}>
+                {patternDetails?.fvg && <div>✓ Fair Value Gap: +25 pts</div>}
+                {patternDetails?.liquiditySweep && <div>✓ Liquidity Sweep: +20 pts</div>}
+                {patternDetails?.bos && <div>✓ Break of Structure: +20 pts</div>}
+                {(premiumDiscount?.zone === 'premium' || premiumDiscount?.zone === 'discount') && <div>✓ Premium/Discount Zone: +20 pts</div>}
+                {volumeAnalysis?.confirmation === 'strong' && <div>✓ Volume Confirmation (Strong): +15 pts</div>}
+                {volumeAnalysis?.confirmation === 'moderate' && <div>✓ Volume Confirmation (Moderate): +10 pts</div>}
+                {ote?.currentPriceInOTE && <div>✓ Optimal Trade Entry (OTE): +10 pts</div>}
+                {orderBlockDetails?.type === 'breakerBlock' && <div>✓ Breaker Block: +10 pts</div>}
+                {structureAnalysis?.bmsDetected && <div>✓ Market Structure Break (BMS): +10 pts</div>}
+              </div>
+            </div>
+
+            {/* HTF Components */}
+            {htfAlignment && (htfAlignment.hasHTFOB || htfAlignment.hasHTFFVG || htfAlignment.hasHTFZone || htfAlignment.hasHTFStructure) && (
+              <div style={{ marginBottom: '15px' }}>
+                <strong style={{ color: '#1e40af' }}>Higher Timeframe ({htfTimeframe || getHTFTimeframe(timeframe)}) Components:</strong>
+                <div style={{ marginLeft: '20px', marginTop: '8px', color: '#3b82f6' }}>
+                  {htfAlignment.hasHTFOB && <div>✓ HTF Order Block Alignment: +15 pts</div>}
+                  {htfAlignment.hasHTFFVG && <div>✓ HTF FVG Targeting: +10 pts</div>}
+                  {htfAlignment.hasHTFZone && <div>✓ HTF Zone Alignment: +10 pts</div>}
+                  {htfAlignment.hasHTFStructure && <div>✓ HTF Structure Alignment: +10 pts</div>}
+                </div>
+              </div>
+            )}
+
+            {/* Total Score */}
+            <div style={{
+              marginTop: '15px',
+              paddingTop: '15px',
+              borderTop: '2px solid #e5e7eb',
+              fontWeight: '700',
+              fontSize: '14px',
+              color: confluenceScore >= 100 ? '#1e40af' : '#374151'
+            }}>
+              Total Confluence: {confluenceScore}/145 points
+              {confluenceScore >= 100 && (
+                <span style={{ marginLeft: '10px', color: '#3b82f6', fontSize: '13px' }}>
+                  ⭐ HTF ALIGNED
+                </span>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -447,6 +626,9 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
           stopLoss={stopLoss}
           takeProfit={takeProfit}
           direction={type === 'BUY' ? 'bullish' : 'bearish'}
+          htfData={htfData}
+          htfTimeframe={htfTimeframe}
+          structureAnalysis={structureAnalysis}
         />
       </div>
 
@@ -483,10 +665,168 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
       </div>
 
       {/* Action Buttons */}
-      <div style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+      <div style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end', alignItems: 'center' }}>
         <button className="btn btn-secondary" onClick={onClose}>
           Close
         </button>
+
+        {/* Share Button with Dropdown Menu */}
+        <div style={{ position: 'relative' }} ref={shareMenuRef}>
+          <button
+            className="btn"
+            onClick={() => setShowShareMenu(!showShareMenu)}
+            style={{
+              padding: '10px 20px',
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontSize: '14px',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>📤</span>
+            Share
+            <span style={{ fontSize: '12px', marginLeft: '4px' }}>{showShareMenu ? '▲' : '▼'}</span>
+          </button>
+
+          {/* Dropdown Menu */}
+          {showShareMenu && (
+            <div style={{
+              position: 'absolute',
+              bottom: '100%',
+              right: 0,
+              marginBottom: '8px',
+              background: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+              border: '1px solid #e5e7eb',
+              minWidth: '220px',
+              zIndex: 1000,
+              overflow: 'hidden'
+            }}>
+              {/* Download Image */}
+              <button
+                onClick={handleDownloadImage}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'white',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#374151',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'background 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+              >
+                <span style={{ fontSize: '18px' }}>💾</span>
+                <span style={{ fontWeight: '500' }}>Download Image</span>
+              </button>
+
+              {/* Divider */}
+              <div style={{
+                height: '1px',
+                background: '#e5e7eb',
+                margin: '4px 0'
+              }}></div>
+
+              {/* Share to Telegram */}
+              <button
+                onClick={handleShareToTelegram}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'white',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#374151',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'background 0.15s ease',
+                  borderTop: '1px solid #f3f4f6'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+              >
+                <span style={{ fontSize: '18px' }}>✈️</span>
+                <span style={{ fontWeight: '500' }}>Share to Telegram</span>
+              </button>
+
+              {/* Share to WhatsApp */}
+              <button
+                onClick={handleShareToWhatsApp}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'white',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#374151',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'background 0.15s ease',
+                  borderTop: '1px solid #f3f4f6'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+              >
+                <span style={{ fontSize: '18px' }}>💬</span>
+                <span style={{ fontWeight: '500' }}>Share to WhatsApp</span>
+              </button>
+
+              {/* Share to Facebook Messenger */}
+              <button
+                onClick={handleShareToMessenger}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'white',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#374151',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'background 0.15s ease',
+                  borderTop: '1px solid #f3f4f6'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+              >
+                <span style={{ fontSize: '18px' }}>💙</span>
+                <span style={{ fontWeight: '500' }}>Share to Messenger</span>
+              </button>
+            </div>
+          )}
+        </div>
+
         <button
           className="btn btn-primary"
           onClick={() => {
@@ -497,6 +837,7 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
         >
           Open in TradingView
         </button>
+      </div>
       </div>
     </Modal>
   );

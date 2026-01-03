@@ -1,0 +1,2293 @@
+{
+  "id": "2026-01-03_elite_4h",
+  "timestamp": "2026-01-03T04:55:28.622Z",
+  "mode": "ELITE",
+  "timeframe": "4h",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "SOLUSDT",
+    "ADAUSDT"
+  ],
+  "results": [
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [
+        {
+          "signal": {
+            "type": "SELL",
+            "direction": "bearish",
+            "entry": 108813.55,
+            "stopLoss": 121533.525,
+            "takeProfit": 74769.78982142857,
+            "riskReward": 2.6764015006768065,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 96093.57500000001,
+              "tp2": 74769.78982142857,
+              "tp3": 70653.62500000003,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 2.6764015006768065,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Order Block",
+              "Breaker Block"
+            ],
+            "timestamp": "2025-06-12T00:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bearish",
+                "index": 2,
+                "top": 83047,
+                "bottom": 82448.21,
+                "gap": 598.7899999999936,
+                "gapPercent": 0.007262619770641395,
+                "timestamp": "2025-04-03T16:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "breakerBlock",
+                "index": 418,
+                "top": 108813.55,
+                "bottom": 107730,
+                "timestamp": "2025-06-12T00:00:00.000Z",
+                "candle": {
+                  "openTime": 1749686400000,
+                  "open": 108645.13,
+                  "high": 108813.55,
+                  "low": 107730,
+                  "close": 107860.05,
+                  "volume": 3756.8345,
+                  "closeTime": 1749700799999,
+                  "timestamp": "2025-06-12T00:00:00.000Z"
+                },
+                "strength": 0.6684860298895419,
+                "impulseCandle": {
+                  "openTime": 1749744000000,
+                  "open": 107020.96,
+                  "high": 108450.16,
+                  "low": 106680,
+                  "close": 106788.8,
+                  "volume": 2559.00784,
+                  "closeTime": 1749758399999,
+                  "timestamp": "2025-06-12T16:00:00.000Z"
+                },
+                "originalType": "bullish",
+                "polarityChange": "support_to_resistance",
+                "breakCandle": {
+                  "openTime": 1749700800000,
+                  "open": 107860.04,
+                  "high": 107993.58,
+                  "low": 107320,
+                  "close": 107633.53,
+                  "volume": 2337.6809,
+                  "closeTime": 1749715199999,
+                  "timestamp": "2025-06-12T04:00:00.000Z"
+                },
+                "breakTimestamp": "2025-06-12T04:00:00.000Z",
+                "priority": "high",
+                "description": "Failed bullish OB, now resistance"
+              },
+              "liquiditySweep": null,
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 106/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 108813.55,
+              "stopLoss": 121533.525,
+              "takeProfit": 74769.78982142857,
+              "riskAmount": 12719.974999999991,
+              "rewardAmount": 34043.760178571436,
+              "ratio": 2.6764015006768065,
+              "stopLossDistance": "11.69%",
+              "takeProfitDistance": "31.29%",
+              "reasoning": "Stop loss above OB with 4801.76250000 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "premium",
+              "percentage": 71.6,
+              "inCorrectZone": true,
+              "equilibrium": 104365.08499999999,
+              "range": 12330.169999999998
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": true,
+              "bosType": null,
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [
+                {
+                  "type": "ChoCh",
+                  "direction": "bearish",
+                  "brokenLevel": 100837.9,
+                  "breakCandle": {
+                    "openTime": 1750593600000,
+                    "open": 102739.47,
+                    "high": 102831,
+                    "low": 98889.35,
+                    "close": 98906.21,
+                    "volume": 12422.58545,
+                    "closeTime": 1750607999999,
+                    "timestamp": "2025-06-22T12:00:00.000Z"
+                  },
+                  "timestamp": "2025-06-22T12:00:00.000Z",
+                  "significance": "warning"
+                }
+              ],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "buy-side",
+                "price": 74564,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 23,
+                    "price": 74508,
+                    "timestamp": "2025-04-07T04:00:00.000Z",
+                    "candle": {
+                      "openTime": 1743998400000,
+                      "open": 77707.78,
+                      "high": 77984,
+                      "low": 74508,
+                      "close": 75126.01,
+                      "volume": 18943.308,
+                      "closeTime": 1744012799999,
+                      "timestamp": "2025-04-07T04:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 34,
+                    "price": 74620,
+                    "timestamp": "2025-04-09T00:00:00.000Z",
+                    "candle": {
+                      "openTime": 1744156800000,
+                      "open": 76322.42,
+                      "high": 76868.28,
+                      "low": 74620,
+                      "close": 75073.33,
+                      "volume": 9779.68513,
+                      "closeTime": 1744171199999,
+                      "timestamp": "2025-04-09T00:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": false,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 0,
+              "allInducements": []
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "breakerBlock",
+              "top": 108813.55,
+              "bottom": 107730,
+              "strength": 0.6684860298895419,
+              "polarityChange": true
+            },
+            "volumeAnalysis": {
+              "confirmation": "moderate",
+              "avgVolume": 3748,
+              "currentVolume": 7497,
+              "volumeRatio": 2,
+              "climaxDetected": false,
+              "divergence": "bearish",
+              "volumeTrend": "decreasing",
+              "details": {
+                "highVolume": true,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_rejection",
+              "bosConfirmed": false,
+              "confirmationType": "REJECTION",
+              "rejectionPattern": "strong_bearish_close",
+              "rejectionStrength": 2,
+              "hasRejectionBonus": true
+            },
+            "confluenceScore": 106,
+            "riskManagement": {
+              "stopLossReasoning": "Above OB with 4801.76250000 buffer",
+              "takeProfitReasoning": "Targeting buy-side liquidity at 74564.00000000",
+              "atrBuffer": 4801.762499999993,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bullish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": false,
+              "hasHTFZone": true,
+              "hasHTFStructure": false,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "1.24"
+            },
+            "correlationAnalysis": {
+              "group": "BTC-Dominance",
+              "correlatedPairs": [
+                "WBTCUSDT"
+              ],
+              "riskLevel": "extreme",
+              "description": "Bitcoin and wrapped Bitcoin move identically",
+              "warningMessage": "⚠️ EXTREME CORRELATION: Avoid multiple positions in BTC-Dominance"
+            },
+            "marketRegime": {
+              "regime": "WEAK_TREND",
+              "adx": 23.12,
+              "bbWidthPercent": 9.93,
+              "action": "MODERATE",
+              "message": "Developing trend - standard approach"
+            }
+          },
+          "entry": 108813.55,
+          "stopLoss": 121533.525,
+          "takeProfit": 74769.78982142857,
+          "type": "SELL",
+          "direction": "SELL",
+          "htfTrend": "bullish",
+          "mtfConsensus": "unknown",
+          "result": "BREAKEVEN",
+          "exitPrice": 108813.55,
+          "exitTime": "2025-06-16T16:00:00.000Z",
+          "pnlPercent": 0,
+          "pnlR": 0,
+          "barsInTrade": 28,
+          "maxAdverseExcursion": -0.005852998924919046,
+          "maxFavorableExcursion": 0.4834317677511166,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": false,
+          "partialCloseExecuted": false,
+          "timedOut": false,
+          "signalTime": "2025-06-12T00:00:00.000Z",
+          "signalIndex": 1768
+        },
+        {
+          "signal": {
+            "type": "SELL",
+            "direction": "bearish",
+            "entry": 108813.55,
+            "stopLoss": 117303.39000000001,
+            "takeProfit": 74709.94807142857,
+            "riskReward": 4.016989946638733,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 100323.70999999999,
+              "tp2": 74709.94807142857,
+              "tp3": 83344.02999999997,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 4.016989946638733,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Breaker Block"
+            ],
+            "timestamp": "2025-06-12T00:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bearish",
+                "index": 4,
+                "top": 83359.64,
+                "bottom": 83146,
+                "gap": 213.63999999999942,
+                "gapPercent": 0.002569456137396861,
+                "timestamp": "2025-04-05T16:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "breakerBlock",
+                "index": 408,
+                "top": 108813.55,
+                "bottom": 107730,
+                "timestamp": "2025-06-12T00:00:00.000Z",
+                "candle": {
+                  "openTime": 1749686400000,
+                  "open": 108645.13,
+                  "high": 108813.55,
+                  "low": 107730,
+                  "close": 107860.05,
+                  "volume": 3756.8345,
+                  "closeTime": 1749700799999,
+                  "timestamp": "2025-06-12T00:00:00.000Z"
+                },
+                "strength": 0.6684860298895419,
+                "impulseCandle": {
+                  "openTime": 1749744000000,
+                  "open": 107020.96,
+                  "high": 108450.16,
+                  "low": 106680,
+                  "close": 106788.8,
+                  "volume": 2559.00784,
+                  "closeTime": 1749758399999,
+                  "timestamp": "2025-06-12T16:00:00.000Z"
+                },
+                "originalType": "bullish",
+                "polarityChange": "support_to_resistance",
+                "breakCandle": {
+                  "openTime": 1749700800000,
+                  "open": 107860.04,
+                  "high": 107993.58,
+                  "low": 107320,
+                  "close": 107633.53,
+                  "volume": 2337.6809,
+                  "closeTime": 1749715199999,
+                  "timestamp": "2025-06-12T04:00:00.000Z"
+                },
+                "breakTimestamp": "2025-06-12T04:00:00.000Z",
+                "priority": "high",
+                "description": "Failed bullish OB, now resistance"
+              },
+              "liquiditySweep": null,
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 100/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 108813.55,
+              "stopLoss": 117303.39000000001,
+              "takeProfit": 74709.94807142857,
+              "riskAmount": 8489.840000000011,
+              "rewardAmount": 34103.60192857143,
+              "ratio": 4.016989946638733,
+              "stopLossDistance": "7.80%",
+              "takeProfitDistance": "31.34%",
+              "reasoning": "Stop loss above OB with 3405.45500000 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "premium",
+              "percentage": 71.1,
+              "inCorrectZone": true,
+              "equilibrium": 104300,
+              "range": 12200
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": false,
+              "bosType": null,
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "buy-side",
+                "price": 74564,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 13,
+                    "price": 74508,
+                    "timestamp": "2025-04-07T04:00:00.000Z",
+                    "candle": {
+                      "openTime": 1743998400000,
+                      "open": 77707.78,
+                      "high": 77984,
+                      "low": 74508,
+                      "close": 75126.01,
+                      "volume": 18943.308,
+                      "closeTime": 1744012799999,
+                      "timestamp": "2025-04-07T04:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 24,
+                    "price": 74620,
+                    "timestamp": "2025-04-09T00:00:00.000Z",
+                    "candle": {
+                      "openTime": 1744156800000,
+                      "open": 76322.42,
+                      "high": 76868.28,
+                      "low": 74620,
+                      "close": 75073.33,
+                      "volume": 9779.68513,
+                      "closeTime": 1744171199999,
+                      "timestamp": "2025-04-09T00:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": false,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "breakerBlock",
+              "top": 108813.55,
+              "bottom": 107730,
+              "strength": 0.6684860298895419,
+              "polarityChange": true
+            },
+            "volumeAnalysis": {
+              "confirmation": "weak",
+              "avgVolume": 2284,
+              "currentVolume": 1946,
+              "volumeRatio": 0.85,
+              "climaxDetected": false,
+              "divergence": "bearish",
+              "volumeTrend": "decreasing",
+              "details": {
+                "highVolume": false,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_retest",
+              "bosConfirmed": false,
+              "confirmationType": "OB_RETEST",
+              "hasRejectionBonus": false,
+              "requiresExtraConfluence": true
+            },
+            "confluenceScore": 100,
+            "riskManagement": {
+              "stopLossReasoning": "Above OB with 3405.45500000 buffer",
+              "takeProfitReasoning": "Targeting buy-side liquidity at 74564.00000000",
+              "atrBuffer": 3405.4550000000017,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bullish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": false,
+              "hasHTFZone": true,
+              "hasHTFStructure": true,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "0.80"
+            },
+            "correlationAnalysis": {
+              "group": "BTC-Dominance",
+              "correlatedPairs": [
+                "WBTCUSDT"
+              ],
+              "riskLevel": "extreme",
+              "description": "Bitcoin and wrapped Bitcoin move identically",
+              "warningMessage": "⚠️ EXTREME CORRELATION: Avoid multiple positions in BTC-Dominance"
+            },
+            "marketRegime": {
+              "regime": "WEAK_TREND",
+              "adx": 22.92,
+              "bbWidthPercent": 3.74,
+              "action": "MODERATE",
+              "message": "Developing trend - standard approach"
+            }
+          },
+          "entry": 108813.55,
+          "stopLoss": 117303.39000000001,
+          "takeProfit": 74709.94807142857,
+          "type": "SELL",
+          "direction": "SELL",
+          "htfTrend": "bullish",
+          "mtfConsensus": "unknown",
+          "result": "TRAILING_STOP_WIN",
+          "exitPrice": 106824.172,
+          "exitTime": "2025-06-16T04:00:00.000Z",
+          "pnlPercent": 1.8282447360645775,
+          "pnlR": 0.23432455735325924,
+          "barsInTrade": 25,
+          "maxAdverseExcursion": 0,
+          "maxFavorableExcursion": 0.724305758412408,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": true,
+          "partialCloseExecuted": false,
+          "timedOut": false,
+          "signalTime": "2025-06-12T00:00:00.000Z",
+          "signalIndex": 1768
+        }
+      ],
+      "metrics": {
+        "totalTrades": 2,
+        "wins": 1,
+        "losses": 0,
+        "winRate": "50.0",
+        "avgWinR": "0.23",
+        "avgLossR": "0.00",
+        "avgR": "0.12",
+        "profitFactor": "Infinity",
+        "expectancy": "0.12",
+        "maxDrawdown": "0.00",
+        "maxRunup": "0.23",
+        "outcomes": {
+          "takeProfit": 0,
+          "stopLoss": 0,
+          "invalidated": 0,
+          "expired": 0,
+          "timeout": 0
+        },
+        "avgBarsInTrade": "26.5",
+        "avgMAE": "0.00",
+        "avgMFE": "0.60",
+        "breakEvenActivations": 2,
+        "trailingActivations": 1,
+        "partialCloses": 0,
+        "timeouts": 0,
+        "breakEvenRate": "100.0",
+        "trailingRate": "50.0",
+        "partialCloseRate": "0.0",
+        "timeoutRate": "0.0"
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [],
+      "metrics": {
+        "totalTrades": 0,
+        "wins": 0,
+        "losses": 0,
+        "winRate": 0,
+        "avgWinR": 0,
+        "avgLossR": 0,
+        "avgR": 0,
+        "profitFactor": 0,
+        "expectancy": 0,
+        "maxDrawdown": 0,
+        "maxRunup": 0
+      }
+    },
+    {
+      "symbol": "BNBUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [
+        {
+          "signal": {
+            "type": "SELL",
+            "direction": "bearish",
+            "entry": 627.71,
+            "stopLoss": 718.187,
+            "takeProfit": 499.48132142857145,
+            "riskReward": 1.4172516614325035,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 537.2330000000001,
+              "tp2": 499.48132142857145,
+              "tp3": 356.2790000000001,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 1.4172516614325035,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Order Block",
+              "Liquidity Sweep"
+            ],
+            "timestamp": "2024-11-09T20:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bearish",
+                "index": 17,
+                "top": 586.4,
+                "bottom": 581.2,
+                "gap": 5.199999999999932,
+                "gapPercent": 0.008947006194081094,
+                "timestamp": "2024-08-24T04:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "bearish",
+                "index": 483,
+                "top": 627.71,
+                "bottom": 614.14,
+                "timestamp": "2024-11-09T20:00:00.000Z",
+                "candle": {
+                  "openTime": 1731182400000,
+                  "open": 615.99,
+                  "high": 627.71,
+                  "low": 614.14,
+                  "close": 624.66,
+                  "volume": 69194.87,
+                  "closeTime": 1731196799999,
+                  "timestamp": "2024-11-09T20:00:00.000Z"
+                },
+                "strength": 2.56328559366587,
+                "impulseCandle": {
+                  "openTime": 1731268800000,
+                  "open": 629.3,
+                  "high": 632.63,
+                  "low": 611.62,
+                  "close": 627.33,
+                  "volume": 138820.351,
+                  "closeTime": 1731283199999,
+                  "timestamp": "2024-11-10T20:00:00.000Z"
+                }
+              },
+              "liquiditySweep": {
+                "type": "sell-side",
+                "direction": "bearish",
+                "index": 488,
+                "swingLevel": 638,
+                "timestamp": "2024-11-10T16:00:00.000Z",
+                "candle": {
+                  "openTime": 1731254400000,
+                  "open": 639.9,
+                  "high": 643.6,
+                  "low": 623.9,
+                  "close": 629.3,
+                  "volume": 143875.861,
+                  "closeTime": 1731268799999,
+                  "timestamp": "2024-11-10T16:00:00.000Z"
+                },
+                "strength": "strong",
+                "conditionsMet": 3
+              },
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 141/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 627.71,
+              "stopLoss": 718.187,
+              "takeProfit": 499.48132142857145,
+              "riskAmount": 90.47699999999998,
+              "rewardAmount": 128.2286785714286,
+              "ratio": 1.4172516614325035,
+              "stopLossDistance": "14.41%",
+              "takeProfitDistance": "20.43%",
+              "reasoning": "Stop loss above OB with 90.47700000 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "premium",
+              "percentage": 66.1,
+              "inCorrectZone": true,
+              "equilibrium": 605.5,
+              "range": 123.79999999999995
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": true,
+              "bosType": null,
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [
+                {
+                  "type": "ChoCh",
+                  "direction": "bearish",
+                  "brokenLevel": 620,
+                  "breakCandle": {
+                    "openTime": 1731297600000,
+                    "open": 637.6,
+                    "high": 638.84,
+                    "low": 613,
+                    "close": 615.99,
+                    "volume": 147571.132,
+                    "closeTime": 1731311999999,
+                    "timestamp": "2024-11-11T04:00:00.000Z"
+                  },
+                  "timestamp": "2024-11-11T04:00:00.000Z",
+                  "significance": "warning"
+                }
+              ],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "buy-side",
+                "price": 496.25,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 85,
+                    "price": 495.8,
+                    "timestamp": "2024-09-04T12:00:00.000Z",
+                    "candle": {
+                      "openTime": 1725451200000,
+                      "open": 498.9,
+                      "high": 513.4,
+                      "low": 495.8,
+                      "close": 508.9,
+                      "volume": 125237.795,
+                      "closeTime": 1725465599999,
+                      "timestamp": "2024-09-04T12:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 92,
+                    "price": 496.7,
+                    "timestamp": "2024-09-05T16:00:00.000Z",
+                    "candle": {
+                      "openTime": 1725552000000,
+                      "open": 501.4,
+                      "high": 503.6,
+                      "low": 496.7,
+                      "close": 499.5,
+                      "volume": 32040.449,
+                      "closeTime": 1725566399999,
+                      "timestamp": "2024-09-05T16:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": true,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "orderBlock",
+              "top": 627.71,
+              "bottom": 614.14,
+              "strength": 2.56328559366587,
+              "polarityChange": false
+            },
+            "volumeAnalysis": {
+              "confirmation": "moderate",
+              "avgVolume": 150643,
+              "currentVolume": 217593,
+              "volumeRatio": 1.44,
+              "climaxDetected": false,
+              "divergence": false,
+              "volumeTrend": "increasing",
+              "details": {
+                "highVolume": false,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_rejection",
+              "bosConfirmed": false,
+              "confirmationType": "REJECTION",
+              "rejectionPattern": "hammer_rejection",
+              "rejectionStrength": 1,
+              "hasRejectionBonus": true
+            },
+            "confluenceScore": 141,
+            "riskManagement": {
+              "stopLossReasoning": "Above OB with 90.47700000 buffer",
+              "takeProfitReasoning": "Targeting buy-side liquidity at 496.25000000",
+              "atrBuffer": 90.47699999999999,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bullish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": true,
+              "hasHTFZone": true,
+              "hasHTFStructure": false,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 3,
+              "volatilityState": "high",
+              "reason": "High volatility detected - using wider stops (3.0 ATR)",
+              "volatilityRatio": "1.37"
+            },
+            "correlationAnalysis": {
+              "group": "Exchange-Tokens",
+              "correlatedPairs": [
+                "FTTUSDT",
+                "CROUSDT",
+                "HTUSDT"
+              ],
+              "riskLevel": "medium",
+              "description": "Exchange utility tokens",
+              "warningMessage": null
+            },
+            "marketRegime": {
+              "regime": "STRONG_TREND",
+              "adx": 28.8,
+              "bbWidthPercent": 7.78,
+              "action": "AGGRESSIVE",
+              "message": "Strong trend - maximize position and let it run"
+            }
+          },
+          "entry": 627.71,
+          "stopLoss": 718.187,
+          "takeProfit": 499.48132142857145,
+          "type": "SELL",
+          "direction": "SELL",
+          "htfTrend": "bullish",
+          "mtfConsensus": "unknown",
+          "result": "EXPIRED",
+          "exitPrice": 614.02,
+          "exitTime": "2024-11-26T12:00:00.000Z",
+          "pnlPercent": 2.1809434292906045,
+          "pnlR": 0.1513091724968783,
+          "barsInTrade": 100,
+          "maxAdverseExcursion": -0.6635940625794399,
+          "maxFavorableExcursion": 0.3830807829614166,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": false,
+          "trailingActivated": false,
+          "partialCloseExecuted": false,
+          "timedOut": false,
+          "signalTime": "2024-11-09T20:00:00.000Z",
+          "signalIndex": 483
+        },
+        {
+          "signal": {
+            "type": "SELL",
+            "direction": "bearish",
+            "entry": 707,
+            "stopLoss": 803.312,
+            "takeProfit": 587.8057857142857,
+            "riskReward": 1.2375842499970338,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 610.688,
+              "tp2": 587.8057857142857,
+              "tp3": 418.06399999999996,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 1.2375842499970338,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Order Block",
+              "BMS (Reversal)"
+            ],
+            "timestamp": "2025-01-15T12:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bearish",
+                "index": 25,
+                "top": 594.8,
+                "bottom": 592.9,
+                "gap": 1.8999999999999773,
+                "gapPercent": 0.0032045876201719976,
+                "timestamp": "2024-10-31T04:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "bearish",
+                "index": 483,
+                "top": 707,
+                "bottom": 688.45,
+                "timestamp": "2025-01-15T12:00:00.000Z",
+                "candle": {
+                  "openTime": 1736942400000,
+                  "open": 692.35,
+                  "high": 707,
+                  "low": 688.45,
+                  "close": 704.1,
+                  "volume": 85937.933,
+                  "closeTime": 1736956799999,
+                  "timestamp": "2025-01-15T12:00:00.000Z"
+                },
+                "strength": 0.9193776520509194,
+                "impulseCandle": {
+                  "openTime": 1737028800000,
+                  "open": 713.5,
+                  "high": 717.5,
+                  "low": 700.5,
+                  "close": 709.6,
+                  "volume": 87399.47,
+                  "closeTime": 1737043199999,
+                  "timestamp": "2025-01-16T12:00:00.000Z"
+                }
+              },
+              "liquiditySweep": null,
+              "bms": {
+                "type": "bearish",
+                "index": 499,
+                "breakLevel": 700.5,
+                "timestamp": "2025-01-18T04:00:00.000Z",
+                "previousTrend": "uptrend"
+              }
+            },
+            "confluenceReason": "Confluence Score: 76/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 707,
+              "stopLoss": 803.312,
+              "takeProfit": 587.8057857142857,
+              "riskAmount": 96.31200000000001,
+              "rewardAmount": 119.19421428571434,
+              "ratio": 1.2375842499970338,
+              "stopLossDistance": "13.62%",
+              "takeProfitDistance": "16.86%",
+              "reasoning": "Stop loss above OB with 36.18500000 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "neutral",
+              "percentage": 47,
+              "inCorrectZone": true,
+              "equilibrium": 702.645,
+              "range": 85.28999999999996
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": true,
+              "bosType": null,
+              "bmsDetected": true,
+              "bmsType": "reversal",
+              "chochEvents": [
+                {
+                  "type": "ChoCh",
+                  "direction": "bearish",
+                  "brokenLevel": 695.62,
+                  "breakCandle": {
+                    "openTime": 1736928000000,
+                    "open": 699.68,
+                    "high": 701,
+                    "low": 689.7,
+                    "close": 692.34,
+                    "volume": 32960.239,
+                    "closeTime": 1736942399999,
+                    "timestamp": "2025-01-15T08:00:00.000Z"
+                  },
+                  "timestamp": "2025-01-15T08:00:00.000Z",
+                  "significance": "warning"
+                },
+                {
+                  "type": "ChoCh",
+                  "direction": "bearish",
+                  "brokenLevel": 706.83,
+                  "breakCandle": {
+                    "openTime": 1737172800000,
+                    "open": 707.41,
+                    "high": 708.92,
+                    "low": 696.7,
+                    "close": 700.12,
+                    "volume": 92925.62,
+                    "closeTime": 1737187199999,
+                    "timestamp": "2025-01-18T04:00:00.000Z"
+                  },
+                  "timestamp": "2025-01-18T04:00:00.000Z",
+                  "significance": "warning"
+                },
+                {
+                  "type": "ChoCh",
+                  "direction": "bearish",
+                  "brokenLevel": 700.5,
+                  "breakCandle": {
+                    "openTime": 1737172800000,
+                    "open": 707.41,
+                    "high": 708.92,
+                    "low": 696.7,
+                    "close": 700.12,
+                    "volume": 92925.62,
+                    "closeTime": 1737187199999,
+                    "timestamp": "2025-01-18T04:00:00.000Z"
+                  },
+                  "timestamp": "2025-01-18T04:00:00.000Z",
+                  "significance": "warning"
+                }
+              ],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "buy-side",
+                "price": 586.255,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 7,
+                    "price": 585.5,
+                    "timestamp": "2024-10-28T04:00:00.000Z",
+                    "candle": {
+                      "openTime": 1730088000000,
+                      "open": 587.1,
+                      "high": 592.8,
+                      "low": 585.5,
+                      "close": 591.6,
+                      "volume": 21643.533,
+                      "closeTime": 1730102399999,
+                      "timestamp": "2024-10-28T04:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 69,
+                    "price": 587.01,
+                    "timestamp": "2024-11-07T12:00:00.000Z",
+                    "candle": {
+                      "openTime": 1730980800000,
+                      "open": 592.27,
+                      "high": 598.09,
+                      "low": 587.01,
+                      "close": 597.9,
+                      "volume": 50084.001,
+                      "closeTime": 1730995199999,
+                      "timestamp": "2024-11-07T12:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": false,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "orderBlock",
+              "top": 707,
+              "bottom": 688.45,
+              "strength": 0.9193776520509194,
+              "polarityChange": false
+            },
+            "volumeAnalysis": {
+              "confirmation": "moderate",
+              "avgVolume": 48068,
+              "currentVolume": 92926,
+              "volumeRatio": 1.93,
+              "climaxDetected": false,
+              "divergence": false,
+              "volumeTrend": "neutral",
+              "details": {
+                "highVolume": true,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_rejection",
+              "bosConfirmed": false,
+              "confirmationType": "REJECTION",
+              "rejectionPattern": "bearish_engulfing",
+              "rejectionStrength": 3,
+              "hasRejectionBonus": true
+            },
+            "confluenceScore": 76,
+            "riskManagement": {
+              "stopLossReasoning": "Above OB with 36.18500000 buffer",
+              "takeProfitReasoning": "Targeting buy-side liquidity at 586.25500000",
+              "atrBuffer": 36.185,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bullish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": true,
+              "hasHTFZone": false,
+              "hasHTFStructure": true,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "1.16"
+            },
+            "correlationAnalysis": {
+              "group": "Exchange-Tokens",
+              "correlatedPairs": [
+                "FTTUSDT",
+                "CROUSDT",
+                "HTUSDT"
+              ],
+              "riskLevel": "medium",
+              "description": "Exchange utility tokens",
+              "warningMessage": null
+            },
+            "marketRegime": {
+              "regime": "CHOPPY",
+              "adx": 15.41,
+              "bbWidthPercent": 4.71,
+              "action": "CAUTIOUS",
+              "message": "Choppy conditions - reduce confidence"
+            }
+          },
+          "entry": 707,
+          "stopLoss": 803.312,
+          "takeProfit": 587.8057857142857,
+          "type": "SELL",
+          "direction": "SELL",
+          "htfTrend": "bullish",
+          "mtfConsensus": "unknown",
+          "result": "TRAILING_STOP_WIN",
+          "exitPrice": 676.2336,
+          "exitTime": "2025-01-27T20:00:00.000Z",
+          "pnlPercent": 4.351683168316828,
+          "pnlR": 0.31944513663925544,
+          "barsInTrade": 74,
+          "maxAdverseExcursion": -0.23849572223606638,
+          "maxFavorableExcursion": 0.7186020433590833,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": true,
+          "partialCloseExecuted": false,
+          "timedOut": false,
+          "signalTime": "2025-01-15T12:00:00.000Z",
+          "signalIndex": 883
+        },
+        {
+          "signal": {
+            "type": "BUY",
+            "direction": "bullish",
+            "entry": 637.21,
+            "stopLoss": 579.2292857142858,
+            "takeProfit": 743.8409285714287,
+            "riskReward": 1.8390758010668586,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 695.1907142857143,
+              "tp2": 743.8409285714287,
+              "tp3": 811.1521428571428,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 1.8390758010668586,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Breaker Block"
+            ],
+            "timestamp": "2024-12-02T20:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bullish",
+                "index": 30,
+                "top": 617.5,
+                "bottom": 614.79,
+                "gap": 2.7100000000000364,
+                "gapPercent": 0.004408009238927172,
+                "timestamp": "2024-11-16T00:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "breakerBlock",
+                "index": 131,
+                "top": 648.2,
+                "bottom": 637.21,
+                "timestamp": "2024-12-02T20:00:00.000Z",
+                "candle": {
+                  "openTime": 1733169600000,
+                  "open": 638.59,
+                  "high": 648.2,
+                  "low": 637.21,
+                  "close": 647.82,
+                  "volume": 80852.095,
+                  "closeTime": 1733183999999,
+                  "timestamp": "2024-12-02T20:00:00.000Z"
+                },
+                "strength": 3.9108299907436006,
+                "impulseCandle": {
+                  "openTime": 1733227200000,
+                  "open": 650.75,
+                  "high": 651.46,
+                  "low": 622.85,
+                  "close": 642.71,
+                  "volume": 308296.738,
+                  "closeTime": 1733241599999,
+                  "timestamp": "2024-12-03T12:00:00.000Z"
+                },
+                "originalType": "bearish",
+                "polarityChange": "resistance_to_support",
+                "breakCandle": {
+                  "openTime": 1733184000000,
+                  "open": 647.83,
+                  "high": 655.2,
+                  "low": 646.14,
+                  "close": 651.93,
+                  "volume": 106800.93,
+                  "closeTime": 1733198399999,
+                  "timestamp": "2024-12-03T00:00:00.000Z"
+                },
+                "breakTimestamp": "2024-12-03T00:00:00.000Z",
+                "priority": "high",
+                "description": "Failed bearish OB, now support"
+              },
+              "liquiditySweep": null,
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 96/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 637.21,
+              "stopLoss": 579.2292857142858,
+              "takeProfit": 743.8409285714287,
+              "riskAmount": 57.98071428571427,
+              "rewardAmount": 106.63092857142863,
+              "ratio": 1.8390758010668586,
+              "stopLossDistance": "9.10%",
+              "takeProfitDistance": "16.73%",
+              "reasoning": "Stop loss below OB with 19.81785714 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "discount",
+              "percentage": 16.9,
+              "inCorrectZone": true,
+              "equilibrium": 683.88,
+              "range": 92.18000000000006
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": false,
+              "bosType": null,
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "sell-side",
+                "price": 745.0300000000001,
+                "touchCount": 3,
+                "strength": "strong",
+                "swings": [
+                  {
+                    "index": 154,
+                    "price": 745.93,
+                    "timestamp": "2024-12-06T16:00:00.000Z",
+                    "candle": {
+                      "openTime": 1733500800000,
+                      "open": 732.51,
+                      "high": 745.93,
+                      "low": 728.66,
+                      "close": 738.23,
+                      "volume": 152628.343,
+                      "closeTime": 1733515199999,
+                      "timestamp": "2024-12-06T16:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 167,
+                    "price": 743.87,
+                    "timestamp": "2024-12-08T20:00:00.000Z",
+                    "candle": {
+                      "openTime": 1733688000000,
+                      "open": 739.89,
+                      "high": 743.87,
+                      "low": 738.6,
+                      "close": 742,
+                      "volume": 32650.049,
+                      "closeTime": 1733702399999,
+                      "timestamp": "2024-12-08T20:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 341,
+                    "price": 745.29,
+                    "timestamp": "2025-01-06T20:00:00.000Z",
+                    "candle": {
+                      "openTime": 1736193600000,
+                      "open": 732.3,
+                      "high": 745.29,
+                      "low": 728.5,
+                      "close": 729.42,
+                      "volume": 96960.296,
+                      "closeTime": 1736207999999,
+                      "timestamp": "2025-01-06T20:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": false,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "breakerBlock",
+              "top": 648.2,
+              "bottom": 637.21,
+              "strength": 3.9108299907436006,
+              "polarityChange": true
+            },
+            "volumeAnalysis": {
+              "confirmation": "moderate",
+              "avgVolume": 29522,
+              "currentVolume": 36157,
+              "volumeRatio": 1.22,
+              "climaxDetected": false,
+              "divergence": false,
+              "volumeTrend": "increasing",
+              "details": {
+                "highVolume": false,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_rejection",
+              "bosConfirmed": false,
+              "confirmationType": "REJECTION",
+              "rejectionPattern": "inverse_hammer",
+              "rejectionStrength": 1,
+              "hasRejectionBonus": true
+            },
+            "confluenceScore": 96,
+            "riskManagement": {
+              "stopLossReasoning": "Below OB with 19.81785714 buffer",
+              "takeProfitReasoning": "Targeting sell-side liquidity at 745.03000000",
+              "atrBuffer": 19.817857142857147,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bearish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": false,
+              "hasHTFFVG": false,
+              "hasHTFZone": true,
+              "hasHTFStructure": false,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "0.87"
+            },
+            "correlationAnalysis": {
+              "group": "Exchange-Tokens",
+              "correlatedPairs": [
+                "FTTUSDT",
+                "CROUSDT",
+                "HTUSDT"
+              ],
+              "riskLevel": "medium",
+              "description": "Exchange utility tokens",
+              "warningMessage": null
+            },
+            "marketRegime": {
+              "regime": "WEAK_TREND",
+              "adx": 22.48,
+              "bbWidthPercent": 6.11,
+              "action": "MODERATE",
+              "message": "Developing trend - standard approach"
+            }
+          },
+          "entry": 637.21,
+          "stopLoss": 579.2292857142858,
+          "takeProfit": 743.8409285714287,
+          "type": "BUY",
+          "direction": "BUY",
+          "htfTrend": "bearish",
+          "mtfConsensus": "unknown",
+          "result": "TRAILING_STOP_WIN",
+          "exitPrice": 672.5957857142857,
+          "exitTime": "2024-12-03T16:00:00.000Z",
+          "pnlPercent": 5.55323766329557,
+          "pnlR": 0.30515134342700156,
+          "barsInTrade": 5,
+          "maxAdverseExcursion": -0.2476685597427719,
+          "maxFavorableExcursion": 0.9942961329506115,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": true,
+          "partialCloseExecuted": true,
+          "timedOut": false,
+          "signalTime": "2024-12-02T20:00:00.000Z",
+          "signalIndex": 621
+        }
+      ],
+      "metrics": {
+        "totalTrades": 3,
+        "wins": 3,
+        "losses": 0,
+        "winRate": "100.0",
+        "avgWinR": "0.26",
+        "avgLossR": "0.00",
+        "avgR": "0.26",
+        "profitFactor": "Infinity",
+        "expectancy": "0.26",
+        "maxDrawdown": "0.00",
+        "maxRunup": "0.78",
+        "outcomes": {
+          "takeProfit": 0,
+          "stopLoss": 0,
+          "invalidated": 0,
+          "expired": 1,
+          "timeout": 0
+        },
+        "avgBarsInTrade": "59.7",
+        "avgMAE": "0.38",
+        "avgMFE": "0.70",
+        "breakEvenActivations": 2,
+        "trailingActivations": 2,
+        "partialCloses": 1,
+        "timeouts": 0,
+        "breakEvenRate": "66.7",
+        "trailingRate": "66.7",
+        "partialCloseRate": "33.3",
+        "timeoutRate": "0.0"
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [
+        {
+          "signal": {
+            "type": "BUY",
+            "direction": "bullish",
+            "entry": 188.63,
+            "stopLoss": 151.2092857142857,
+            "takeProfit": 241.67792857142857,
+            "riskReward": 1.4176086583061325,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 226.0507142857143,
+              "tp2": 241.67792857142857,
+              "tp3": 300.89214285714286,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 1.4176086583061325,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Order Block",
+              "Liquidity Sweep"
+            ],
+            "timestamp": "2025-01-12T16:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bullish",
+                "index": 6,
+                "top": 174.65,
+                "bottom": 174.38,
+                "gap": 0.27000000000001023,
+                "gapPercent": 0.001548342699850959,
+                "timestamp": "2024-10-24T16:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "bullish",
+                "index": 486,
+                "top": 190.76,
+                "bottom": 188.63,
+                "timestamp": "2025-01-12T16:00:00.000Z",
+                "candle": {
+                  "openTime": 1736697600000,
+                  "open": 190.45,
+                  "high": 190.76,
+                  "low": 188.63,
+                  "close": 188.9,
+                  "volume": 244077.756,
+                  "closeTime": 1736711999999,
+                  "timestamp": "2025-01-12T16:00:00.000Z"
+                },
+                "strength": 0.7740020145257954,
+                "impulseCandle": {
+                  "openTime": 1736841600000,
+                  "open": 185.61,
+                  "high": 190.09,
+                  "low": 185.6,
+                  "close": 187.06,
+                  "volume": 551061.885,
+                  "closeTime": 1736855999999,
+                  "timestamp": "2025-01-14T08:00:00.000Z"
+                }
+              },
+              "liquiditySweep": {
+                "type": "buy-side",
+                "direction": "bullish",
+                "index": 493,
+                "swingLevel": 182,
+                "timestamp": "2025-01-13T20:00:00.000Z",
+                "candle": {
+                  "openTime": 1736798400000,
+                  "open": 177.6,
+                  "high": 183.81,
+                  "low": 176.61,
+                  "close": 182.87,
+                  "volume": 646741.05,
+                  "closeTime": 1736812799999,
+                  "timestamp": "2025-01-13T20:00:00.000Z"
+                },
+                "strength": "strong",
+                "conditionsMet": 3
+              },
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 145/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 188.63,
+              "stopLoss": 151.2092857142857,
+              "takeProfit": 241.67792857142857,
+              "riskAmount": 37.4207142857143,
+              "rewardAmount": 53.04792857142857,
+              "ratio": 1.4176086583061325,
+              "stopLossDistance": "19.84%",
+              "takeProfitDistance": "28.12%",
+              "reasoning": "Stop loss below OB with 12.61785714 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "discount",
+              "percentage": 34.4,
+              "inCorrectZone": true,
+              "equilibrium": 196.03,
+              "range": 54.30000000000001
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": false,
+              "bosType": "continuation",
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [],
+              "bosEvents": [
+                {
+                  "type": "BOS",
+                  "direction": "bullish",
+                  "brokenLevel": 190.11,
+                  "breakCandle": {
+                    "openTime": 1736683200000,
+                    "open": 186.68,
+                    "high": 191,
+                    "low": 186.17,
+                    "close": 190.45,
+                    "volume": 302015.114,
+                    "closeTime": 1736697599999,
+                    "timestamp": "2025-01-12T12:00:00.000Z"
+                  },
+                  "timestamp": "2025-01-12T12:00:00.000Z",
+                  "significance": "continuation",
+                  "trendAlignment": true
+                }
+              ]
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "sell-side",
+                "price": 242.435,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 148,
+                    "price": 242.33,
+                    "timestamp": "2024-11-17T08:00:00.000Z",
+                    "candle": {
+                      "openTime": 1731830400000,
+                      "open": 237.22,
+                      "high": 242.33,
+                      "low": 234.29,
+                      "close": 234.81,
+                      "volume": 1525599.255,
+                      "closeTime": 1731844799999,
+                      "timestamp": "2024-11-17T08:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 167,
+                    "price": 242.54,
+                    "timestamp": "2024-11-20T12:00:00.000Z",
+                    "candle": {
+                      "openTime": 1732104000000,
+                      "open": 237.55,
+                      "high": 242.54,
+                      "low": 235.5,
+                      "close": 238.37,
+                      "volume": 1256475.335,
+                      "closeTime": 1732118399999,
+                      "timestamp": "2024-11-20T12:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": true,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "orderBlock",
+              "top": 190.76,
+              "bottom": 188.63,
+              "strength": 0.7740020145257954,
+              "polarityChange": false
+            },
+            "volumeAnalysis": {
+              "confirmation": "moderate",
+              "avgVolume": 529008,
+              "currentVolume": 231355,
+              "volumeRatio": 0.44,
+              "climaxDetected": false,
+              "divergence": false,
+              "volumeTrend": "increasing",
+              "details": {
+                "highVolume": false,
+                "lowVolume": true,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_retest",
+              "bosConfirmed": false,
+              "confirmationType": "OB_RETEST",
+              "hasRejectionBonus": false,
+              "requiresExtraConfluence": true
+            },
+            "confluenceScore": 145,
+            "riskManagement": {
+              "stopLossReasoning": "Below OB with 12.61785714 buffer",
+              "takeProfitReasoning": "Targeting sell-side liquidity at 242.43500000",
+              "atrBuffer": 12.617857142857147,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bearish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": true,
+              "hasHTFZone": true,
+              "hasHTFStructure": false,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "0.96"
+            },
+            "correlationAnalysis": {
+              "group": "Layer-1-Alts",
+              "correlatedPairs": [
+                "AVAXUSDT",
+                "ADAUSDT",
+                "DOTUSDT",
+                "ATOMUSDT",
+                "NEARUSDT",
+                "ALGOUSDT"
+              ],
+              "riskLevel": "high",
+              "description": "Layer-1 blockchain platforms (high correlation during market moves)",
+              "warningMessage": "⚠️ HIGH CORRELATION: Use caution with Layer-1-Alts positions"
+            },
+            "marketRegime": {
+              "regime": "STRONG_TREND",
+              "adx": 32.63,
+              "bbWidthPercent": 8.06,
+              "action": "AGGRESSIVE",
+              "message": "Strong trend - maximize position and let it run"
+            }
+          },
+          "entry": 188.63,
+          "stopLoss": 151.2092857142857,
+          "takeProfit": 241.67792857142857,
+          "type": "BUY",
+          "direction": "BUY",
+          "htfTrend": "bearish",
+          "mtfConsensus": "unknown",
+          "result": "TRAILING_STOP_WIN",
+          "exitPrice": 201.5537857142857,
+          "exitTime": "2025-01-16T08:00:00.000Z",
+          "pnlPercent": 6.8513946425731405,
+          "pnlR": 0.34536448491095445,
+          "barsInTrade": 22,
+          "maxAdverseExcursion": -0.5277825497718985,
+          "maxFavorableExcursion": 0.6507091183263659,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": true,
+          "partialCloseExecuted": false,
+          "timedOut": false,
+          "signalTime": "2025-01-12T16:00:00.000Z",
+          "signalIndex": 866
+        }
+      ],
+      "metrics": {
+        "totalTrades": 1,
+        "wins": 1,
+        "losses": 0,
+        "winRate": "100.0",
+        "avgWinR": "0.35",
+        "avgLossR": "0.00",
+        "avgR": "0.35",
+        "profitFactor": "Infinity",
+        "expectancy": "0.35",
+        "maxDrawdown": "0.00",
+        "maxRunup": "0.35",
+        "outcomes": {
+          "takeProfit": 0,
+          "stopLoss": 0,
+          "invalidated": 0,
+          "expired": 0,
+          "timeout": 0
+        },
+        "avgBarsInTrade": "22.0",
+        "avgMAE": "0.53",
+        "avgMFE": "0.65",
+        "breakEvenActivations": 1,
+        "trailingActivations": 1,
+        "partialCloses": 0,
+        "timeouts": 0,
+        "breakEvenRate": "100.0",
+        "trailingRate": "100.0",
+        "partialCloseRate": "0.0",
+        "timeoutRate": "0.0"
+      }
+    },
+    {
+      "symbol": "ADAUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [
+        {
+          "signal": {
+            "type": "SELL",
+            "direction": "bearish",
+            "entry": 0.8362,
+            "stopLoss": 0.9108,
+            "takeProfit": 0.6480971428571429,
+            "riskReward": 2.521486020681731,
+            "confidence": "premium",
+            "takeProfitLevels": {
+              "tp1": 0.7616,
+              "tp2": 0.6480971428571429,
+              "tp3": 0.6124,
+              "allocations": {
+                "tp1": 0.5,
+                "tp2": 0.3,
+                "tp3": 0.2
+              },
+              "riskRewards": {
+                "tp1": 1,
+                "tp2": 2.521486020681731,
+                "tp3": 3
+              }
+            },
+            "patterns": [
+              "FVG (Unfilled)",
+              "Order Block",
+              "Breaker Block"
+            ],
+            "timestamp": "2025-05-13T20:00:00.000Z",
+            "patternDetails": {
+              "fvg": {
+                "type": "bearish",
+                "index": 3,
+                "top": 0.6389,
+                "bottom": 0.6376,
+                "gap": 0.0013000000000000789,
+                "gapPercent": 0.002038895859473148,
+                "timestamp": "2025-03-01T12:00:00.000Z",
+                "mitigated": false,
+                "fillPercentage": 0,
+                "touchCount": 0,
+                "strength": "strong"
+              },
+              "orderBlock": {
+                "type": "breakerBlock",
+                "index": 443,
+                "top": 0.8362,
+                "bottom": 0.8246,
+                "timestamp": "2025-05-13T20:00:00.000Z",
+                "candle": {
+                  "openTime": 1747166400000,
+                  "open": 0.8347,
+                  "high": 0.8362,
+                  "low": 0.8246,
+                  "close": 0.8299,
+                  "volume": 22804823.9,
+                  "closeTime": 1747180799999,
+                  "timestamp": "2025-05-13T20:00:00.000Z"
+                },
+                "strength": 0.5335920446276934,
+                "impulseCandle": {
+                  "openTime": 1747224000000,
+                  "open": 0.8209,
+                  "high": 0.829,
+                  "low": 0.798,
+                  "close": 0.8074,
+                  "volume": 34038968.6,
+                  "closeTime": 1747238399999,
+                  "timestamp": "2025-05-14T12:00:00.000Z"
+                },
+                "originalType": "bullish",
+                "polarityChange": "support_to_resistance",
+                "breakCandle": {
+                  "openTime": 1747180800000,
+                  "open": 0.83,
+                  "high": 0.8337,
+                  "low": 0.8124,
+                  "close": 0.8168,
+                  "volume": 22620198.3,
+                  "closeTime": 1747195199999,
+                  "timestamp": "2025-05-14T00:00:00.000Z"
+                },
+                "breakTimestamp": "2025-05-14T00:00:00.000Z",
+                "priority": "high",
+                "description": "Failed bullish OB, now resistance"
+              },
+              "liquiditySweep": null,
+              "bms": null
+            },
+            "confluenceReason": "Confluence Score: 125/145 (PREMIUM)",
+            "riskRewardBreakdown": {
+              "entry": 0.8362,
+              "stopLoss": 0.9108,
+              "takeProfit": 0.6480971428571429,
+              "riskAmount": 0.0746,
+              "rewardAmount": 0.18810285714285713,
+              "ratio": 2.521486020681731,
+              "stopLossDistance": "8.92%",
+              "takeProfitDistance": "22.49%",
+              "reasoning": "Stop loss above OB with 0.07460000 buffer"
+            },
+            "premiumDiscount": {
+              "zone": "premium",
+              "percentage": 73.4,
+              "inCorrectZone": true,
+              "equilibrium": 0.7596499999999999,
+              "range": 0.20929999999999993
+            },
+            "ote": null,
+            "structureAnalysis": {
+              "chochDetected": false,
+              "bosType": null,
+              "bmsDetected": false,
+              "bmsType": null,
+              "chochEvents": [],
+              "bosEvents": []
+            },
+            "liquidityAnalysis": {
+              "externalLiquidity": {
+                "type": "external",
+                "direction": "buy-side",
+                "price": 0.6449,
+                "touchCount": 2,
+                "strength": "moderate",
+                "swings": [
+                  {
+                    "index": 9,
+                    "price": 0.645,
+                    "timestamp": "2025-03-02T12:00:00.000Z",
+                    "candle": {
+                      "openTime": 1740916800000,
+                      "open": 0.6629,
+                      "high": 0.8994,
+                      "low": 0.645,
+                      "close": 0.8659,
+                      "volume": 335825728.5,
+                      "closeTime": 1740931199999,
+                      "timestamp": "2025-03-02T12:00:00.000Z"
+                    }
+                  },
+                  {
+                    "index": 213,
+                    "price": 0.6448,
+                    "timestamp": "2025-04-05T12:00:00.000Z",
+                    "candle": {
+                      "openTime": 1743854400000,
+                      "open": 0.6612,
+                      "high": 0.6627,
+                      "low": 0.6448,
+                      "close": 0.6478,
+                      "volume": 11925074,
+                      "closeTime": 1743868799999,
+                      "timestamp": "2025-04-05T12:00:00.000Z"
+                    }
+                  }
+                ]
+              },
+              "sweepDetected": false,
+              "inducementDetected": false,
+              "inducementType": null,
+              "inducementLevel": null,
+              "inducementPosition": null,
+              "inducementStrength": null,
+              "inducementDistance": null,
+              "inducementDistanceATR": null,
+              "inducementDetails": null,
+              "totalInducementsDetected": 1,
+              "allInducements": [
+                {
+                  "type": "inducement"
+                }
+              ]
+            },
+            "fvgStatus": {
+              "detected": true,
+              "mitigationStatus": "unfilled",
+              "fillPercentage": 0,
+              "strength": "strong"
+            },
+            "orderBlockDetails": {
+              "type": "breakerBlock",
+              "top": 0.8362,
+              "bottom": 0.8246,
+              "strength": 0.5335920446276934,
+              "polarityChange": true
+            },
+            "volumeAnalysis": {
+              "confirmation": "strong",
+              "avgVolume": 21857600,
+              "currentVolume": 41171510,
+              "volumeRatio": 1.88,
+              "climaxDetected": false,
+              "divergence": false,
+              "volumeTrend": "increasing",
+              "details": {
+                "highVolume": true,
+                "lowVolume": false,
+                "climaxWarning": null
+              }
+            },
+            "entryTiming": {
+              "status": "ob_retest",
+              "bosConfirmed": false,
+              "confirmationType": "OB_RETEST",
+              "hasRejectionBonus": false,
+              "requiresExtraConfluence": true
+            },
+            "confluenceScore": 125,
+            "riskManagement": {
+              "stopLossReasoning": "Above OB with 0.07460000 buffer",
+              "takeProfitReasoning": "Targeting buy-side liquidity at 0.64490000",
+              "atrBuffer": 0.07459999999999997,
+              "maxRiskPercent": 3
+            },
+            "scalpingConfig": {
+              "trailingStopEnabled": true,
+              "partialCloseEnabled": true,
+              "breakEvenR": 0.3,
+              "trailingStartR": 0.5,
+              "trailingDistanceR": 0.3,
+              "partialCloseR": 0.8,
+              "partialClosePercent": 50
+            },
+            "htfTrend": "bullish",
+            "mtfConsensus": null,
+            "htfAlignment": {
+              "hasHTFOB": true,
+              "hasHTFFVG": false,
+              "hasHTFZone": true,
+              "hasHTFStructure": false,
+              "htfTimeframe": "1d"
+            },
+            "volatilityState": {
+              "multiplier": 2.5,
+              "volatilityState": "normal",
+              "reason": "Normal volatility - standard stops (2.5 ATR)",
+              "volatilityRatio": "0.89"
+            },
+            "correlationAnalysis": {
+              "group": "Layer-1-Alts",
+              "correlatedPairs": [
+                "SOLUSDT",
+                "AVAXUSDT",
+                "DOTUSDT",
+                "ATOMUSDT",
+                "NEARUSDT",
+                "ALGOUSDT"
+              ],
+              "riskLevel": "high",
+              "description": "Layer-1 blockchain platforms (high correlation during market moves)",
+              "warningMessage": "⚠️ HIGH CORRELATION: Use caution with Layer-1-Alts positions"
+            },
+            "marketRegime": {
+              "regime": "STRONG_TREND",
+              "adx": 27.5,
+              "bbWidthPercent": 16.34,
+              "action": "AGGRESSIVE",
+              "message": "Strong trend - maximize position and let it run"
+            }
+          },
+          "entry": 0.8362,
+          "stopLoss": 0.9108,
+          "takeProfit": 0.6480971428571429,
+          "type": "SELL",
+          "direction": "SELL",
+          "htfTrend": "bullish",
+          "mtfConsensus": "unknown",
+          "result": "TRAILING_STOP_WIN",
+          "exitPrice": 0.7899799999999999,
+          "exitTime": "2025-05-15T04:00:00.000Z",
+          "pnlPercent": 5.527385792872536,
+          "pnlR": 0.30978552278820476,
+          "barsInTrade": 8,
+          "maxAdverseExcursion": 0,
+          "maxFavorableExcursion": 0.9423592493297591,
+          "invalidated": false,
+          "invalidationReason": null,
+          "breakEvenActivated": true,
+          "trailingActivated": true,
+          "partialCloseExecuted": true,
+          "timedOut": false,
+          "signalTime": "2025-05-13T20:00:00.000Z",
+          "signalIndex": 1593
+        }
+      ],
+      "metrics": {
+        "totalTrades": 1,
+        "wins": 1,
+        "losses": 0,
+        "winRate": "100.0",
+        "avgWinR": "0.31",
+        "avgLossR": "0.00",
+        "avgR": "0.31",
+        "profitFactor": "Infinity",
+        "expectancy": "0.31",
+        "maxDrawdown": "0.00",
+        "maxRunup": "0.31",
+        "outcomes": {
+          "takeProfit": 0,
+          "stopLoss": 0,
+          "invalidated": 0,
+          "expired": 0,
+          "timeout": 0
+        },
+        "avgBarsInTrade": "8.0",
+        "avgMAE": "0.00",
+        "avgMFE": "0.94",
+        "breakEvenActivations": 1,
+        "trailingActivations": 1,
+        "partialCloses": 1,
+        "timeouts": 0,
+        "breakEvenRate": "100.0",
+        "trailingRate": "100.0",
+        "partialCloseRate": "100.0",
+        "timeoutRate": "0.0"
+      }
+    }
+  ],
+  "combinedMetrics": {
+    "totalTrades": 7,
+    "winningTrades": 6,
+    "losingTrades": 0,
+    "winRate": 85.71428571428571,
+    "avgProfit": 0.23857142857142857,
+    "profitFactor": 999,
+    "maxDrawdown": 0
+  }
+}

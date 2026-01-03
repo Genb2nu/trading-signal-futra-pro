@@ -1,0 +1,142 @@
+{
+  "version": "2.0-MTF",
+  "startDate": "2025-12-26T16:28:53.012Z",
+  "signals": [
+    {
+      "id": "BTCUSDT_1766767139673",
+      "symbol": "BTCUSDT",
+      "type": "BUY",
+      "direction": "bullish",
+      "entry": 87300,
+      "stopLoss": 84476,
+      "takeProfit": 92947,
+      "riskReward": 2,
+      "confidence": "premium",
+      "confluenceScore": 110,
+      "patterns": [
+        "FVG",
+        "Order Block",
+        "HTF OB Alignment"
+      ],
+      "timestamp": "2025-12-26T16:38:59.670Z",
+      "status": "CLOSED",
+      "outcome": "WIN",
+      "closedAt": "2025-12-26T16:39:03.679Z",
+      "pnlR": 2,
+      "actualRR": 2,
+      "notes": "Clean TP hit, exactly as planned"
+    },
+    {
+      "id": "ETHUSDT_1766767146685",
+      "symbol": "ETHUSDT",
+      "type": "SELL",
+      "direction": "bearish",
+      "entry": 3250,
+      "stopLoss": 3340,
+      "takeProfit": 3070,
+      "riskReward": 2,
+      "confidence": "high",
+      "confluenceScore": 95,
+      "patterns": [
+        "FVG",
+        "Liquidity Sweep",
+        "BOS"
+      ],
+      "timestamp": "2025-12-26T16:39:06.683Z",
+      "status": "CLOSED",
+      "outcome": "WIN",
+      "closedAt": "2025-12-26T16:39:08.690Z",
+      "pnlR": 2,
+      "actualRR": 2,
+      "notes": "Strong bearish momentum, TP easily reached"
+    },
+    {
+      "id": "BNBUSDT_1766767151697",
+      "symbol": "BNBUSDT",
+      "type": "BUY",
+      "direction": "bullish",
+      "entry": 612,
+      "stopLoss": 600,
+      "takeProfit": 636,
+      "riskReward": 2,
+      "confidence": "standard",
+      "confluenceScore": 75,
+      "patterns": [
+        "Order Block",
+        "Valid Zone"
+      ],
+      "timestamp": "2025-12-26T16:39:11.695Z",
+      "status": "CLOSED",
+      "outcome": "LOSS",
+      "closedAt": "2025-12-26T16:39:13.703Z",
+      "pnlR": -1,
+      "actualRR": -1,
+      "notes": "Market moved against us, SL hit"
+    },
+    {
+      "id": "SOLUSDT_1766767156710",
+      "symbol": "SOLUSDT",
+      "type": "BUY",
+      "direction": "bullish",
+      "entry": 198,
+      "stopLoss": 192,
+      "takeProfit": 210,
+      "riskReward": 2,
+      "confidence": "premium",
+      "confluenceScore": 125,
+      "patterns": [
+        "FVG",
+        "Order Block",
+        "HTF OB",
+        "HTF FVG",
+        "HTF Zone"
+      ],
+      "timestamp": "2025-12-26T16:39:16.708Z",
+      "status": "CLOSED",
+      "outcome": "WIN",
+      "closedAt": "2025-12-26T16:39:18.718Z",
+      "pnlR": 2,
+      "actualRR": 2,
+      "notes": "Perfect HTF alignment, strong winner"
+    },
+    {
+      "id": "ADAUSDT_1766767161726",
+      "symbol": "ADAUSDT",
+      "type": "SELL",
+      "direction": "bearish",
+      "entry": 0.95,
+      "stopLoss": 0.975,
+      "takeProfit": 0.9,
+      "riskReward": 2,
+      "confidence": "premium",
+      "confluenceScore": 115,
+      "patterns": [
+        "FVG",
+        "Breaker Block",
+        "HTF Structure"
+      ],
+      "timestamp": "2025-12-26T16:39:21.723Z",
+      "status": "CLOSED",
+      "outcome": "WIN",
+      "closedAt": "2025-12-26T16:39:23.732Z",
+      "pnlR": 2,
+      "actualRR": 2,
+      "notes": "HTF structure alignment confirmed, clean winner"
+    }
+  ],
+  "stats": {
+    "totalSignals": 5,
+    "closedSignals": 5,
+    "activeSignals": 0,
+    "wins": 4,
+    "losses": 1,
+    "breakeven": 0,
+    "winRate": 80,
+    "avgRMultiple": 1.4,
+    "totalProfitR": 8,
+    "totalLossR": -1,
+    "netProfitR": 7,
+    "profitFactor": 8,
+    "expectancy": 1.4
+  }
+}

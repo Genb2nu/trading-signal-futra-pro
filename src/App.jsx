@@ -3,6 +3,7 @@ import SignalTracker from './SignalTracker';
 import Settings from './Settings';
 import TrackedSignals from './TrackedSignals';
 import LiveTrading from './LiveTrading';
+import BacktestResults from './BacktestResults';
 import notificationService from './services/notificationService';
 
 function App() {
@@ -40,6 +41,12 @@ function App() {
           Paper Trading
         </button>
         <button
+          className={`nav-link ${currentPage === 'backtest' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('backtest')}
+        >
+          Backtest Results
+        </button>
+        <button
           className={`nav-link ${currentPage === 'settings' ? 'active' : ''}`}
           onClick={() => setCurrentPage('settings')}
         >
@@ -55,6 +62,9 @@ function App() {
       </div>
       <div style={{ display: currentPage === 'live' ? 'block' : 'none' }}>
         <LiveTrading />
+      </div>
+      <div style={{ display: currentPage === 'backtest' ? 'block' : 'none' }}>
+        <BacktestResults />
       </div>
       <div style={{ display: currentPage === 'settings' ? 'block' : 'none' }}>
         <Settings />

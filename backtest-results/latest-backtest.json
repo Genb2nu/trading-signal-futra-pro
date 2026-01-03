@@ -1,0 +1,68 @@
+{
+  "id": "2026-01-03_ultra_4h",
+  "timestamp": "2026-01-03T04:55:54.687Z",
+  "mode": "ULTRA",
+  "timeframe": "4h",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "SOLUSDT",
+    "ADAUSDT"
+  ],
+  "results": [
+    {
+      "symbol": "BTCUSDT",
+      "error": "Cannot read properties of undefined (reading '5m')",
+      "trades": [],
+      "metrics": null
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "candleCount": 3000,
+      "lookforward": 100,
+      "trades": [],
+      "metrics": {
+        "totalTrades": 0,
+        "wins": 0,
+        "losses": 0,
+        "winRate": 0,
+        "avgWinR": 0,
+        "avgLossR": 0,
+        "avgR": 0,
+        "profitFactor": 0,
+        "expectancy": 0,
+        "maxDrawdown": 0,
+        "maxRunup": 0
+      }
+    },
+    {
+      "symbol": "BNBUSDT",
+      "error": "Cannot read properties of undefined (reading '5m')",
+      "trades": [],
+      "metrics": null
+    },
+    {
+      "symbol": "SOLUSDT",
+      "error": "Cannot read properties of undefined (reading '5m')",
+      "trades": [],
+      "metrics": null
+    },
+    {
+      "symbol": "ADAUSDT",
+      "error": "Cannot read properties of undefined (reading '5m')",
+      "trades": [],
+      "metrics": null
+    }
+  ],
+  "combinedMetrics": {
+    "totalTrades": 0,
+    "winningTrades": 0,
+    "losingTrades": 0,
+    "winRate": 0,
+    "avgProfit": 0,
+    "profitFactor": 0,
+    "maxDrawdown": 0
+  }
+}

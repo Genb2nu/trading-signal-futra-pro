@@ -47,6 +47,88 @@ export async function getBinanceKlines(symbol, interval, limit = 500) {
 }
 
 /**
+ * Fetches extended kline data from Binance (more than 1000 candles)
+ * Makes multiple API calls and merges results
+ * @param {string} symbol - Trading pair symbol (e.g., 'BTCUSDT')
+ * @param {string} interval - Timeframe (1m, 5m, 15m, 1h, 4h, 1d, 1w, 1M)
+ * @param {number} totalCandles - Total number of candles to fetch (e.g., 2000, 3000)
+ * @returns {Promise<Array>} Array of kline objects
+ */
+export async function getBinanceKlinesExtended(symbol, interval, totalCandles) {
+  try {
+    const allCandles = [];
+    const batchSize = 1000; // Max per API call
+    const batches = Math.ceil(totalCandles / batchSize);
+
+    // Get timeframe in milliseconds
+    const intervalMs = {
+      '1m': 60 * 1000,
+      '5m': 5 * 60 * 1000,
+      '15m': 15 * 60 * 1000,
+      '1h': 60 * 60 * 1000,
+      '4h': 4 * 60 * 60 * 1000,
+      '1d': 24 * 60 * 60 * 1000,
+      '1w': 7 * 24 * 60 * 60 * 1000,
+      '1M': 30 * 24 * 60 * 60 * 1000
+    }[interval];
+
+    if (!intervalMs) {
+      throw new Error(`Invalid interval: ${interval}`);
+    }
+
+    // Fetch in reverse chronological order (newest first)
+    let endTime = Date.now();
+
+    for (let i = 0; i < batches; i++) {
+      const limit = Math.min(batchSize, totalCandles - allCandles.length);
+
+      const url = `${BINANCE_API_URL}/v3/klines`;
+      const params = {
+        symbol,
+        interval,
+        limit,
+        endTime
+      };
+
+      const response = await axios.get(url, { params });
+      const batch = response.data.map(candle => ({
+        openTime: candle[0],
+        open: parseFloat(candle[1]),
+        high: parseFloat(candle[2]),
+        low: parseFloat(candle[3]),
+        close: parseFloat(candle[4]),
+        volume: parseFloat(candle[5]),
+        closeTime: candle[6],
+        timestamp: new Date(candle[0]).toISOString()
+      }));
+
+      // Add to beginning (we're going backwards in time)
+      allCandles.unshift(...batch);
+
+      // Update endTime to fetch earlier data in next iteration
+      if (batch.length > 0) {
+        endTime = batch[0].openTime - 1;
+      }
+
+      // Small delay to avoid rate limiting
+      if (i < batches - 1) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      // Stop if we got less than requested (reached earliest available data)
+      if (batch.length < limit) {
+        break;
+      }
+    }
+
+    return allCandles.slice(-totalCandles); // Return only the requested amount
+  } catch (error) {
+    console.error(`Error fetching extended klines for ${symbol}:`, error.message);
+    throw new Error(`Failed to fetch extended klines for ${symbol}: ${error.message}`);
+  }
+}
+
+/**
  * Fetches all available trading pairs from Binance
  * @returns {Promise<Object>} Exchange info with all symbols
  */

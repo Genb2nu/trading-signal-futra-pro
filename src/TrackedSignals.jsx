@@ -8,6 +8,40 @@ function TrackedSignals() {
   const [statistics, setStatistics] = useState(null);
   const [selectedSignal, setSelectedSignal] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leverage, setLeverage] = useState(20); // Default 20x leverage
+
+  // Load leverage from settings
+  useEffect(() => {
+    const loadLeverage = () => {
+      try {
+        const savedSettings = localStorage.getItem('smcSettings');
+        if (savedSettings) {
+          const settings = JSON.parse(savedSettings);
+          if (settings.leverage) {
+            setLeverage(settings.leverage);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading leverage:', error);
+      }
+    };
+    loadLeverage();
+  }, []);
+
+  // Handle leverage change
+  const handleLeverageChange = (newLeverage) => {
+    setLeverage(newLeverage);
+
+    // Save to localStorage
+    try {
+      const savedSettings = localStorage.getItem('smcSettings');
+      const settings = savedSettings ? JSON.parse(savedSettings) : {};
+      settings.leverage = newLeverage;
+      localStorage.setItem('smcSettings', JSON.stringify(settings));
+    } catch (error) {
+      console.error('Error saving leverage:', error);
+    }
+  };
 
   // Load signals on mount and set up refresh interval
   useEffect(() => {
@@ -76,12 +110,20 @@ function TrackedSignals() {
         pnlPercent = ((entryPrice - currentPrice) / entryPrice) * 100;
       }
 
+      // Calculate leveraged P&L
+      const leveragedPnL = pnlPercent * leverage;
+
+      // Check for liquidation (loss >= 100% with leverage)
+      const isLiquidated = leveragedPnL <= -100;
+
       return {
         percent: Math.abs((currentPrice - entryPrice) / entryPrice) * 100,
         isReady: false,
         isApproaching: false,
         entryHit: true,
         pnlPercent: pnlPercent,
+        leveragedPnL: leveragedPnL,
+        isLiquidated: isLiquidated,
         inProfit: pnlPercent > 0.1,
         inLoss: pnlPercent < -0.1,
         atBreakeven: Math.abs(pnlPercent) <= 0.1
@@ -106,16 +148,34 @@ function TrackedSignals() {
 
     // If entry was hit, show P&L status
     if (distance.entryHit) {
+      // Check for liquidation first
+      if (distance.isLiquidated) {
+        return (
+          <span className="badge" style={{
+            background: '#1f2937',
+            color: '#ef4444',
+            fontWeight: 'bold',
+            border: '2px solid #ef4444'
+          }} title={`Liquidated at ${leverage}x leverage: ${distance.leveragedPnL.toFixed(2)}%`}>
+            💀 LIQUIDATED {distance.leveragedPnL.toFixed(1)}%
+          </span>
+        );
+      }
+
       if (distance.inProfit) {
         return (
-          <span className="badge badge-success" title={`In profit: +${distance.pnlPercent.toFixed(2)}%`}>
-            💰 IN PROFIT +{distance.pnlPercent.toFixed(2)}%
+          <span className="badge badge-success" title={`Spot: +${distance.pnlPercent.toFixed(2)}% | ${leverage}x: +${distance.leveragedPnL.toFixed(2)}%`}>
+            💰 +{distance.leveragedPnL.toFixed(2)}% ({leverage}x)
           </span>
         );
       } else if (distance.inLoss) {
+        const isNearLiquidation = distance.leveragedPnL <= -80;
         return (
-          <span className="badge badge-danger" title={`In loss: ${distance.pnlPercent.toFixed(2)}%`}>
-            📉 IN LOSS {distance.pnlPercent.toFixed(2)}%
+          <span className="badge badge-danger" style={{
+            background: isNearLiquidation ? '#7f1d1d' : undefined,
+            animation: isNearLiquidation ? 'pulse 1s infinite' : undefined
+          }} title={`Spot: ${distance.pnlPercent.toFixed(2)}% | ${leverage}x: ${distance.leveragedPnL.toFixed(2)}%`}>
+            {isNearLiquidation ? '⚠️ ' : '📉 '}{distance.leveragedPnL.toFixed(2)}% ({leverage}x)
           </span>
         );
       } else {
@@ -172,6 +232,98 @@ function TrackedSignals() {
 
   return (
     <div>
+      {/* Leverage Selector */}
+      <div className="card" style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h3 style={{ margin: '0 0 8px 0', color: '#1f2937', fontSize: '18px', fontWeight: '600' }}>
+              ⚡ Paper Trading Leverage
+            </h3>
+            <p style={{ margin: 0, fontSize: '13px', color: '#6b7280' }}>
+              Multiplies your P&L by the selected leverage. Higher leverage = higher risk!
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <select
+              value={leverage}
+              onChange={(e) => handleLeverageChange(parseInt(e.target.value))}
+              style={{
+                padding: '12px 20px',
+                fontSize: '16px',
+                fontWeight: '700',
+                borderRadius: '8px',
+                border: `3px solid ${leverage === 20 ? '#3b82f6' : leverage === 50 ? '#f59e0b' : '#ef4444'}`,
+                background: leverage === 20 ? '#dbeafe' : leverage === 50 ? '#fef3c7' : '#fee2e2',
+                color: leverage === 20 ? '#1e40af' : leverage === 50 ? '#92400e' : '#991b1b',
+                cursor: 'pointer',
+                outline: 'none',
+                minWidth: '200px'
+              }}
+            >
+              <option value="20">20x Leverage (Moderate)</option>
+              <option value="50">50x Leverage (Aggressive)</option>
+              <option value="100">100x Leverage (Extreme)</option>
+            </select>
+
+            <div style={{
+              padding: '12px 20px',
+              borderRadius: '8px',
+              background: leverage === 20 ? '#dbeafe' : leverage === 50 ? '#fef3c7' : '#fee2e2',
+              border: `3px solid ${leverage === 20 ? '#3b82f6' : leverage === 50 ? '#f59e0b' : '#ef4444'}`,
+              minWidth: '120px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px' }}>
+                Current
+              </div>
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: leverage === 20 ? '#1e40af' : leverage === 50 ? '#92400e' : '#991b1b'
+              }}>
+                {leverage}x
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Warning message for high leverage */}
+        {leverage >= 50 && (
+          <div style={{
+            marginTop: '16px',
+            padding: '12px 16px',
+            background: leverage === 100 ? '#fee2e2' : '#fef3c7',
+            borderLeft: `4px solid ${leverage === 100 ? '#ef4444' : '#f59e0b'}`,
+            borderRadius: '6px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: leverage === 100 ? '#991b1b' : '#92400e',
+              fontSize: '13px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '18px' }}>⚠️</span>
+              <span>
+                {leverage === 100 ?
+                  'EXTREME RISK: A 1% adverse move will liquidate your position!' :
+                  'HIGH RISK: Small adverse moves can result in large losses!'
+                }
+              </span>
+            </div>
+            <div style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: '#6b7280'
+            }}>
+              Example: A {leverage === 100 ? '1%' : '2%'} price movement = {leverage === 100 ? '100%' : '100%'} P&L change
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Statistics Summary */}
       {statistics && (statistics.completedSignals > 0 || statistics.activeSignals > 0) && (
         <div className="card" style={{ marginBottom: '20px' }}>
@@ -314,6 +466,7 @@ function TrackedSignals() {
                   <th>Stop Loss</th>
                   <th>Take Profit</th>
                   <th>R:R</th>
+                  <th>Confluence</th>
                   <th>Tracked Since</th>
                   <th>Actions</th>
                 </tr>
@@ -393,6 +546,18 @@ function TrackedSignals() {
                       <td>{signal.stopLoss}</td>
                       <td>{signal.takeProfit}</td>
                       <td>{signal.riskReward}</td>
+                      <td>
+                        <span style={{
+                          background: signal.confluenceScore >= 100 ? '#dbeafe' : '#f3f4f6',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          color: signal.confluenceScore >= 100 ? '#1e40af' : '#6b7280'
+                        }}>
+                          {signal.confluenceScore || 0}/145
+                        </span>
+                      </td>
                       <td style={{ fontSize: '12px', color: '#6b7280' }}>
                         {new Date(signal.trackedAt).toLocaleString()}
                       </td>

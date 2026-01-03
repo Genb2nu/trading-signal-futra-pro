@@ -357,6 +357,61 @@ class NotificationService {
   }
 
   /**
+   * Notify about new signals discovered during scan
+   * NEW FEATURE: Alert user immediately when signals are found
+   */
+  async notifyNewSignalsFound(newSignals) {
+    // Request permission if not granted
+    if (this.permission !== 'granted') {
+      const granted = await this.requestPermission();
+      if (!granted) {
+        console.warn('Cannot notify - notification permission denied');
+        return;
+      }
+    }
+
+    if (newSignals.length === 0) return;
+
+    // Play sound first for immediate attention
+    this.playNotificationSound();
+
+    // Show notification for each new signal (max 3 to avoid spam)
+    const signalsToNotify = newSignals.slice(0, 3);
+
+    for (const signal of signalsToNotify) {
+      const title = `🚨 NEW SIGNAL: ${signal.symbol}`;
+      const body = `${signal.direction?.toUpperCase() || 'LONG'} Signal Found!\n` +
+                   `Timeframe: ${signal.timeframe}\n` +
+                   `Entry: ${signal.entry}\n` +
+                   `Confidence: ${signal.confidence?.toUpperCase() || 'STANDARD'}\n` +
+                   `Confluence: ${signal.confluenceScore || 0}\n` +
+                   `R:R: ${signal.riskReward || 'N/A'}`;
+
+      this.showNotification(title, {
+        body,
+        tag: `new-signal-${signal.symbol}-${Date.now()}`,
+        requireInteraction: true,
+        data: { signal }
+      });
+    }
+
+    // If more than 3 signals, show summary notification
+    if (newSignals.length > 3) {
+      const title = `🎯 ${newSignals.length} NEW SIGNALS FOUND!`;
+      const symbolsList = newSignals.map(s => s.symbol).join(', ');
+      const body = `Check the Signal Tracker for all signals:\n${symbolsList}`;
+
+      this.showNotification(title, {
+        body,
+        tag: `new-signals-summary-${Date.now()}`,
+        requireInteraction: true
+      });
+    }
+
+    console.log(`🔔 NEW SIGNAL NOTIFICATIONS SENT: ${newSignals.length} signals`);
+  }
+
+  /**
    * Play notification sound
    */
   playNotificationSound() {

@@ -31,6 +31,9 @@ function SignalTracker() {
     loadSymbols();
     loadUserSettings();
 
+    // PHASE 12+15 ENHANCEMENT: Initialize notification service
+    notificationService.init();
+
     // Listen for settings updates from Settings page
     const handleSettingsUpdate = (event) => {
       console.log('Settings updated, reloading...', event.detail);
@@ -66,7 +69,25 @@ function SignalTracker() {
       const response = await fetch(`${API_URL}/api/symbols`);
       const data = await response.json();
       setSymbols(data.symbols || []);
-      setSelectedSymbols(data.symbols?.slice(0, 10) || []); // Default first 10
+
+      // Check if user has saved symbol preferences in localStorage
+      const localSettings = localStorage.getItem('smcSettings');
+      if (localSettings) {
+        try {
+          const settings = JSON.parse(localSettings);
+          if (settings.symbols && settings.symbols.length > 0) {
+            setSelectedSymbols(settings.symbols);
+            return;
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage settings:', e);
+        }
+      }
+
+      // DEFAULT: Top 4 performing symbols (100% WR on Conservative 1H)
+      const TOP_4_SYMBOLS = ['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT'];
+      const availableTop4 = TOP_4_SYMBOLS.filter(s => data.symbols?.includes(s));
+      setSelectedSymbols(availableTop4.length > 0 ? availableTop4 : (data.symbols?.slice(0, 10) || []));
     } catch (err) {
       console.error('Error loading symbols:', err);
       setError('Failed to load symbols');
@@ -135,6 +156,21 @@ function SignalTracker() {
       if (data.success) {
         // Replace existing signals for same symbols with new signals
         const newSignals = data.signals || [];
+
+        // PHASE 12+15 ENHANCEMENT: Detect truly NEW signals and notify
+        const existingSignalIds = new Set(
+          signals.map(s => `${s.symbol}_${s.timeframe}_${s.entry}`)
+        );
+
+        const trulyNewSignals = newSignals.filter(s =>
+          !existingSignalIds.has(`${s.symbol}_${s.timeframe}_${s.entry}`)
+        );
+
+        // Notify about new signals found
+        if (trulyNewSignals.length > 0) {
+          console.log(`🚨 ${trulyNewSignals.length} NEW SIGNALS DETECTED!`);
+          notificationService.notifyNewSignalsFound(trulyNewSignals);
+        }
 
         setSignals(prev => {
           // Add scanTime to each new signal
@@ -275,6 +311,65 @@ function SignalTracker() {
 
   return (
     <div>
+      {/* Deployment Configuration Info */}
+      {(() => {
+        const isDeploymentConfig =
+          timeframe === '1h' &&
+          selectedSymbols.length === 4 &&
+          ['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT'].every(s => selectedSymbols.includes(s));
+
+        return (
+          <div
+            style={{
+              marginBottom: '20px',
+              padding: '16px',
+              backgroundColor: isDeploymentConfig ? '#ecfdf5' : '#fef3c7',
+              border: `2px solid ${isDeploymentConfig ? '#10b981' : '#f59e0b'}`,
+              borderRadius: '8px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '1.5rem' }}>
+                {isDeploymentConfig ? '✅' : '💡'}
+              </span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: isDeploymentConfig ? '#065f46' : '#92400e', marginBottom: '4px' }}>
+                  {isDeploymentConfig
+                    ? '🏆 Deployment Configuration Active'
+                    : '💡 Recommended: Use Deployment Configuration'}
+                </div>
+                <div style={{ fontSize: '0.8125rem', color: isDeploymentConfig ? '#047857' : '#78350f' }}>
+                  {isDeploymentConfig
+                    ? 'Conservative mode + 1H timeframe + Top 4 symbols (100% WR, +8.79R in backtest)'
+                    : 'For best results: Select 1H timeframe and Top 4 symbols (AVAX, ADA, DOGE, BTC)'}
+                </div>
+                {!isDeploymentConfig && (
+                  <button
+                    onClick={() => {
+                      setTimeframe('1h');
+                      setSelectedSymbols(['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT']);
+                    }}
+                    style={{
+                      marginTop: '8px',
+                      padding: '6px 12px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Apply Deployment Config
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="card">
         <h2 style={{ marginBottom: '20px', color: '#1f2937' }}>Scan Configuration</h2>
 
@@ -436,7 +531,9 @@ function SignalTracker() {
                     <th>Stop Loss</th>
                     <th>Take Profit</th>
                     <th>R:R</th>
+                    <th>Confluence</th>
                     <th>Confidence</th>
+                    <th>Zone</th>
                     <th>Patterns</th>
                     <th>Detected At</th>
                     <th>Actions</th>
@@ -471,7 +568,20 @@ function SignalTracker() {
                           {signal.symbol}
                         </a>
                       </td>
-                      <td>{signal.timeframe}</td>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <span style={{ fontSize: '13px', fontWeight: '500' }}>{signal.timeframe}</span>
+                          {signal.htfTimeframe && (
+                            <span style={{
+                              fontSize: '10px',
+                              color: '#3b82f6',
+                              fontWeight: '500'
+                            }}>
+                              HTF: {signal.htfTimeframe}
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td>
                         <span className={`badge ${signal.type === 'BUY' ? 'badge-success' : 'badge-danger'}`}>
                           {signal.type}
@@ -499,9 +609,51 @@ function SignalTracker() {
                       <td>{signal.takeProfit}</td>
                       <td>{signal.riskReward}</td>
                       <td>
-                        <span className={`badge ${signal.confidence === 'high' ? 'badge-success' : 'badge-warning'}`}>
-                          {signal.confidence}
+                        <div className="confluence-container">
+                          <div className="confluence-score">
+                            <span style={{
+                              color: signal.confluenceScore >= 85 ? '#f59e0b' :
+                                     signal.confluenceScore >= 60 ? '#059669' : '#6b7280'
+                            }}>
+                              {signal.confluenceScore || 0}
+                            </span>
+                            <span style={{ fontSize: '11px', color: '#9ca3af' }}>/145</span>
+                            {signal.confluenceScore >= 100 && <span title="HTF Aligned">⭐</span>}
+                          </div>
+                          <div className="confluence-bar">
+                            <div
+                              className={`confluence-fill ${
+                                signal.confluenceScore >= 85 ? 'confluence-fill-premium' :
+                                signal.confluenceScore >= 60 ? 'confluence-fill-high' :
+                                'confluence-fill-standard'
+                              }`}
+                              style={{ width: `${Math.min((signal.confluenceScore / 145) * 100, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`badge ${
+                          signal.confidence === 'premium' ? 'badge-premium' :
+                          signal.confidence === 'high' ? 'badge-high' :
+                          'badge-standard'
+                        }`}>
+                          {signal.confidence?.toUpperCase() || 'STANDARD'}
                         </span>
+                      </td>
+                      <td>
+                        {signal.premiumDiscount ? (
+                          <span className={`zone-badge ${
+                            signal.premiumDiscount.zone === 'discount' ? 'zone-badge-discount' :
+                            signal.premiumDiscount.zone === 'premium' ? 'zone-badge-premium' :
+                            'zone-badge-neutral'
+                          }`} title={`${signal.premiumDiscount.percentage?.toFixed(1)}% of range`}>
+                            {signal.premiumDiscount.zone === 'discount' ? 'D' :
+                             signal.premiumDiscount.zone === 'premium' ? 'P' : 'N'}
+                          </span>
+                        ) : (
+                          <span className="zone-badge zone-badge-neutral">N</span>
+                        )}
                       </td>
                       <td style={{ fontSize: '12px' }}>{signal.patternsText}</td>
                       <td style={{ fontSize: '12px' }}>

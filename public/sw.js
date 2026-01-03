@@ -1,5 +1,5 @@
 // Service Worker for Futra Pro PWA
-const CACHE_NAME = 'futra-pro-v2'; // Updated for new icons
+const CACHE_NAME = 'futra-pro-v4'; // Force cache refresh for SNIPER mode
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -18,8 +18,19 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        console.log('Opened cache:', CACHE_NAME);
+        // Try to cache all resources, but don't fail if some are missing
+        return Promise.allSettled(
+          urlsToCache.map(url =>
+            cache.add(url).catch(err => {
+              console.warn(`Failed to cache ${url}:`, err.message);
+              return null;
+            })
+          )
+        );
+      })
+      .catch((err) => {
+        console.error('Cache open failed:', err);
       })
   );
   self.skipWaiting();
@@ -27,6 +38,17 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  // Skip caching for API calls - always fetch fresh
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request).catch(() => {
+      return new Response(JSON.stringify({ error: 'Network error' }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }));
+    return;
+  }
+
+  // For static assets, use cache-first strategy
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -34,9 +56,38 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+
+        // Not in cache - fetch from network
+        return fetch(event.request)
+          .then((fetchResponse) => {
+            // Check if valid response
+            if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type === 'error') {
+              return fetchResponse;
+            }
+
+            // Clone the response (can only be consumed once)
+            const responseToCache = fetchResponse.clone();
+
+            // Cache the fetched response for future use
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+
+            return fetchResponse;
+          })
+          .catch((error) => {
+            console.error('Fetch failed:', error);
+            // Return a fallback response for failed fetches
+            return new Response('Offline - content not available', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
+          });
+      })
   );
 });
 

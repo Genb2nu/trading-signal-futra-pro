@@ -5,6 +5,7 @@
 
 import { getBinanceKlines } from './binanceClient.js';
 import { analyzeSMC } from '../shared/smcDetectors.js';
+import { getHTFTimeframe } from '../shared/strategyConfig.js';
 
 /**
  * Scans a single symbol for SMC signals (client-side)
@@ -125,7 +126,12 @@ export function formatSignalsForDisplay(scanResults) {
         entryTiming: signal.entryTiming,
         confluenceScore: signal.confluenceScore,
         riskManagement: signal.riskManagement,
-        details: signal
+        details: signal,
+        // HTF METADATA (for UI display)
+        htfTimeframe: getHTFTimeframe(result.timeframe),
+        isHTFAligned: signal.confluenceScore >= 100,
+        confluenceMax: 145, // Maximum possible confluence score with HTF
+        htfAlignment: signal.htfAlignment || null
       });
     }
   }

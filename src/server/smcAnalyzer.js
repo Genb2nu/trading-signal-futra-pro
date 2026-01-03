@@ -1,5 +1,6 @@
 import { getBinanceKlines } from './binanceService.js';
 import { analyzeSMC } from '../shared/smcDetectors.js';
+import { getHTFTimeframe } from '../shared/strategyConfig.js';
 
 /**
  * Scans a single symbol for SMC signals
@@ -12,17 +13,25 @@ export async function scanSymbol(symbol, timeframe) {
     // Fetch kline data - increased for better pattern detection
     const candles = await getBinanceKlines(symbol, timeframe, 1000);
 
-    // Fetch higher timeframe for multi-timeframe confirmation
+    // Fetch multiple higher timeframes for trend confluence (user's methodology)
+    // For 15m: Check BOTH 1h AND 4h to confirm trend direction
     let htfCandles = null;
+    let htf2Candles = null; // Second higher timeframe for 15m
+
     try {
-      const htfTimeframe = timeframe === '1h' ? '4h' : timeframe === '4h' ? '1d' : '1d';
+      const htfTimeframe = getHTFTimeframe(timeframe);
       htfCandles = await getBinanceKlines(symbol, htfTimeframe, 500);
+
+      // For 15m trading: Also fetch 4h for double confirmation (user's approach)
+      if (timeframe === '15m') {
+        htf2Candles = await getBinanceKlines(symbol, '4h', 300);
+      }
     } catch (error) {
       console.log(`Could not fetch HTF for ${symbol}, using single timeframe`);
     }
 
-    // Run SMC analysis with multi-timeframe confirmation
-    const analysis = analyzeSMC(candles, htfCandles);
+    // Run SMC analysis with multi-timeframe confirmation (PHASE 16: Pass symbol for correlation)
+    const analysis = analyzeSMC(candles, htfCandles, timeframe, htf2Candles, symbol);
 
     // Return results with symbol and timeframe info
     return {

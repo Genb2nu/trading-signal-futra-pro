@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createChart } from 'lightweight-charts';
 import { getBinanceKlines } from '../services/binanceClient.js';
 
-const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, takeProfit, direction }) => {
+const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, takeProfit, direction, htfData, htfTimeframe, structureAnalysis }) => {
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
   const [loading, setLoading] = useState(true);
@@ -162,67 +162,342 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         candlestickSeries.createPriceLine(stopLossLine);
         candlestickSeries.createPriceLine(takeProfitLine);
 
-        // Draw FVG zone
+        // Draw FVG zone as filled rectangle
         if (patternDetails?.fvg) {
-          const fvgSeries = chart.addLineSeries({
-            color: 'transparent',
-            lineWidth: 0,
-            priceLineVisible: false,
-            lastValueVisible: false,
-          });
-
-          // Create a rectangle for FVG using polygon
           const fvgTop = patternDetails.fvg.top;
           const fvgBottom = patternDetails.fvg.bottom;
+          const fvgTimestamp = patternDetails.fvg.timestamp
+            ? new Date(patternDetails.fvg.timestamp).getTime() / 1000
+            : null;
 
-          // Add price lines to show FVG zone
-          const fvgTopLine = {
+          // Create filled area series for FVG zone
+          const fvgAreaSeries = chart.addLineSeries({
+            color: '#8b5cf6',
+            lineWidth: 2,
+            priceLineVisible: false,
+            lastValueVisible: false,
+            crosshairMarkerVisible: false,
+          });
+
+          // Only draw zone from FVG formation time onwards
+          const fvgTopData = candlestickData
+            .filter(candle => !fvgTimestamp || candle.time >= fvgTimestamp)
+            .map(candle => ({
+              time: candle.time,
+              value: fvgTop
+            }));
+
+          fvgAreaSeries.setData(fvgTopData);
+
+          // Create baseline at bottom price to fill the zone
+          fvgAreaSeries.applyOptions({
+            lineWidth: 0,
+            color: 'transparent',
+            priceFormat: {
+              type: 'price',
+              precision: 8,
+              minMove: 0.00000001,
+            },
+          });
+
+          fvgAreaSeries.createPriceLine({
             price: fvgTop,
             color: '#8b5cf6',
             lineWidth: 1,
             lineStyle: 1, // Dotted
             axisLabelVisible: false,
             title: 'FVG Top',
-          };
+          });
 
-          const fvgBottomLine = {
+          fvgAreaSeries.createPriceLine({
             price: fvgBottom,
             color: '#8b5cf6',
             lineWidth: 1,
             lineStyle: 1, // Dotted
             axisLabelVisible: false,
             title: 'FVG Bottom',
-          };
+          });
 
-          candlestickSeries.createPriceLine(fvgTopLine);
-          candlestickSeries.createPriceLine(fvgBottomLine);
+          // Add shaded area using histogram series
+          const fvgShade = chart.addHistogramSeries({
+            color: 'rgba(139, 92, 246, 0.15)', // Purple with transparency
+            priceFormat: {
+              type: 'price',
+            },
+            priceScaleId: '',
+            lastValueVisible: false,
+          });
+
+          // Create histogram data for the zone (only from FVG formation time)
+          const fvgZoneData = candlestickData
+            .filter(candle => !fvgTimestamp || candle.time >= fvgTimestamp)
+            .map(candle => ({
+              time: candle.time,
+              value: fvgTop,
+              color: 'rgba(139, 92, 246, 0.15)'
+            }));
+
+          fvgShade.setData(fvgZoneData);
+
+          // Set baseline to create filled area
+          fvgShade.applyOptions({
+            baseValue: {
+              type: 'price',
+              price: fvgBottom
+            }
+          });
         }
 
-        // Draw Order Block zone
+        // Draw HTF FVG zones as filled rectangles (if present)
+        if (htfData?.fvgs) {
+          // Draw HTF Bullish FVGs (for bullish signals)
+          if (direction === 'bullish' && htfData.fvgs.bullish && htfData.fvgs.bullish.length > 0) {
+            htfData.fvgs.bullish.slice(0, 3).forEach((fvg, index) => {
+              // Add shaded area for HTF FVG
+              const htfFvgShade = chart.addHistogramSeries({
+                color: 'rgba(34, 197, 94, 0.12)', // Light green with transparency
+                priceFormat: { type: 'price' },
+                priceScaleId: '',
+                lastValueVisible: false,
+              });
+
+              const htfFvgTimestamp = fvg.timestamp
+                ? new Date(fvg.timestamp).getTime() / 1000
+                : null;
+
+              const htfFvgZoneData = candlestickData
+                .filter(candle => !htfFvgTimestamp || candle.time >= htfFvgTimestamp)
+                .map(candle => ({
+                  time: candle.time,
+                  value: fvg.top,
+                  color: 'rgba(34, 197, 94, 0.12)'
+                }));
+
+              htfFvgShade.setData(htfFvgZoneData);
+              htfFvgShade.applyOptions({
+                baseValue: { type: 'price', price: fvg.bottom }
+              });
+
+              // Add border lines
+              candlestickSeries.createPriceLine({
+                price: fvg.top,
+                color: 'rgba(34, 197, 94, 0.6)',
+                lineWidth: 1,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: index === 0 ? 'HTF FVG' : '',
+              });
+
+              candlestickSeries.createPriceLine({
+                price: fvg.bottom,
+                color: 'rgba(34, 197, 94, 0.6)',
+                lineWidth: 1,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: '',
+              });
+            });
+          }
+
+          // Draw HTF Bearish FVGs (for bearish signals)
+          if (direction === 'bearish' && htfData.fvgs.bearish && htfData.fvgs.bearish.length > 0) {
+            htfData.fvgs.bearish.slice(0, 3).forEach((fvg, index) => {
+              // Add shaded area for HTF FVG
+              const htfFvgShade = chart.addHistogramSeries({
+                color: 'rgba(239, 68, 68, 0.12)', // Light red with transparency
+                priceFormat: { type: 'price' },
+                priceScaleId: '',
+                lastValueVisible: false,
+              });
+
+              const htfFvgTimestamp = fvg.timestamp
+                ? new Date(fvg.timestamp).getTime() / 1000
+                : null;
+
+              const htfFvgZoneData = candlestickData
+                .filter(candle => !htfFvgTimestamp || candle.time >= htfFvgTimestamp)
+                .map(candle => ({
+                  time: candle.time,
+                  value: fvg.top,
+                  color: 'rgba(239, 68, 68, 0.12)'
+                }));
+
+              htfFvgShade.setData(htfFvgZoneData);
+              htfFvgShade.applyOptions({
+                baseValue: { type: 'price', price: fvg.bottom }
+              });
+
+              // Add border lines
+              candlestickSeries.createPriceLine({
+                price: fvg.top,
+                color: 'rgba(239, 68, 68, 0.6)',
+                lineWidth: 1,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: index === 0 ? 'HTF FVG' : '',
+              });
+
+              candlestickSeries.createPriceLine({
+                price: fvg.bottom,
+                color: 'rgba(239, 68, 68, 0.6)',
+                lineWidth: 1,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: '',
+              });
+            });
+          }
+        }
+
+        // Draw Order Block zone as filled rectangle
         if (patternDetails?.orderBlock) {
           const obTop = patternDetails.orderBlock.top;
           const obBottom = patternDetails.orderBlock.bottom;
+          const obTimestamp = patternDetails.orderBlock.timestamp
+            ? new Date(patternDetails.orderBlock.timestamp).getTime() / 1000
+            : null;
 
-          const obTopLine = {
+          // Add shaded area for Order Block
+          const obShade = chart.addHistogramSeries({
+            color: 'rgba(236, 72, 153, 0.15)', // Pink with transparency
+            priceFormat: { type: 'price' },
+            priceScaleId: '',
+            lastValueVisible: false,
+          });
+
+          // Only draw zone from Order Block formation time onwards
+          const obZoneData = candlestickData
+            .filter(candle => !obTimestamp || candle.time >= obTimestamp)
+            .map(candle => ({
+              time: candle.time,
+              value: obTop,
+              color: 'rgba(236, 72, 153, 0.15)'
+            }));
+
+          obShade.setData(obZoneData);
+          obShade.applyOptions({
+            baseValue: { type: 'price', price: obBottom }
+          });
+
+          // Add border lines
+          candlestickSeries.createPriceLine({
             price: obTop,
             color: '#ec4899',
             lineWidth: 1,
             lineStyle: 1, // Dotted
             axisLabelVisible: false,
             title: 'OB Top',
-          };
+          });
 
-          const obBottomLine = {
+          candlestickSeries.createPriceLine({
             price: obBottom,
             color: '#ec4899',
             lineWidth: 1,
             lineStyle: 1, // Dotted
             axisLabelVisible: false,
             title: 'OB Bottom',
-          };
+          });
+        }
 
-          candlestickSeries.createPriceLine(obTopLine);
-          candlestickSeries.createPriceLine(obBottomLine);
+        // Draw HTF Order Block zones as filled rectangles (if present)
+        if (htfData?.orderBlocks) {
+          // Draw HTF Bullish Order Blocks (for bullish signals)
+          if (direction === 'bullish' && htfData.orderBlocks.bullish && htfData.orderBlocks.bullish.length > 0) {
+            htfData.orderBlocks.bullish.slice(0, 3).forEach((ob, index) => {
+              // Add shaded area for HTF Order Block
+              const htfOBShade = chart.addHistogramSeries({
+                color: 'rgba(34, 197, 94, 0.1)', // Light green with transparency
+                priceFormat: { type: 'price' },
+                priceScaleId: '',
+                lastValueVisible: false,
+              });
+
+              const htfOBTimestamp = ob.timestamp
+                ? new Date(ob.timestamp).getTime() / 1000
+                : null;
+
+              const htfOBZoneData = candlestickData
+                .filter(candle => !htfOBTimestamp || candle.time >= htfOBTimestamp)
+                .map(candle => ({
+                  time: candle.time,
+                  value: ob.top,
+                  color: 'rgba(34, 197, 94, 0.1)'
+                }));
+
+              htfOBShade.setData(htfOBZoneData);
+              htfOBShade.applyOptions({
+                baseValue: { type: 'price', price: ob.bottom }
+              });
+
+              // Add border lines
+              candlestickSeries.createPriceLine({
+                price: ob.top,
+                color: 'rgba(34, 197, 94, 0.7)',
+                lineWidth: 2,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: index === 0,
+                title: 'HTF OB',
+              });
+
+              candlestickSeries.createPriceLine({
+                price: ob.bottom,
+                color: 'rgba(34, 197, 94, 0.7)',
+                lineWidth: 2,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: '',
+              });
+            });
+          }
+
+          // Draw HTF Bearish Order Blocks (for bearish signals)
+          if (direction === 'bearish' && htfData.orderBlocks.bearish && htfData.orderBlocks.bearish.length > 0) {
+            htfData.orderBlocks.bearish.slice(0, 3).forEach((ob, index) => {
+              // Add shaded area for HTF Order Block
+              const htfOBShade = chart.addHistogramSeries({
+                color: 'rgba(239, 68, 68, 0.1)', // Light red with transparency
+                priceFormat: { type: 'price' },
+                priceScaleId: '',
+                lastValueVisible: false,
+              });
+
+              const htfOBTimestamp = ob.timestamp
+                ? new Date(ob.timestamp).getTime() / 1000
+                : null;
+
+              const htfOBZoneData = candlestickData
+                .filter(candle => !htfOBTimestamp || candle.time >= htfOBTimestamp)
+                .map(candle => ({
+                  time: candle.time,
+                  value: ob.top,
+                  color: 'rgba(239, 68, 68, 0.1)'
+                }));
+
+              htfOBShade.setData(htfOBZoneData);
+              htfOBShade.applyOptions({
+                baseValue: { type: 'price', price: ob.bottom }
+              });
+
+              // Add border lines
+              candlestickSeries.createPriceLine({
+                price: ob.top,
+                color: 'rgba(239, 68, 68, 0.7)',
+                lineWidth: 2,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: index === 0,
+                title: 'HTF OB',
+              });
+
+              candlestickSeries.createPriceLine({
+                price: ob.bottom,
+                color: 'rgba(239, 68, 68, 0.7)',
+                lineWidth: 2,
+                lineStyle: 3, // Dashed
+                axisLabelVisible: false,
+                title: '',
+              });
+            });
+          }
         }
 
         // Draw Liquidity Sweep level
@@ -255,6 +530,78 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
           };
 
           candlestickSeries.createPriceLine(bmsLine);
+        }
+
+        // Draw ChoCH (Change of Character) levels
+        if (structureAnalysis?.chochEvents && structureAnalysis.chochEvents.length > 0) {
+          structureAnalysis.chochEvents.forEach((choch, index) => {
+            const chochLine = {
+              price: choch.brokenLevel,
+              color: '#f59e0b', // Amber for ChoCH
+              lineWidth: 2,
+              lineStyle: 1, // Dotted
+              axisLabelVisible: index === 0, // Only show label for first ChoCH
+              title: index === 0 ? 'ChoCH' : '',
+            };
+
+            candlestickSeries.createPriceLine(chochLine);
+
+            // Add marker at the break point
+            if (choch.breakCandle && choch.timestamp) {
+              const markerTime = new Date(choch.timestamp).getTime() / 1000;
+              const markerSeries = chart.addLineSeries({
+                color: 'transparent',
+                lineWidth: 0,
+                priceLineVisible: false,
+                lastValueVisible: false,
+              });
+
+              markerSeries.setMarkers([{
+                time: markerTime,
+                position: direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                color: '#f59e0b',
+                shape: 'circle',
+                text: 'ChoCH',
+                size: 1
+              }]);
+            }
+          });
+        }
+
+        // Draw BOS (Break of Structure) levels
+        if (structureAnalysis?.bosEvents && structureAnalysis.bosEvents.length > 0) {
+          structureAnalysis.bosEvents.forEach((bos, index) => {
+            const bosLine = {
+              price: bos.brokenLevel,
+              color: '#10b981', // Green for BOS (continuation)
+              lineWidth: 2,
+              lineStyle: 3, // Dashed
+              axisLabelVisible: index === 0, // Only show label for first BOS
+              title: index === 0 ? 'BOS' : '',
+            };
+
+            candlestickSeries.createPriceLine(bosLine);
+
+            // Add marker at the break point
+            if (bos.breakCandle && bos.timestamp) {
+              const markerTime = new Date(bos.timestamp).getTime() / 1000;
+              const markerSeries = chart.addLineSeries({
+                color: 'transparent',
+                lineWidth: 0,
+                priceLineVisible: false,
+                lastValueVisible: false,
+              });
+
+              markerSeries.setMarkers([{
+                time: markerTime,
+                position: direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                color: '#10b981',
+                shape: 'square',
+                text: 'BOS',
+                size: 1
+              }]);
+            }
+          });
         }
 
         // Fit content
@@ -294,7 +641,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         chartRef.current = null;
       }
     };
-  }, [symbol, timeframe, patternDetails, entry, stopLoss, takeProfit]);
+  }, [symbol, timeframe, patternDetails, entry, stopLoss, takeProfit, direction, htfData, htfTimeframe]);
 
   // Get full symbol name
   const getSymbolName = (sym) => {
@@ -424,6 +771,18 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               {patternDetails?.bms ? '✓ Detected' : '✗ Not Detected'}
             </span>
           </div>
+          <div>
+            <span style={{ fontWeight: '600' }}>ChoCH: </span>
+            <span style={{ color: structureAnalysis?.chochEvents?.length > 0 ? '#10b981' : '#ef4444' }}>
+              {structureAnalysis?.chochEvents?.length > 0 ? `✓ Detected (${structureAnalysis.chochEvents.length})` : '✗ Not Detected'}
+            </span>
+          </div>
+          <div>
+            <span style={{ fontWeight: '600' }}>BOS: </span>
+            <span style={{ color: structureAnalysis?.bosEvents?.length > 0 ? '#10b981' : '#ef4444' }}>
+              {structureAnalysis?.bosEvents?.length > 0 ? `✓ Detected (${structureAnalysis.bosEvents.length})` : '✗ Not Detected'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -452,8 +811,8 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
           {patternDetails?.fvg && (
             <div>
-              <span style={{ color: '#8b5cf6', fontWeight: '600' }}>··· FVG Zone: </span>
-              <span style={{ fontFamily: 'monospace' }}>
+              <span style={{ color: '#8b5cf6', fontWeight: '600' }}>█ FVG Zone: </span>
+              <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
                 {patternDetails.fvg.bottom.toFixed(8)} - {patternDetails.fvg.top.toFixed(8)}
               </span>
             </div>
@@ -461,8 +820,8 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
           {patternDetails?.orderBlock && (
             <div>
-              <span style={{ color: '#ec4899', fontWeight: '600' }}>··· Order Block: </span>
-              <span style={{ fontFamily: 'monospace' }}>
+              <span style={{ color: '#ec4899', fontWeight: '600' }}>█ Order Block: </span>
+              <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
                 {patternDetails.orderBlock.bottom.toFixed(8)} - {patternDetails.orderBlock.top.toFixed(8)}
               </span>
             </div>
@@ -475,6 +834,24 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             </div>
           )}
 
+          {structureAnalysis?.chochEvents && structureAnalysis.chochEvents.length > 0 && (
+            <div>
+              <span style={{ color: '#f59e0b', fontWeight: '600' }}>··· ChoCH Levels: </span>
+              <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                {structureAnalysis.chochEvents.map(e => e.brokenLevel.toFixed(8)).join(', ')}
+              </span>
+            </div>
+          )}
+
+          {structureAnalysis?.bosEvents && structureAnalysis.bosEvents.length > 0 && (
+            <div>
+              <span style={{ color: '#10b981', fontWeight: '600' }}>━ ━ BOS Levels: </span>
+              <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                {structureAnalysis.bosEvents.map(e => e.brokenLevel.toFixed(8)).join(', ')}
+              </span>
+            </div>
+          )}
+
           {patternDetails?.bms && (
             <div>
               <span style={{ color: '#f43f5e', fontWeight: '600' }}>━ ━ BMS Level: </span>
@@ -482,6 +859,61 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             </div>
           )}
         </div>
+
+        {/* HTF Patterns Section */}
+        {htfData && (htfData.orderBlocks || htfData.fvgs) && (
+          <div style={{
+            marginTop: '12px',
+            paddingTop: '12px',
+            borderTop: '2px solid #e5e7eb'
+          }}>
+            <div style={{ fontWeight: '600', marginBottom: '8px', color: '#1e40af' }}>
+              Higher Timeframe ({htfTimeframe}) Patterns:
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
+              {/* HTF Order Blocks */}
+              {direction === 'bullish' && htfData.orderBlocks?.bullish && htfData.orderBlocks.bullish.length > 0 && (
+                <div>
+                  <span style={{ color: 'rgba(34, 197, 94, 0.8)', fontWeight: '600' }}>█ HTF Order Blocks: </span>
+                  <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                    {htfData.orderBlocks.bullish.length} zones
+                  </span>
+                </div>
+              )}
+              {direction === 'bearish' && htfData.orderBlocks?.bearish && htfData.orderBlocks.bearish.length > 0 && (
+                <div>
+                  <span style={{ color: 'rgba(239, 68, 68, 0.8)', fontWeight: '600' }}>█ HTF Order Blocks: </span>
+                  <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                    {htfData.orderBlocks.bearish.length} zones
+                  </span>
+                </div>
+              )}
+
+              {/* HTF FVGs */}
+              {direction === 'bullish' && htfData.fvgs?.bullish && htfData.fvgs.bullish.length > 0 && (
+                <div>
+                  <span style={{ color: 'rgba(34, 197, 94, 0.8)', fontWeight: '600' }}>█ HTF FVG Zones: </span>
+                  <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                    {htfData.fvgs.bullish.length} zones
+                  </span>
+                </div>
+              )}
+              {direction === 'bearish' && htfData.fvgs?.bearish && htfData.fvgs.bearish.length > 0 && (
+                <div>
+                  <span style={{ color: 'rgba(239, 68, 68, 0.8)', fontWeight: '600' }}>█ HTF FVG Zones: </span>
+                  <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                    {htfData.fvgs.bearish.length} zones
+                  </span>
+                </div>
+              )}
+
+              {/* HTF Legend Note */}
+              <div style={{ gridColumn: '1 / -1', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>
+                Note: HTF patterns shown as shaded zones (█) with dashed borders for visual distinction
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

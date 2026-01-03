@@ -1,0 +1,364 @@
+{
+  "runs": [
+    {
+      "id": "2026-01-03_ultra_4h",
+      "timestamp": "2026-01-03T04:55:54.687Z",
+      "mode": "ULTRA",
+      "timeframe": "4h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_4h.json"
+    },
+    {
+      "id": "2026-01-03_ultra_1h",
+      "timestamp": "2026-01-03T04:55:51.056Z",
+      "mode": "ULTRA",
+      "timeframe": "1h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_1h.json"
+    },
+    {
+      "id": "2026-01-03_ultra_15m",
+      "timestamp": "2026-01-03T04:55:47.656Z",
+      "mode": "ULTRA",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_15m.json"
+    },
+    {
+      "id": "2026-01-03_sniper_4h",
+      "timestamp": "2026-01-03T04:55:43.063Z",
+      "mode": "SNIPER",
+      "timeframe": "4h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_sniper_4h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_1h",
+      "timestamp": "2026-01-03T04:55:38.399Z",
+      "mode": "SNIPER",
+      "timeframe": "1h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_sniper_1h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_15m",
+      "timestamp": "2026-01-03T04:55:33.860Z",
+      "mode": "SNIPER",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_sniper_15m.json"
+    },
+    {
+      "id": "2026-01-03_elite_4h",
+      "timestamp": "2026-01-03T04:55:28.622Z",
+      "mode": "ELITE",
+      "timeframe": "4h",
+      "totalTrades": 7,
+      "winRate": 85.71428571428571,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_elite_4h.json"
+    },
+    {
+      "id": "2026-01-03_elite_1h",
+      "timestamp": "2026-01-03T04:55:24.234Z",
+      "mode": "ELITE",
+      "timeframe": "1h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_elite_1h.json"
+    },
+    {
+      "id": "2026-01-03_elite_15m",
+      "timestamp": "2026-01-03T04:55:19.554Z",
+      "mode": "ELITE",
+      "timeframe": "15m",
+      "totalTrades": 1,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_elite_15m.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_4h",
+      "timestamp": "2026-01-03T04:55:14.742Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "4h",
+      "totalTrades": 13,
+      "winRate": 84.61538461538461,
+      "profitFactor": 30,
+      "file": "runs/2026-01-03_aggressive_4h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_1h",
+      "timestamp": "2026-01-03T04:55:10.052Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "1h",
+      "totalTrades": 20,
+      "winRate": 80,
+      "profitFactor": 4.277777777777779,
+      "file": "runs/2026-01-03_aggressive_1h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_15m",
+      "timestamp": "2026-01-03T04:55:05.632Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "15m",
+      "totalTrades": 1,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_aggressive_15m.json"
+    },
+    {
+      "id": "2026-01-03_moderate_4h",
+      "timestamp": "2026-01-03T04:54:57.184Z",
+      "mode": "MODERATE",
+      "timeframe": "4h",
+      "totalTrades": 13,
+      "winRate": 84.61538461538461,
+      "profitFactor": 31.142857142857142,
+      "file": "runs/2026-01-03_moderate_4h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_1h",
+      "timestamp": "2026-01-03T04:54:48.928Z",
+      "mode": "MODERATE",
+      "timeframe": "1h",
+      "totalTrades": 17,
+      "winRate": 70.58823529411765,
+      "profitFactor": 5.411042944785276,
+      "file": "runs/2026-01-03_moderate_1h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_15m",
+      "timestamp": "2026-01-03T04:54:36.952Z",
+      "mode": "MODERATE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_moderate_15m.json"
+    },
+    {
+      "id": "2026-01-03_conservative_4h",
+      "timestamp": "2026-01-03T04:54:22.098Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "4h",
+      "totalTrades": 11,
+      "winRate": 81.81818181818183,
+      "profitFactor": 26.785714285714285,
+      "file": "runs/2026-01-03_conservative_4h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_1h",
+      "timestamp": "2026-01-03T04:54:11.218Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "1h",
+      "totalTrades": 21,
+      "winRate": 71.42857142857143,
+      "profitFactor": 3.8326996197718626,
+      "file": "runs/2026-01-03_conservative_1h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_15m",
+      "timestamp": "2026-01-03T04:54:03.626Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_conservative_15m.json"
+    },
+    {
+      "id": "2026-01-03_ultra_4h",
+      "timestamp": "2026-01-03T04:42:36.216Z",
+      "mode": "ULTRA",
+      "timeframe": "4h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_4h.json"
+    },
+    {
+      "id": "2026-01-03_ultra_1h",
+      "timestamp": "2026-01-03T04:42:34.924Z",
+      "mode": "ULTRA",
+      "timeframe": "1h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_1h.json"
+    },
+    {
+      "id": "2026-01-03_ultra_15m",
+      "timestamp": "2026-01-03T04:42:33.841Z",
+      "mode": "ULTRA",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_ultra_15m.json"
+    },
+    {
+      "id": "2026-01-03_sniper_4h",
+      "timestamp": "2026-01-03T04:42:31.393Z",
+      "mode": "SNIPER",
+      "timeframe": "4h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_sniper_4h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_1h",
+      "timestamp": "2026-01-03T04:42:30.134Z",
+      "mode": "SNIPER",
+      "timeframe": "1h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_sniper_1h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_15m",
+      "timestamp": "2026-01-03T04:42:28.960Z",
+      "mode": "SNIPER",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_sniper_15m.json"
+    },
+    {
+      "id": "2026-01-03_elite_4h",
+      "timestamp": "2026-01-03T04:42:27.242Z",
+      "mode": "ELITE",
+      "timeframe": "4h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_elite_4h.json"
+    },
+    {
+      "id": "2026-01-03_elite_1h",
+      "timestamp": "2026-01-03T04:42:26.048Z",
+      "mode": "ELITE",
+      "timeframe": "1h",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_elite_1h.json"
+    },
+    {
+      "id": "2026-01-03_elite_15m",
+      "timestamp": "2026-01-03T04:42:24.818Z",
+      "mode": "ELITE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_elite_15m.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_4h",
+      "timestamp": "2026-01-03T04:42:21.724Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "4h",
+      "totalTrades": 2,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_aggressive_4h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_1h",
+      "timestamp": "2026-01-03T04:42:20.338Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "1h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_aggressive_1h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_15m",
+      "timestamp": "2026-01-03T04:42:19.159Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_aggressive_15m.json"
+    },
+    {
+      "id": "2026-01-03_moderate_4h",
+      "timestamp": "2026-01-03T04:42:17.632Z",
+      "mode": "MODERATE",
+      "timeframe": "4h",
+      "totalTrades": 2,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_moderate_4h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_1h",
+      "timestamp": "2026-01-03T04:42:16.453Z",
+      "mode": "MODERATE",
+      "timeframe": "1h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_moderate_1h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_15m",
+      "timestamp": "2026-01-03T04:42:15.360Z",
+      "mode": "MODERATE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_moderate_15m.json"
+    },
+    {
+      "id": "2026-01-03_conservative_4h",
+      "timestamp": "2026-01-03T04:42:13.605Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "4h",
+      "totalTrades": 2,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_conservative_4h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_1h",
+      "timestamp": "2026-01-03T04:42:11.919Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "1h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_conservative_1h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_15m",
+      "timestamp": "2026-01-03T04:42:09.813Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "15m",
+      "totalTrades": 0,
+      "winRate": 0,
+      "profitFactor": 0,
+      "file": "runs/2026-01-03_conservative_15m.json"
+    }
+  ]
+}

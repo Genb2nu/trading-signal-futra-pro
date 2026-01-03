@@ -6,6 +6,7 @@ import fs from 'fs/promises';
 import axios from 'axios';
 import { getUSDTSymbols, testConnection } from './binanceService.js';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './smcAnalyzer.js';
+import backtestRoutes from './routes/backtestRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +17,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Register API routes
+app.use('/api/backtest-results', backtestRoutes);
 
 // Config file path
 const CONFIG_PATH = path.join(__dirname, '../../config.json');

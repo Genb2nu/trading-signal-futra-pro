@@ -47,6 +47,50 @@ export async function getBinanceKlines(symbol, interval, limit = 500) {
 }
 
 /**
+ * Fetches kline data for a specific time range from Binance (client-side)
+ * @param {string} symbol - Trading pair symbol (e.g., 'BTCUSDT')
+ * @param {string} interval - Timeframe (1m, 5m, 15m, 1h, 4h, 1d, 1w, 1M)
+ * @param {number} startTime - Start timestamp in milliseconds
+ * @param {number} endTime - End timestamp in milliseconds
+ * @returns {Promise<Array>} Array of kline objects
+ */
+export async function getBinanceKlinesWithTime(symbol, interval, startTime, endTime) {
+  try {
+    const url = `${BINANCE_API_URL}/v3/klines`;
+    const params = new URLSearchParams({
+      symbol: symbol,
+      interval: interval,
+      startTime: Math.floor(startTime),
+      endTime: Math.floor(endTime),
+      limit: 1000 // Max limit
+    });
+
+    const response = await fetch(`${url}?${params}`);
+
+    if (!response.ok) {
+      throw new Error(`Binance API returned ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Transform Binance kline format to usable format
+    return data.map(candle => ({
+      openTime: candle[0],
+      open: parseFloat(candle[1]),
+      high: parseFloat(candle[2]),
+      low: parseFloat(candle[3]),
+      close: parseFloat(candle[4]),
+      volume: parseFloat(candle[5]),
+      closeTime: candle[6],
+      timestamp: new Date(candle[0]).toISOString()
+    }));
+  } catch (error) {
+    console.error(`Error fetching historical klines for ${symbol}:`, error.message);
+    throw new Error(`Failed to fetch historical klines for ${symbol}: ${error.message}`);
+  }
+}
+
+/**
  * Fetches all available trading pairs from Binance (client-side)
  * @returns {Promise<Object>} Exchange info with all symbols
  */

@@ -1,0 +1,7 @@
+As a senior software engineer and a professional crypto trader, i want you to analyze the video about smart money concept and help me create a website that will create a signal that this coin/token is hit the concept or strategy. Get the kline in binance see the Binance service.md file for sample code, we can use a different language than c# if possible no database also backend and front in one code so that 1 deployment only. What i expect is that we have a page that we can track signal and in that page we have option what timeline, What symbols, Strategy (Dropdown for now the strategy is the SMC which is about the video to add more in future), Button to start to search the strategy and another button to clear the results, Settings as will which i can set what symbols need to search, limit selected 50 and set the default 50 and this settings if any other configurable. 
+
+Video: https://www.youtube.com/watch?v=plhWMmmgZj4
+
+To Check next:
+https://www.youtube.com/watch?v=iGuFJyX1EUU - 3 rules SMC
+https://www.youtube.com/watch?v=i0voelY0UTQ -SMC Full Course
