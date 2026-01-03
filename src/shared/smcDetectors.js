@@ -1534,7 +1534,8 @@ export function analyzeSMC(candles, htfCandles = null, timeframe = null, htf2Can
   const symbolName = symbol || null;
 
   // Build config object for timeframe-adaptive detection
-  const baseConfig = getCurrentConfig();
+  // Pass timeframe to get 15m adjustments if applicable
+  const baseConfig = getCurrentConfig(timeframe);
   const config = baseConfig.scalping?.enableTimeoutExit && timeframe ?
     { ...baseConfig, timeframe } : baseConfig;
 

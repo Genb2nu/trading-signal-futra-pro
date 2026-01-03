@@ -14,8 +14,8 @@ const TEST_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT'];
 // All timeframes to test
 const TIMEFRAMES = ['15m', '1h', '4h'];
 
-// Strategy modes to test (all 6 modes)
-const MODES = ['CONSERVATIVE', 'MODERATE', 'AGGRESSIVE', 'ELITE', 'SNIPER', 'ULTRA'];
+// Strategy modes to test (5 active modes, ULTRA removed due to bugs)
+const MODES = ['CONSERVATIVE', 'MODERATE', 'AGGRESSIVE', 'ELITE', 'SNIPER'];
 
 /**
  * Save backtest results to JSON files
@@ -80,12 +80,13 @@ function updateBacktestIndex(backtestData) {
 }
 
 async function runComprehensiveBacktest() {
-  console.log('🚀 Starting Comprehensive Inducement Backtest\n');
+  console.log('🚀 Starting Comprehensive Backtest\n');
   console.log('='  .repeat(80));
-  console.log('Testing Strategy: Enhanced Inducement Detection (5 types)');
+  console.log('Testing Strategy: Enhanced SMC with Inducement Detection');
   console.log('Test Symbols:', TEST_SYMBOLS.join(', '));
   console.log('Timeframes:', TIMEFRAMES.join(', '));
-  console.log('Strategy Modes:', MODES.join(', '));
+  console.log('Strategy Modes:', MODES.join(', ') + ' (5 modes)');
+  console.log('Data Size: 3000 candles per symbol');
   console.log('='  .repeat(80));
   console.log('');
 

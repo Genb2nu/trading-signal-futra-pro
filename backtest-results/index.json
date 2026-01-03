@@ -1,6 +1,156 @@
 {
   "runs": [
     {
+      "id": "2026-01-03_sniper_4h",
+      "timestamp": "2026-01-03T05:06:36.821Z",
+      "mode": "SNIPER",
+      "timeframe": "4h",
+      "totalTrades": 4,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_sniper_4h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_1h",
+      "timestamp": "2026-01-03T05:06:32.167Z",
+      "mode": "SNIPER",
+      "timeframe": "1h",
+      "totalTrades": 9,
+      "winRate": 66.66666666666666,
+      "profitFactor": 1.87,
+      "file": "runs/2026-01-03_sniper_1h.json"
+    },
+    {
+      "id": "2026-01-03_sniper_15m",
+      "timestamp": "2026-01-03T05:06:27.719Z",
+      "mode": "SNIPER",
+      "timeframe": "15m",
+      "totalTrades": 1,
+      "winRate": 100,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_sniper_15m.json"
+    },
+    {
+      "id": "2026-01-03_elite_4h",
+      "timestamp": "2026-01-03T05:06:22.880Z",
+      "mode": "ELITE",
+      "timeframe": "4h",
+      "totalTrades": 7,
+      "winRate": 85.71428571428571,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_elite_4h.json"
+    },
+    {
+      "id": "2026-01-03_elite_1h",
+      "timestamp": "2026-01-03T05:06:17.768Z",
+      "mode": "ELITE",
+      "timeframe": "1h",
+      "totalTrades": 9,
+      "winRate": 66.66666666666666,
+      "profitFactor": 1.18,
+      "file": "runs/2026-01-03_elite_1h.json"
+    },
+    {
+      "id": "2026-01-03_elite_15m",
+      "timestamp": "2026-01-03T05:06:12.340Z",
+      "mode": "ELITE",
+      "timeframe": "15m",
+      "totalTrades": 3,
+      "winRate": 66.66666666666666,
+      "profitFactor": 999,
+      "file": "runs/2026-01-03_elite_15m.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_4h",
+      "timestamp": "2026-01-03T05:06:06.787Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "4h",
+      "totalTrades": 13,
+      "winRate": 84.61538461538461,
+      "profitFactor": 30,
+      "file": "runs/2026-01-03_aggressive_4h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_1h",
+      "timestamp": "2026-01-03T05:06:02.172Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "1h",
+      "totalTrades": 23,
+      "winRate": 73.91304347826086,
+      "profitFactor": 5.305,
+      "file": "runs/2026-01-03_aggressive_1h.json"
+    },
+    {
+      "id": "2026-01-03_aggressive_15m",
+      "timestamp": "2026-01-03T05:05:57.082Z",
+      "mode": "AGGRESSIVE",
+      "timeframe": "15m",
+      "totalTrades": 10,
+      "winRate": 50,
+      "profitFactor": 0.6411290322580645,
+      "file": "runs/2026-01-03_aggressive_15m.json"
+    },
+    {
+      "id": "2026-01-03_moderate_4h",
+      "timestamp": "2026-01-03T05:05:50.901Z",
+      "mode": "MODERATE",
+      "timeframe": "4h",
+      "totalTrades": 13,
+      "winRate": 84.61538461538461,
+      "profitFactor": 31.142857142857142,
+      "file": "runs/2026-01-03_moderate_4h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_1h",
+      "timestamp": "2026-01-03T05:05:46.503Z",
+      "mode": "MODERATE",
+      "timeframe": "1h",
+      "totalTrades": 22,
+      "winRate": 77.27272727272727,
+      "profitFactor": 5.885,
+      "file": "runs/2026-01-03_moderate_1h.json"
+    },
+    {
+      "id": "2026-01-03_moderate_15m",
+      "timestamp": "2026-01-03T05:05:41.951Z",
+      "mode": "MODERATE",
+      "timeframe": "15m",
+      "totalTrades": 10,
+      "winRate": 50,
+      "profitFactor": 0.6411290322580645,
+      "file": "runs/2026-01-03_moderate_15m.json"
+    },
+    {
+      "id": "2026-01-03_conservative_4h",
+      "timestamp": "2026-01-03T05:05:35.702Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "4h",
+      "totalTrades": 11,
+      "winRate": 81.81818181818183,
+      "profitFactor": 26.785714285714285,
+      "file": "runs/2026-01-03_conservative_4h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_1h",
+      "timestamp": "2026-01-03T05:05:31.454Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "1h",
+      "totalTrades": 20,
+      "winRate": 80,
+      "profitFactor": 5.575,
+      "file": "runs/2026-01-03_conservative_1h.json"
+    },
+    {
+      "id": "2026-01-03_conservative_15m",
+      "timestamp": "2026-01-03T05:05:27.039Z",
+      "mode": "CONSERVATIVE",
+      "timeframe": "15m",
+      "totalTrades": 6,
+      "winRate": 66.66666666666666,
+      "profitFactor": 2.5517241379310347,
+      "file": "runs/2026-01-03_conservative_15m.json"
+    },
+    {
       "id": "2026-01-03_ultra_4h",
       "timestamp": "2026-01-03T04:55:54.687Z",
       "mode": "ULTRA",
@@ -349,16 +499,6 @@
       "winRate": 100,
       "profitFactor": 999,
       "file": "runs/2026-01-03_conservative_1h.json"
-    },
-    {
-      "id": "2026-01-03_conservative_15m",
-      "timestamp": "2026-01-03T04:42:09.813Z",
-      "mode": "CONSERVATIVE",
-      "timeframe": "15m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_conservative_15m.json"
     }
   ]
 }

@@ -9,8 +9,7 @@ export const STRATEGY_MODES = {
   AGGRESSIVE: 'aggressive',
   SCALPING: 'scalping',
   ELITE: 'elite',
-  SNIPER: 'sniper',
-  ULTRA: 'ultra'
+  SNIPER: 'sniper'
 };
 
 // Current mode - change this to switch strategies
@@ -487,137 +486,85 @@ export const STRATEGY_CONFIG = {
     ]
   },
 
-  [STRATEGY_MODES.ULTRA]: {
-    name: 'Ultra (Elite 70-80% WR)',
-    description: 'Ultimate mode combining Conservative filtering + SNIPER trade management for maximum win rate',
-
-    // Based on backtest analysis:
-    // - Conservative mode: 60.9% WR baseline on 1H
-    // - Top symbols (AVAX, ADA, DOGE, BTC): 70-100% WR in Conservative mode
-    // - SNIPER trade management: 2.85:1 R:R
-    // Strategy: Enhance Conservative with extra filters to push 60% → 70-80% WR
-
-    // Order Block Settings (from Conservative - proven to work)
-    obImpulseThreshold: 0.005, // 0.5% for 1H
-
-    // Confirmation Requirements (STRICTER than Conservative)
-    requireAllConfirmations: false,
-    requiredConfirmations: ['fvg'], // FVG is required (core SMC pattern)
-    preferredPatterns: ['liquiditySweep', 'bos'], // Strong bonus if present
-
-    // Zone Settings (STRICTER than Conservative)
-    allowNeutralZone: false, // MUST be in discount (long) or premium (short) zone
-    neutralZoneScore: 0,
-
-    // Stop Loss Settings (from Conservative)
-    stopLossATRMultiplier: 2.5,
-
-    // Confluence Settings (Balanced - same as Conservative baseline)
-    minimumConfluence: 48, // Slightly higher than Conservative's 45
-    confluenceWeights: {
-      // Core patterns (higher weight)
-      liquiditySweep: 35,      // Best pattern (68% WR) - INCREASED
-      fvg: 25,                 // Required pattern - INCREASED
-      rejectionPattern: 25,    // Entry confirmation - INCREASED (bonus, not required)
-
-      // Supporting patterns
-      bos: 20,                 // Trend confirmation
-      ote: 20,                 // Optimal entry zone
-      validZone: 15,           // Premium/discount zone
-
-      // Additional confirmation
-      breakerBlock: 15,
-      volume: 15,
-      bms: 10,
-
-      // Inducement patterns (moderate weight)
-      basicInducement: 10,
-      consolidationInducement: 12,
-      prematureReversalInducement: 8,
-      firstPullbackInducement: 15,
-
-      // HTF confluence (supporting factors)
-      htfOBAlignment: 15,
-      htfFVGConfluence: 12,
-      htfZoneAlignment: 12,
-      htfStructureAlignment: 12
-    },
-
-    // Entry Settings (STRICT but not over-filtering)
-    requireBOSConfirmation: false, // Optional (adds confluence)
-    requireRejectionPattern: false, // Optional (adds 25 confluence) - not hard requirement
-    strictHTFAlignment: true,       // REQUIRED - must trade WITH HTF trend
-    bosLookback: 10,
-
-    // Risk Management (Higher R:R like SNIPER)
-    minimumRiskReward: 2.5, // Raised from Conservative's 2.0
-
-    // Trade Management (from SNIPER - proven 2.85 PF)
-    scalping: {
-      enableTimeoutExit: false, // Don't timeout on 1H
-      enableTrailingStop: true,
-      breakEvenTriggerR: 0.8,    // Move to BE at 0.8R
-      trailingStartR: 1.5,       // Start trailing at 1.5R
-      trailingDistanceR: 0.5,    // Trail 0.5R behind
-      enablePartialClose: true,
-      partialCloseR: 2.0,        // Take 50% profit at 2R
-      partialClosePercent: 50
-    },
-
-    // Expected Performance
-    expectedSignalsPerDay: '10-20 per 1000 candles (ultra-selective)',
-    targetWinRate: '70-80%',
-    targetProfitFactor: '3.5-5.0+',
-
-    // Recommended symbols (from backtest - best performers in Conservative mode)
-    recommendedSymbols: ['AVAXUSDT', 'ADAUSDT', 'DOGEUSDT', 'BTCUSDT'],
-
-    // Symbol-specific performance (from backtest):
-    // AVAX + Conservative: 100% WR (6/6), +4.01R
-    // ADA + Conservative: 100% WR (7/7), +2.47R
-    // DOGE + Conservative: 100% WR (3/3), +0.96R
-    // BTC + Conservative: 100% WR (3/3), +1.35R
-
-    // Notes
-    notes: [
-      'ULTRA mode = Conservative filtering + SNIPER trade management',
-      'Proven: Conservative 60.9% WR + top symbols 70-100% WR each',
-      'Focus ONLY on AVAX, ADA, DOGE, BTC (proven 100% WR in Conservative)',
-      'Requires: FVG + rejection pattern + proper zone + HTF alignment',
-      'Higher confluence (55 vs Conservative 45) for extra selectivity',
-      'SNIPER trade management (BE at 0.8R, partial at 2R, trailing)',
-      'Target: 70-80% WR with 2.5-3.5:1 R:R',
-      'Expected: 10-20 trades per 1000 candles, ~1-2 per week on top 4 symbols'
-    ]
-  }
 };
 
 // Runtime configuration overrides (loaded from settings)
 let runtimeConfig = null;
 
 /**
+ * Get timeframe-specific adjustments for 15m (less strict)
+ * @param {Object} baseConfig - Base strategy config
+ * @returns {Object} Adjusted config for 15m
+ */
+function get15mAdjustments(baseConfig) {
+  return {
+    ...baseConfig,
+    // CRITICAL: Much lower confluence for 15m (choppy timeframe, more signals)
+    minimumConfluence: Math.max(15, baseConfig.minimumConfluence - 30),
+
+    // CRITICAL: Allow neutral zone (15m often sideways)
+    allowNeutralZone: true,
+    neutralZoneScore: 10, // Give points for neutral zone
+
+    // CRITICAL: Don't require HTF alignment (15m can counter-trend scalp)
+    strictHTFAlignment: false,
+
+    // CRITICAL: Don't require rejection (candles too fast on 15m)
+    requireRejectionPattern: false,
+
+    // CRITICAL: Remove required confirmations (too restrictive for 15m)
+    requiredConfirmations: [],
+
+    // Lower OB threshold for smaller 15m moves
+    obImpulseThreshold: 0.0025, // 0.25% (vs 0.5% on higher TF) - catch smaller moves
+
+    // Lower R:R target (15m has smaller moves, quick scalps)
+    minimumRiskReward: Math.max(1.0, baseConfig.minimumRiskReward - 0.8),
+
+    // Tighter stop loss for 15m (smaller moves, tighter risk)
+    stopLossATRMultiplier: Math.max(1.5, baseConfig.stopLossATRMultiplier - 0.7)
+  };
+}
+
+/**
  * Gets the current strategy configuration
+ * @param {string} timeframe - Optional timeframe for adjustments
  * @returns {Object} Current strategy config
  */
-export function getCurrentConfig() {
+export function getCurrentConfig(timeframe = null) {
   // Use runtime mode if set (from setStrategyMode), otherwise use CURRENT_MODE
   const activeMode = runtimeMode || CURRENT_MODE;
 
+  let config = STRATEGY_CONFIG[activeMode];
+
   // If runtime config is set (from settings), merge it with the base config
   if (runtimeConfig) {
-    const baseConfig = STRATEGY_CONFIG[activeMode];
-    return { ...baseConfig, ...runtimeConfig };
+    config = { ...config, ...runtimeConfig };
   }
-  return STRATEGY_CONFIG[activeMode];
+
+  // Apply 15m adjustments if on 15m timeframe
+  if (timeframe === '15m') {
+    config = get15mAdjustments(config);
+  }
+
+  return config;
 }
 
 /**
  * Gets configuration for a specific mode
  * @param {string} mode - Strategy mode
+ * @param {string} timeframe - Optional timeframe for adjustments
  * @returns {Object} Strategy config
  */
-export function getConfig(mode) {
-  return STRATEGY_CONFIG[mode] || STRATEGY_CONFIG[STRATEGY_MODES.MODERATE];
+export function getConfig(mode, timeframe = null) {
+  let config = STRATEGY_CONFIG[mode] || STRATEGY_CONFIG[STRATEGY_MODES.MODERATE];
+
+  // Apply 15m adjustments if on 15m timeframe
+  if (timeframe === '15m') {
+    config = get15mAdjustments(config);
+  }
+
+  return config;
 }
 
 /**
