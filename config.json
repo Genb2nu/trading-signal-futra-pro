@@ -203,18 +203,16 @@
   ],
   "limit": 200,
   "defaultTimeframes": [
-    "15m",
-    "1h",
-    "4h"
+    "1h"
   ],
-  "strategyMode": "aggressive",
-  "riskPerTrade": 2.5,
+  "strategyMode": "moderate",
+  "riskPerTrade": 2,
   "maxConcurrentTrades": 3,
-  "stopLossATRMultiplier": 2,
-  "minimumConfluence": 25,
-  "minimumRiskReward": 1.5,
+  "stopLossATRMultiplier": 2.5,
+  "minimumConfluence": 40,
+  "minimumRiskReward": 2,
   "minimumConfidenceLevel": "premium",
-  "requireHTFAlignment": false,
+  "requireHTFAlignment": true,
   "allowNeutralZone": true,
-  "obImpulseThreshold": 0.003
+  "obImpulseThreshold": 0.005
 }

@@ -407,11 +407,11 @@ function Settings() {
                       </strong>
                     </div>
                     <p style={{ fontSize: '12px', color: '#6b7280', marginLeft: '26px' }}>
-                      {mode === 'conservative' && '56% win rate, 2.01 PF, highest quality (1h/4h) - MTF + Inducement Enhanced'}
-                      {mode === 'moderate' && '60% win rate, 1.79 PF, balanced approach (1h) - Inducement Filter + MTF Optimized'}
-                      {mode === 'aggressive' && '62% win rate, 2.33 PF, more signals, all timeframes - Inducement Enhanced'}
-                      {mode === 'scalping' && '85% win rate, 2.26 PF, optimized for 15m/1h, breakeven & trailing stops'}
-                      {mode === 'sniper' && '⭐ 69% win rate, 4.48 PF (BEST), ultra-selective 1h only, rejection required'}
+                      {mode === 'conservative' && '75% WR, 4.58 PF (1h) | 87.5% WR, 4.98 PF (15m) - Consistent, high quality signals'}
+                      {mode === 'moderate' && '🏆 87.5% WR, 11.05 PF (1h) - BEST OVERALL - Balanced and reliable'}
+                      {mode === 'aggressive' && '85.7% WR, 8.91 PF (1h) | 90% WR, 6.26 PF (15m) - More signals, excellent performance'}
+                      {mode === 'scalping' && 'Not yet backtested - Experimental mode for quick scalps'}
+                      {mode === 'sniper' && '⚠️ 60% WR, 0.66 PF (1h) - Ultra-selective but underperforming (not recommended)'}
                     </p>
                   </label>
                 ))}

@@ -13,7 +13,7 @@ export const STRATEGY_MODES = {
 };
 
 // Current mode - change this to switch strategies
-export const CURRENT_MODE = STRATEGY_MODES.MODERATE; // Moderate mode for 15m trading (78.1% WR, 7.96 PF, +1.05R)
+export const CURRENT_MODE = STRATEGY_MODES.MODERATE; // Moderate mode: 87.5% WR, 11.05 PF (1h) - BEST OVERALL
 
 export const STRATEGY_CONFIG = {
   [STRATEGY_MODES.CONSERVATIVE]: {
