@@ -323,6 +323,91 @@ export function detectBreakOfStructure(candles, structure) {
 }
 
 /**
+ * CRITICAL: Validates FVGs and OBs against market structure shifts
+ * Only keeps patterns that formed during or near BOS/CHoCH events
+ * This filters out low-probability consolidation patterns
+ *
+ * @param {Array} patterns - Array of FVG or OB patterns
+ * @param {Array} bmsEvents - Break of market structure events
+ * @param {Array} liquiditySweeps - Liquidity sweep events
+ * @param {string} patternType - 'fvg' or 'ob'
+ * @returns {Array} Validated patterns that occurred during structure shifts
+ */
+function validatePatternsWithStructureShift(patterns, bmsEvents, liquiditySweeps, patternType) {
+  const validated = [];
+  const lookbackRange = patternType === 'fvg' ? 5 : 10; // FVGs closer to shift, OBs can be slightly before
+
+  for (const pattern of patterns) {
+    let isValidated = false;
+    let validationReason = null;
+
+    // Check if pattern formed near a BOS/CHoCH event
+    for (const bms of bmsEvents) {
+      const candleDistance = Math.abs(pattern.index - bms.index);
+
+      // Pattern should form BEFORE or AT the structure break
+      const isBeforeBreak = pattern.index <= bms.index;
+      const isInRange = candleDistance <= lookbackRange;
+
+      // Type must match: bullish pattern near bullish BOS, or bearish pattern near bearish BOS
+      const typesMatch = pattern.type === bms.type;
+
+      if (isBeforeBreak && isInRange && typesMatch) {
+        isValidated = true;
+        validationReason = {
+          type: 'BOS',
+          bmsIndex: bms.index,
+          bmsType: bms.type,
+          breakLevel: bms.breakLevel,
+          candleDistance: candleDistance,
+          explanation: `${pattern.type.toUpperCase()} ${patternType.toUpperCase()} formed ${candleDistance} candles before ${bms.type} BOS at ${bms.breakLevel.toFixed(2)}`
+        };
+        break;
+      }
+    }
+
+    // If not validated by BOS, check if validated by liquidity sweep
+    if (!isValidated) {
+      for (const sweep of liquiditySweeps) {
+        const candleDistance = Math.abs(pattern.index - sweep.index);
+        const isInRange = candleDistance <= lookbackRange;
+        const typesMatch = pattern.type === sweep.direction;
+
+        if (isInRange && typesMatch) {
+          isValidated = true;
+          validationReason = {
+            type: 'SWEEP',
+            sweepIndex: sweep.index,
+            sweepDirection: sweep.direction,
+            swingLevel: sweep.swingLevel,
+            candleDistance: candleDistance,
+            explanation: `${pattern.type.toUpperCase()} ${patternType.toUpperCase()} formed ${candleDistance} candles from ${sweep.direction} liquidity sweep at ${sweep.swingLevel.toFixed(2)}`
+          };
+          break;
+        }
+      }
+    }
+
+    // Only include patterns validated by market structure shift
+    if (isValidated) {
+      validated.push({
+        ...pattern,
+        validated: true,
+        validationReason
+      });
+    }
+  }
+
+  // Log filtering stats for debugging
+  const filteredCount = patterns.length - validated.length;
+  if (filteredCount > 0) {
+    console.log(`🔍 ${patternType.toUpperCase()} Filter: Removed ${filteredCount} consolidation patterns, kept ${validated.length} high-probability patterns near BOS/CHoCH`);
+  }
+
+  return validated;
+}
+
+/**
  * Main SMC analyzer that combines all detection methods
  * and generates trading signals
  * @param {Array} candles - Array of kline objects
@@ -338,11 +423,16 @@ export function analyzeSMC(candles) {
 
   // Run all detection algorithms
   const swingPoints = detectSwingPoints(candles);
-  const fvgs = detectFairValueGaps(candles);
-  const orderBlocks = detectOrderBlocks(candles);
+  const allFvgs = detectFairValueGaps(candles);
+  const allOrderBlocks = detectOrderBlocks(candles);
   const structure = analyzeMarketStructure(swingPoints);
   const liquiditySweeps = detectLiquiditySweeps(candles, swingPoints);
   const bmsEvents = detectBreakOfStructure(candles, structure);
+
+  // CRITICAL FIX: Filter FVGs and OBs to only keep those near BOS/CHoCH
+  // This ensures we only trade high-probability zones formed during market shifts
+  const fvgs = validatePatternsWithStructureShift(allFvgs, bmsEvents, liquiditySweeps, 'fvg');
+  const orderBlocks = validatePatternsWithStructureShift(allOrderBlocks, bmsEvents, liquiditySweeps, 'ob');
 
   // Generate trading signals
   const signals = generateSignals({
