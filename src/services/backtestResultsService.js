@@ -11,7 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
  */
 export async function getLatestBacktest() {
   try {
-    const response = await fetch(`${API_URL}/api/backtest-results/latest`);
+    const response = await fetch(`${API_URL}/api/backtest-results?endpoint=latest`);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -34,7 +34,7 @@ export async function getLatestBacktest() {
  */
 export async function getAllBacktestRuns() {
   try {
-    const response = await fetch(`${API_URL}/api/backtest-results/runs`);
+    const response = await fetch(`${API_URL}/api/backtest-results?endpoint=runs`);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch backtest runs: ${response.statusText}`);
@@ -55,7 +55,7 @@ export async function getAllBacktestRuns() {
  */
 export async function getBacktestRunById(id) {
   try {
-    const response = await fetch(`${API_URL}/api/backtest-results/runs/${id}`);
+    const response = await fetch(`${API_URL}/api/backtest-results?endpoint=run&id=${id}`);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -78,7 +78,7 @@ export async function getBacktestRunById(id) {
  */
 export async function getBacktestStatus() {
   try {
-    const response = await fetch(`${API_URL}/api/backtest-results/status`);
+    const response = await fetch(`${API_URL}/api/backtest-results?endpoint=status`);
 
     if (!response.ok) {
       throw new Error(`Failed to check status: ${response.statusText}`);
