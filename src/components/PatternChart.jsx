@@ -758,10 +758,10 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         // Draw Trading Sessions (Asia, London, New York)
         const drawTradingSessions = () => {
           /**
-           * Trading Session Times (UTC):
-           * - Asia (Tokyo): 00:00 - 09:00 UTC
-           * - London: 08:00 - 17:00 UTC
-           * - New York: 13:00 - 22:00 UTC
+           * Trading Session Times (UTC+8):
+           * - Asia (Tokyo): 08:00 - 17:00 (00:00 - 09:00 UTC)
+           * - London: 16:00 - 01:00 (08:00 - 17:00 UTC)
+           * - New York: 21:00 - 06:00 (13:00 - 22:00 UTC)
            */
 
           // Get today's date at midnight UTC
@@ -802,10 +802,16 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             return;
           }
 
-          // Get price range from ALL visible candles (not just today) for full-height rectangles
+          // Get GLOBAL price range from ALL candles (not just visible ones)
           const allPrices = candlestickData.map(c => [c.high, c.low]).flat();
-          const maxPrice = Math.max(...allPrices);
-          const minPrice = Math.min(...allPrices);
+          const dataMaxPrice = Math.max(...allPrices);
+          const dataMinPrice = Math.min(...allPrices);
+
+          // Use extreme values to ensure session backgrounds ALWAYS fill the chart
+          // This works even when the user zooms in/out
+          const priceRange = dataMaxPrice - dataMinPrice;
+          const maxPrice = dataMaxPrice * 1000; // Extremely high price (way above any zoom range)
+          const minPrice = 0; // Zero - always below any visible price
 
           // Draw each session
           sessions.forEach(session => {
@@ -826,8 +832,10 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             }
 
             // Draw session background using baseline series for continuous fill (no gaps)
+            // Using extremely high value (maxPrice) ensures it fills to the top of any zoom level
+            // Using 0 as baseValue ensures it fills from the very bottom
             const sessionSeries = chart.addBaselineSeries({
-              baseValue: { type: 'price', price: minPrice },
+              baseValue: { type: 'price', price: minPrice }, // Always at bottom (0)
               topLineColor: 'transparent',
               topFillColor1: session.color,
               topFillColor2: session.color,
@@ -836,15 +844,16 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               bottomFillColor2: 'transparent',
               lineWidth: 0,
               priceFormat: { type: 'price' },
-              priceScaleId: '',
+              priceScaleId: '', // No price scale (overlay)
               lastValueVisible: false,
               priceLineVisible: false,
             });
 
             // Create continuous data points for the session background
+            // Each point uses maxPrice (extremely high) to fill from bottom to top
             const sessionData = sessionCandles.map(candle => ({
               time: candle.time,
-              value: maxPrice
+              value: maxPrice // Extremely high value ensures fill to top
             }));
 
             sessionSeries.setData(sessionData);

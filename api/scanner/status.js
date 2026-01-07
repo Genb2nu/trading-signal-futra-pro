@@ -23,6 +23,14 @@ export default async function handler(req, res) {
     // For Vercel, we don't have a persistent scanner
     // Return status indicating serverless mode
     res.status(200).json({
+      success: true,
+      status: {
+        isRunning: false,
+        mode: 'serverless',
+        message: 'Continuous scanner not available on Vercel. Use manual scan instead.',
+        lastScan: null,
+        scanCount: 0
+      },
       running: false,
       mode: 'serverless',
       message: 'Continuous scanner not available on Vercel. Use manual scan instead.',
@@ -31,6 +39,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Scanner status error:', error);
     res.status(500).json({
+      success: false,
       error: error.message,
       running: false
     });
