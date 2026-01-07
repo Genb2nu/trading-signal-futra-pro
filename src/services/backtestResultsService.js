@@ -3,7 +3,8 @@
  * Handles fetching and caching of backtest data from the API
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Use relative URLs in production, localhost in development
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'production' ? '' : 'http://localhost:3000');
 
 /**
  * Fetch the latest backtest results
