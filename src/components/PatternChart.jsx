@@ -860,16 +860,24 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             sessionOverlay.setData(sessionData);
 
             // CRITICAL FIX: Create vertical pillar backgrounds for trading sessions
-            // These need to be inserted BEFORE the chart canvas so they appear behind candles
+            // These need to fill ENTIRE chart height from absolute top to bottom
             const chartContainer = chartContainerRef.current;
 
             // Function to draw/update session background
             const drawSessionBackground = () => {
               const timeScale = chart.timeScale();
+              const priceScale = chart.priceScale('right');
               const sessionStart = timeScale.timeToCoordinate(session.start);
               const sessionEnd = timeScale.timeToCoordinate(session.end);
 
               if (sessionStart !== null && sessionEnd !== null) {
+                // Find the chart's main pane (where candles are drawn)
+                const chartPane = chartContainer.querySelector('td:first-child');
+                const targetContainer = chartPane || chartContainer;
+
+                // Get the actual height of the chart pane
+                const paneHeight = targetContainer.clientHeight;
+
                 // Find or create the session div
                 let sessionDiv = chartContainer.querySelector(`[data-session="${session.name}"]`);
 
@@ -879,20 +887,13 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
                   sessionDiv.className = 'trading-session-pillar';
                   sessionDiv.style.cssText = `
                     position: absolute;
-                    top: 0;
-                    height: 100%;
                     background-color: ${session.color};
                     pointer-events: none;
                     z-index: 1;
                   `;
 
-                  // Insert BEFORE the first canvas (so it's behind the chart)
-                  const canvas = chartContainer.querySelector('canvas');
-                  if (canvas && canvas.parentElement) {
-                    canvas.parentElement.insertBefore(sessionDiv, canvas);
-                  } else {
-                    chartContainer.appendChild(sessionDiv);
-                  }
+                  // Append to main chart container
+                  chartContainer.appendChild(sessionDiv);
 
                   // Store reference for cleanup
                   if (!chartContainer._sessionDivs) {
@@ -901,14 +902,21 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
                   chartContainer._sessionDivs.push(sessionDiv);
                 }
 
-                // Update position and width (for zoom/pan)
+                // Get the position of the chart pane relative to container
+                const paneRect = targetContainer.getBoundingClientRect();
+                const containerRect = chartContainer.getBoundingClientRect();
+                const topOffset = paneRect.top - containerRect.top;
+
+                // Update position to fill ENTIRE chart pane height
                 sessionDiv.style.left = `${Math.max(0, sessionStart)}px`;
                 sessionDiv.style.width = `${Math.max(0, sessionEnd - sessionStart)}px`;
+                sessionDiv.style.top = `${topOffset}px`;
+                sessionDiv.style.height = `${paneHeight}px`;
               }
             };
 
             // Draw initial background
-            drawSessionBackground();
+            setTimeout(drawSessionBackground, 100);
 
             // Redraw on zoom/scroll events
             chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
