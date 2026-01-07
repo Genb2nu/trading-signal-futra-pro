@@ -2,19 +2,25 @@
 
 **Date:** January 7, 2026
 **Status:** Ready to Deploy
-**Issue:** 404 errors on Vercel deployment for scanner and auto-tracker APIs
+**Issue:** 404/500 errors on Vercel deployment for multiple API endpoints
 
 ---
 
 ## Problem
 
-After deploying to Vercel, the following endpoints returned 404 errors:
-- `https://trading-signal-futra-pro.vercel.app/api/scanner/status`
-- `https://trading-signal-futra-pro.vercel.app/api/auto-tracker/stats`
+After deploying to Vercel, the following endpoints returned errors:
+- ❌ `/api/scanner/status` - 404 (Auto-Scanner tab crash)
+- ❌ `/api/auto-tracker/stats` - 404 (Auto-Tracker tab fail)
+- ❌ `/api/settings` - 500 (Settings page error on save)
+- ❌ `/api/symbols` - Missing (LiveTrading/SignalTracker fail)
+- ❌ `/api/backtest-results/*` - Missing (Backtest Results tab fail)
 
 This caused:
 - Auto-Scanner tab to crash
 - Auto-Tracker tab to fail loading
+- Settings save showing 500 Internal Server Error
+- LiveTrading and SignalTracker unable to fetch symbols
+- Backtest Results tab unable to load historical data
 - Unable to scan or track signals on production
 
 ---
@@ -27,7 +33,7 @@ Vercel requires API endpoints to be structured as serverless functions in the `/
 
 ## Solution
 
-Created 8 new serverless functions for Vercel:
+Created **14 serverless functions** for complete Vercel compatibility:
 
 ### Scanner API (4 endpoints)
 
@@ -75,6 +81,53 @@ Created 8 new serverless functions for Vercel:
 - Updates signal status in cache
 - Dynamic route parameter support
 
+### Settings API (2 endpoints)
+
+**api/settings/index.js**
+- GET `/api/settings`
+- Returns configuration from config.json
+- Includes strategy mode, risk settings, filtering options
+- Fallback to defaults if config missing
+
+- POST `/api/settings`
+- Accepts settings updates
+- Acknowledges update (settings stored in localStorage)
+- Returns success with serverless mode note
+
+### Symbols API (1 endpoint)
+
+**api/symbols/index.js**
+- GET `/api/symbols`
+- Returns configured symbols from config.json
+- Returns symbol limit setting
+- Fallback to default symbols if config missing
+
+### Backtest Results API (4 endpoints)
+
+**api/backtest-results/latest.js**
+- GET `/api/backtest-results/latest`
+- Returns latest-backtest.json results
+- 404 if no results exist
+- Includes all strategy modes and metrics
+
+**api/backtest-results/runs/index.js**
+- GET `/api/backtest-results/runs`
+- Returns index.json with all backtest runs
+- Empty array if no index exists
+- Lists run IDs, dates, and summaries
+
+**api/backtest-results/runs/[id].js**
+- GET `/api/backtest-results/runs/:id`
+- Returns specific backtest run by ID
+- Dynamic route parameter support
+- 404 if run not found
+
+**api/backtest-results/status.js**
+- GET `/api/backtest-results/status`
+- Returns availability status
+- Counts total runs
+- Shows directory paths
+
 ---
 
 ## Implementation Details
@@ -92,6 +145,16 @@ api/
 │   ├── tracked-signals.js
 │   ├── auto-track.js
 │   └── record-outcome/
+│       └── [id].js
+├── settings/
+│   └── index.js
+├── symbols/
+│   └── index.js
+├── backtest-results/
+│   ├── latest.js
+│   ├── status.js
+│   └── runs/
+│       ├── index.js
 │       └── [id].js
 ├── binanceService.js
 ├── index.js
@@ -442,28 +505,48 @@ curl -X POST https://trading-signal-futra-pro.vercel.app/api/scanner/start \
 
 ### Changes Made
 
-- ✅ Created 8 serverless functions
+- ✅ Created **14 serverless functions** (complete API coverage)
 - ✅ Implemented signal caching
-- ✅ Added CORS support
+- ✅ Added CORS support for all endpoints
 - ✅ Handled serverless limitations
+- ✅ Settings API with localStorage fallback
+- ✅ Backtest results serving from static files
 - ✅ Documented thoroughly
 
 ### Files Added
 
+**Scanner API (4 files):**
 - `api/scanner/status.js`
 - `api/scanner/all-signals.js`
 - `api/scanner/start.js`
 - `api/scanner/stop.js`
+
+**Auto-Tracker API (4 files):**
 - `api/auto-tracker/stats.js`
 - `api/auto-tracker/tracked-signals.js`
 - `api/auto-tracker/auto-track.js`
 - `api/auto-tracker/record-outcome/[id].js`
 
+**Settings API (1 file):**
+- `api/settings/index.js`
+
+**Symbols API (1 file):**
+- `api/symbols/index.js`
+
+**Backtest Results API (4 files):**
+- `api/backtest-results/latest.js`
+- `api/backtest-results/status.js`
+- `api/backtest-results/runs/index.js`
+- `api/backtest-results/runs/[id].js`
+
 ### Lines of Code
 
-- Total: 527 lines
+- Total: **929 lines**
 - Scanner: 215 lines
 - Auto-Tracker: 312 lines
+- Settings: 138 lines
+- Symbols: 48 lines
+- Backtest Results: 216 lines
 
 ---
 
