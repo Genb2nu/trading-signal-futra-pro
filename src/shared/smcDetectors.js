@@ -1677,6 +1677,102 @@ export function calculateHTFSwingRange(htfCandles, lookback = 50) {
 }
 
 /**
+ * OPTION 1 FIX: Validate OBs/FVGs by proximity to BOS/CHoCH events
+ * Filters patterns to only those formed near market structure shifts
+ * @param {Array} patterns - FVGs or OBs to validate
+ * @param {Array} bmsEvents - Break of market structure events
+ * @param {Array} liquiditySweeps - Liquidity sweep events
+ * @param {string} patternType - 'fvg' or 'ob'
+ * @returns {Array} Validated patterns that occurred during structure shifts
+ */
+function validatePatternsWithStructureShift(patterns, bmsEvents, liquiditySweeps, patternType) {
+  const validated = [];
+  // OPTION 1 FIX: Increased lookback range for better detection
+  // FVGs: 5 → 15 candles (3x increase)
+  // OBs: 10 → 20 candles (2x increase)
+  const lookbackRange = patternType === 'fvg' ? 15 : 20;
+
+  for (const pattern of patterns) {
+    let isValidated = false;
+    let validationReason = null;
+
+    // Check if pattern formed near a BOS/CHoCH event
+    for (const bms of bmsEvents) {
+      const candleDistance = Math.abs(pattern.index - bms.index);
+
+      // OPTION 1 FIX: Accept patterns both BEFORE and AFTER the structure break
+      // Before: Pattern forms, then market breaks structure
+      // After: Market breaks structure, then price returns to test the zone (retest)
+      const isInRange = candleDistance <= lookbackRange;
+
+      // Type must match: bullish pattern near bullish BOS, or bearish pattern near bearish BOS
+      const typesMatch = pattern.type === bms.type;
+
+      if (isInRange && typesMatch) {
+        const timing = pattern.index <= bms.index ? 'before' : 'after';
+        isValidated = true;
+        validationReason = {
+          type: 'BOS',
+          bmsIndex: bms.index,
+          bmsType: bms.type,
+          breakLevel: bms.breakLevel,
+          candleDistance: candleDistance,
+          timing: timing,
+          explanation: `${pattern.type.toUpperCase()} ${patternType.toUpperCase()} formed ${candleDistance} candles ${timing} ${bms.type} BOS at ${bms.breakLevel.toFixed(2)}`
+        };
+        break;
+      }
+    }
+
+    // If not validated by BOS, check if validated by liquidity sweep
+    if (!isValidated) {
+      for (const sweep of liquiditySweeps) {
+        const candleDistance = Math.abs(pattern.index - sweep.index);
+        const isInRange = candleDistance <= lookbackRange;
+        const typesMatch = pattern.type === sweep.direction;
+
+        if (isInRange && typesMatch) {
+          isValidated = true;
+          validationReason = {
+            type: 'SWEEP',
+            sweepIndex: sweep.index,
+            sweepDirection: sweep.direction,
+            swingLevel: sweep.swingLevel,
+            candleDistance: candleDistance,
+            explanation: `${pattern.type.toUpperCase()} ${patternType.toUpperCase()} formed ${candleDistance} candles from ${sweep.direction} liquidity sweep at ${sweep.swingLevel.toFixed(2)}`
+          };
+          break;
+        }
+      }
+    }
+
+    // Only include patterns validated by market structure shift
+    if (isValidated) {
+      validated.push({
+        ...pattern,
+        validated: true,
+        validationReason
+      });
+    }
+  }
+
+  // Log filtering stats for debugging
+  const filteredCount = patterns.length - validated.length;
+  const detectionRate = patterns.length > 0 ? ((validated.length / patterns.length) * 100).toFixed(1) : 0;
+
+  console.log(`🔍 ${patternType.toUpperCase()} Validation (Lookback: ${lookbackRange} candles):`);
+  console.log(`   ✅ Validated: ${validated.length} | ❌ Filtered: ${filteredCount} | 📊 Detection Rate: ${detectionRate}%`);
+
+  if (validated.length > 0) {
+    const beforeCount = validated.filter(p => p.validationReason?.timing === 'before').length;
+    const afterCount = validated.filter(p => p.validationReason?.timing === 'after').length;
+    console.log(`   ⏮️  Before BOS: ${beforeCount} | ⏭️  After BOS (Retest): ${afterCount}`);
+  }
+
+  return validated;
+}
+
+/**
  * Main SMC analyzer that combines all detection methods
  * and generates trading signals
  * @param {Array} candles - Array of kline objects
@@ -1703,26 +1799,30 @@ export function analyzeSMC(candles, htfCandles = null, timeframe = null, htf2Can
   // ===== EXISTING DETECTIONS (with config passed for scalping mode) =====
   const swingPoints = detectSwingPoints(candles, 2, config);
   const fvgsFlat = detectFairValueGaps(candles, config);
-
-  // Transform flat FVG array into structured object for trackFVGMitigation
-  const fvgs = {
-    bullish: fvgsFlat.filter(f => f.type === 'bullish'),
-    bearish: fvgsFlat.filter(f => f.type === 'bearish')
-  };
-
-  const orderBlocks = detectOrderBlocks(candles, null, config);
+  const allOrderBlocks = detectOrderBlocks(candles, null, config);
   const structure = analyzeMarketStructure(swingPoints);
   const liquiditySweeps = detectLiquiditySweeps(candles, swingPoints, config);
   const bmsEvents = detectBreakOfStructure(candles, structure);
+
+  // OPTION 1 FIX: Filter FVGs and OBs to only keep those near BOS/CHoCH
+  // This ensures we only trade high-probability zones formed during market shifts
+  const validatedFvgsFlat = validatePatternsWithStructureShift(fvgsFlat, bmsEvents, liquiditySweeps, 'fvg');
+  const orderBlocks = validatePatternsWithStructureShift(allOrderBlocks, bmsEvents, liquiditySweeps, 'ob');
+
+  // Transform validated FVGs into structured object for trackFVGMitigation
+  const fvgsValidated = {
+    bullish: validatedFvgsFlat.filter(f => f.type === 'bullish'),
+    bearish: validatedFvgsFlat.filter(f => f.type === 'bearish')
+  };
 
   // ===== NEW ENHANCED DETECTIONS =====
   const chochEvents = detectChangeOfCharacter(candles, structure);
   const { bos, bms } = distinguishBOSvsBMS(candles, structure);
   const externalLiquidity = detectExternalLiquidity(swingPoints);
   const internalLiquidity = detectInternalLiquidity(candles, swingPoints);
-  const inducement = detectEnhancedInducementZones(candles, structure, orderBlocks, fvgs, bos, swingPoints);
+  const inducement = detectEnhancedInducementZones(candles, structure, orderBlocks, fvgsValidated, bos, swingPoints);
   const volumeAnalysis = analyzeVolume(candles);
-  const mitigatedFVGs = trackFVGMitigation(fvgs, candles);
+  const mitigatedFVGs = trackFVGMitigation(fvgsValidated, candles);
   const breakerBlocks = detectBreakerBlocks(orderBlocks, candles);
   const latestCandle = candles[candles.length - 1];
   const premiumDiscount = calculatePremiumDiscount(candles, swingPoints, latestCandle.close);
