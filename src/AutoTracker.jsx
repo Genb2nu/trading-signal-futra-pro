@@ -127,7 +127,11 @@ function AutoTracker() {
       const response = await axios.post(`${API_URL}/api/scanner/stop`);
 
       if (response.data.success) {
-        alert(`✅ Scanner stopped.\n\nTotal scans: ${response.data.stats.totalScans}\nSignals detected: ${response.data.stats.signalsDetected}\nSignals tracked: ${response.data.stats.signalsTracked}`);
+        if (response.data.stats) {
+          alert(`✅ Scanner stopped.\n\nTotal scans: ${response.data.stats.totalScans}\nSignals detected: ${response.data.stats.signalsDetected}\nSignals tracked: ${response.data.stats.signalsTracked}`);
+        } else {
+          alert(`✅ Scanner stopped successfully.`);
+        }
         await loadScannerStatus();
       }
     } catch (error) {
@@ -337,7 +341,7 @@ function AutoTracker() {
                   {scannerStatus.isRunning ? '🟢 RUNNING' : '⚫ STOPPED'}
                 </div>
               </div>
-              {scannerStatus.stats.totalScans > 0 && (
+              {scannerStatus?.stats?.totalScans > 0 && (
                 <>
                   <div>
                     <div style={{ opacity: 0.8, marginBottom: '4px' }}>Total Scans</div>

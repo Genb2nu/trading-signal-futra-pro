@@ -31,6 +31,12 @@ export default async function handler(req, res) {
         lastScan: null,
         scanCount: 0
       },
+      stats: {
+        totalScans: 0,
+        signalsDetected: 0,
+        signalsTracked: 0,
+        lastScanTime: null
+      },
       running: false,
       mode: 'serverless',
       message: 'Continuous scanner not available on Vercel. Use manual scan instead.',
