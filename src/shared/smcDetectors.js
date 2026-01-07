@@ -1799,7 +1799,7 @@ export function analyzeSMC(candles, htfCandles = null, timeframe = null, htf2Can
   // ===== EXISTING DETECTIONS (with config passed for scalping mode) =====
   const swingPoints = detectSwingPoints(candles, 2, config);
   const fvgsFlat = detectFairValueGaps(candles, config);
-  const allOrderBlocks = detectOrderBlocks(candles, null, config);
+  const allOrderBlocksGrouped = detectOrderBlocks(candles, null, config);
   const structure = analyzeMarketStructure(swingPoints);
   const liquiditySweeps = detectLiquiditySweeps(candles, swingPoints, config);
   const bmsEvents = detectBreakOfStructure(candles, structure);
@@ -1807,7 +1807,19 @@ export function analyzeSMC(candles, htfCandles = null, timeframe = null, htf2Can
   // OPTION 1 FIX: Filter FVGs and OBs to only keep those near BOS/CHoCH
   // This ensures we only trade high-probability zones formed during market shifts
   const validatedFvgsFlat = validatePatternsWithStructureShift(fvgsFlat, bmsEvents, liquiditySweeps, 'fvg');
-  const orderBlocks = validatePatternsWithStructureShift(allOrderBlocks, bmsEvents, liquiditySweeps, 'ob');
+
+  // Flatten OB groups into array for validation
+  const allOrderBlocksFlat = [
+    ...(allOrderBlocksGrouped.bullish || []),
+    ...(allOrderBlocksGrouped.bearish || [])
+  ];
+  const validatedOrderBlocksFlat = validatePatternsWithStructureShift(allOrderBlocksFlat, bmsEvents, liquiditySweeps, 'ob');
+
+  // Re-group validated OBs
+  const orderBlocks = {
+    bullish: validatedOrderBlocksFlat.filter(ob => ob.type === 'bullish'),
+    bearish: validatedOrderBlocksFlat.filter(ob => ob.type === 'bearish')
+  };
 
   // Transform validated FVGs into structured object for trackFVGMitigation
   const fvgsValidated = {
@@ -3019,6 +3031,10 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
           ].filter(p => p !== null),
           timestamp: bullishOB.timestamp, // Use order block's timestamp, not latest candle
 
+          // OPTION 1 FIX: Add validated OB/FVG directly for validation logger
+          orderBlock: bullishOB,
+          fvg: findNearestFVG(allBullishFVGs, latestCandle.close, 'bullish'),
+
           // Pattern details (existing)
           patternDetails: {
             fvg: findNearestFVG(allBullishFVGs, latestCandle.close, 'bullish'), // Use nearest FVG to current price
@@ -3659,6 +3675,10 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
             ote.currentPriceInOTE ? 'OTE' : null
           ].filter(p => p !== null),
           timestamp: bearishOB.timestamp, // Use order block's timestamp, not latest candle
+
+          // OPTION 1 FIX: Add validated OB/FVG directly for validation logger
+          orderBlock: bearishOB,
+          fvg: findNearestFVG(allBearishFVGs, latestCandle.close, 'bearish'),
 
           // Pattern details (existing)
           patternDetails: {
