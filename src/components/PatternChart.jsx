@@ -859,41 +859,61 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
             sessionOverlay.setData(sessionData);
 
-            // CRITICAL FIX: Add CSS overlay for full-height background
-            // This uses the chart container to draw a colored rectangle behind candles
+            // CRITICAL FIX: Create vertical pillar backgrounds for trading sessions
+            // These need to be inserted BEFORE the chart canvas so they appear behind candles
             const chartContainer = chartContainerRef.current;
-            const sessionDiv = document.createElement('div');
-            sessionDiv.className = 'trading-session-background';
-            sessionDiv.style.cssText = `
-              position: absolute;
-              top: 0;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              background-color: ${session.color};
-              pointer-events: none;
-              z-index: 0;
-            `;
 
-            // Calculate time-based positioning
-            const timeScale = chart.timeScale();
-            const sessionStart = timeScale.timeToCoordinate(session.start);
-            const sessionEnd = timeScale.timeToCoordinate(session.end);
+            // Function to draw/update session background
+            const drawSessionBackground = () => {
+              const timeScale = chart.timeScale();
+              const sessionStart = timeScale.timeToCoordinate(session.start);
+              const sessionEnd = timeScale.timeToCoordinate(session.end);
 
-            if (sessionStart !== null && sessionEnd !== null) {
-              sessionDiv.style.left = `${sessionStart}px`;
-              sessionDiv.style.width = `${sessionEnd - sessionStart}px`;
-              sessionDiv.style.top = '0';
-              sessionDiv.style.height = '100%';
+              if (sessionStart !== null && sessionEnd !== null) {
+                // Find or create the session div
+                let sessionDiv = chartContainer.querySelector(`[data-session="${session.name}"]`);
 
-              chartContainer.appendChild(sessionDiv);
+                if (!sessionDiv) {
+                  sessionDiv = document.createElement('div');
+                  sessionDiv.setAttribute('data-session', session.name);
+                  sessionDiv.className = 'trading-session-pillar';
+                  sessionDiv.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    background-color: ${session.color};
+                    pointer-events: none;
+                    z-index: 1;
+                  `;
 
-              // Store reference for cleanup
-              if (!chartContainer._sessionDivs) {
-                chartContainer._sessionDivs = [];
+                  // Insert BEFORE the first canvas (so it's behind the chart)
+                  const canvas = chartContainer.querySelector('canvas');
+                  if (canvas && canvas.parentElement) {
+                    canvas.parentElement.insertBefore(sessionDiv, canvas);
+                  } else {
+                    chartContainer.appendChild(sessionDiv);
+                  }
+
+                  // Store reference for cleanup
+                  if (!chartContainer._sessionDivs) {
+                    chartContainer._sessionDivs = [];
+                  }
+                  chartContainer._sessionDivs.push(sessionDiv);
+                }
+
+                // Update position and width (for zoom/pan)
+                sessionDiv.style.left = `${Math.max(0, sessionStart)}px`;
+                sessionDiv.style.width = `${Math.max(0, sessionEnd - sessionStart)}px`;
               }
-              chartContainer._sessionDivs.push(sessionDiv);
-            }
+            };
+
+            // Draw initial background
+            drawSessionBackground();
+
+            // Redraw on zoom/scroll events
+            chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
+              drawSessionBackground();
+            });
 
             // Add session label marker
             const sessionLabelTime = session.start + ((session.end - session.start) / 2);
