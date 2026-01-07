@@ -764,6 +764,13 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
            * - New York: 21:00 - 06:00 (13:00 - 22:00 UTC)
            */
 
+          // Cleanup old session divs before redrawing
+          const chartContainer = chartContainerRef.current;
+          if (chartContainer && chartContainer._sessionDivs) {
+            chartContainer._sessionDivs.forEach(div => div.remove());
+            chartContainer._sessionDivs = [];
+          }
+
           // Get today's date at midnight UTC
           const now = new Date();
           const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
@@ -802,18 +809,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             return;
           }
 
-          // Get GLOBAL price range from ALL candles (not just visible ones)
-          const allPrices = candlestickData.map(c => [c.high, c.low]).flat();
-          const dataMaxPrice = Math.max(...allPrices);
-          const dataMinPrice = Math.min(...allPrices);
-
-          // Use extreme values to ensure session backgrounds ALWAYS fill the chart
-          // This works even when the user zooms in/out
-          const priceRange = dataMaxPrice - dataMinPrice;
-          const maxPrice = dataMaxPrice * 1000; // Extremely high price (way above any zoom range)
-          const minPrice = 0; // Zero - always below any visible price
-
-          // Draw each session
+          // Draw each session using rectangular overlays
           sessions.forEach(session => {
             // Check if this session has occurred yet or is ongoing
             const currentTime = Date.now() / 1000;
@@ -831,32 +827,73 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               return;
             }
 
-            // Draw session background using baseline series for continuous fill (no gaps)
-            // Using extremely high value (maxPrice) ensures it fills to the top of any zoom level
-            // Using 0 as baseValue ensures it fills from the very bottom
-            const sessionSeries = chart.addBaselineSeries({
-              baseValue: { type: 'price', price: minPrice }, // Always at bottom (0)
-              topLineColor: 'transparent',
-              topFillColor1: session.color,
-              topFillColor2: session.color,
-              bottomLineColor: 'transparent',
-              bottomFillColor1: 'transparent',
-              bottomFillColor2: 'transparent',
+            // Use a hidden line series to create markers that we'll style as full-height backgrounds
+            const sessionOverlay = chart.addLineSeries({
+              color: 'transparent',
               lineWidth: 0,
-              priceFormat: { type: 'price' },
-              priceScaleId: '', // No price scale (overlay)
               lastValueVisible: false,
               priceLineVisible: false,
+              crosshairMarkerVisible: false,
+              autoscaleInfoProvider: () => ({
+                priceRange: null,
+                margins: { above: 0, below: 0 }
+              })
             });
 
-            // Create continuous data points for the session background
-            // Each point uses maxPrice (extremely high) to fill from bottom to top
-            const sessionData = sessionCandles.map(candle => ({
+            // Add one marker per candle in session to create continuous background
+            const sessionMarkers = sessionCandles.map(candle => ({
               time: candle.time,
-              value: maxPrice // Extremely high value ensures fill to top
+              position: 'inBar',
+              color: session.color,
+              shape: 'square',
+              size: 3
             }));
 
-            sessionSeries.setData(sessionData);
+            sessionOverlay.setMarkers(sessionMarkers);
+
+            // Create data points for the line series (will be invisible)
+            const sessionData = sessionCandles.map(candle => ({
+              time: candle.time,
+              value: candle.close
+            }));
+
+            sessionOverlay.setData(sessionData);
+
+            // CRITICAL FIX: Add CSS overlay for full-height background
+            // This uses the chart container to draw a colored rectangle behind candles
+            const chartContainer = chartContainerRef.current;
+            const sessionDiv = document.createElement('div');
+            sessionDiv.className = 'trading-session-background';
+            sessionDiv.style.cssText = `
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              background-color: ${session.color};
+              pointer-events: none;
+              z-index: 0;
+            `;
+
+            // Calculate time-based positioning
+            const timeScale = chart.timeScale();
+            const sessionStart = timeScale.timeToCoordinate(session.start);
+            const sessionEnd = timeScale.timeToCoordinate(session.end);
+
+            if (sessionStart !== null && sessionEnd !== null) {
+              sessionDiv.style.left = `${sessionStart}px`;
+              sessionDiv.style.width = `${sessionEnd - sessionStart}px`;
+              sessionDiv.style.top = '0';
+              sessionDiv.style.height = '100%';
+
+              chartContainer.appendChild(sessionDiv);
+
+              // Store reference for cleanup
+              if (!chartContainer._sessionDivs) {
+                chartContainer._sessionDivs = [];
+              }
+              chartContainer._sessionDivs.push(sessionDiv);
+            }
 
             // Add session label marker
             const sessionLabelTime = session.start + ((session.end - session.start) / 2);
@@ -971,6 +1008,13 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
     fetchData();
 
     return () => {
+      // Cleanup session background divs
+      if (chartContainerRef.current && chartContainerRef.current._sessionDivs) {
+        chartContainerRef.current._sessionDivs.forEach(div => div.remove());
+        chartContainerRef.current._sessionDivs = [];
+      }
+
+      // Cleanup chart
       if (chartRef.current) {
         chartRef.current.remove();
         chartRef.current = null;

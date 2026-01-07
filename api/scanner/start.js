@@ -6,7 +6,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { scanMultipleSymbols, formatSignalsForDisplay } from '../smcAnalyzer.js';
+import { scanMultipleSymbols, formatSignalsForDisplay } from '../../lib/smcAnalyzer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
