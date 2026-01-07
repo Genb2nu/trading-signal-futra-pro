@@ -1,225 +1,75 @@
 {
   "runs": [
     {
-      "id": "backtest-2026-01-07T02-39-14-357Z",
-      "timestamp": "2026-01-07T02:39:14.357Z",
-      "duration": "76.4s",
+      "id": "backtest-2026-01-07T15-32-14-331Z",
+      "timestamp": "2026-01-07T15:32:14.331Z",
+      "duration": "84.2s",
       "description": "Comprehensive backtest with tuned SMC strategy",
       "summary": {
         "conservative": {
-          "totalTrades": 39,
-          "wins": 15,
-          "losses": 12,
-          "winRate": 38.46,
-          "profitFactor": 2.44,
-          "totalPnlR": 17.48,
-          "avgRPerTrade": 0.45
+          "totalTrades": 42,
+          "wins": 14,
+          "losses": 9,
+          "winRate": 33.33,
+          "profitFactor": 3.01,
+          "totalPnlR": 18.41,
+          "avgRPerTrade": 0.44
         },
         "moderate": {
           "totalTrades": 50,
           "wins": 23,
-          "losses": 15,
+          "losses": 9,
           "winRate": 46,
-          "profitFactor": 2.33,
-          "totalPnlR": 20.22,
-          "avgRPerTrade": 0.4
+          "profitFactor": 3.74,
+          "totalPnlR": 25.11,
+          "avgRPerTrade": 0.5
         },
         "aggressive": {
           "totalTrades": 125,
-          "wins": 60,
-          "losses": 34,
-          "winRate": 48,
-          "profitFactor": 2.57,
-          "totalPnlR": 53.63,
-          "avgRPerTrade": 0.43
+          "wins": 56,
+          "losses": 25,
+          "winRate": 44.8,
+          "profitFactor": 3.43,
+          "totalPnlR": 62.07,
+          "avgRPerTrade": 0.5
         },
         "scalping": {
-          "totalTrades": 104,
-          "wins": 62,
-          "losses": 20,
-          "winRate": 59.62,
-          "profitFactor": 4.06,
-          "totalPnlR": 61.7,
-          "avgRPerTrade": 0.59
+          "totalTrades": 89,
+          "wins": 50,
+          "losses": 13,
+          "winRate": 56.18,
+          "profitFactor": 4.89,
+          "totalPnlR": 51.63,
+          "avgRPerTrade": 0.58
         },
         "elite": {
           "totalTrades": 8,
           "wins": 5,
           "losses": 0,
           "winRate": 62.5,
-          "profitFactor": 42.78,
-          "totalPnlR": 6.82,
+          "profitFactor": 42.42,
+          "totalPnlR": 6.77,
           "avgRPerTrade": 0.85
         },
         "sniper": {
-          "totalTrades": 4,
+          "totalTrades": 1,
           "wins": 0,
           "losses": 0,
           "winRate": 0,
           "profitFactor": 999,
-          "totalPnlR": 2.26,
-          "avgRPerTrade": 0.56
+          "totalPnlR": 1.75,
+          "avgRPerTrade": 1.75
         },
         "ultra": {
-          "totalTrades": 4,
+          "totalTrades": 1,
           "wins": 0,
           "losses": 0,
           "winRate": 0,
           "profitFactor": 999,
-          "totalPnlR": 2.26,
-          "avgRPerTrade": 0.56
+          "totalPnlR": 1.75,
+          "avgRPerTrade": 1.75
         }
       }
-    },
-    {
-      "id": "2026-01-03_sniper_1h",
-      "timestamp": "2026-01-03T09:37:59.761Z",
-      "mode": "SNIPER",
-      "timeframe": "1h",
-      "totalTrades": 5,
-      "winRate": 60,
-      "profitFactor": 0.655,
-      "file": "runs/2026-01-03_sniper_1h.json"
-    },
-    {
-      "id": "2026-01-03_sniper_15m",
-      "timestamp": "2026-01-03T09:37:54.588Z",
-      "mode": "SNIPER",
-      "timeframe": "15m",
-      "totalTrades": 2,
-      "winRate": 100,
-      "profitFactor": 999,
-      "file": "runs/2026-01-03_sniper_15m.json"
-    },
-    {
-      "id": "2026-01-03_sniper_5m",
-      "timestamp": "2026-01-03T09:37:49.789Z",
-      "mode": "SNIPER",
-      "timeframe": "5m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_sniper_5m.json"
-    },
-    {
-      "id": "2026-01-03_elite_1h",
-      "timestamp": "2026-01-03T09:37:45.447Z",
-      "mode": "ELITE",
-      "timeframe": "1h",
-      "totalTrades": 7,
-      "winRate": 71.42857142857143,
-      "profitFactor": 1.82,
-      "file": "runs/2026-01-03_elite_1h.json"
-    },
-    {
-      "id": "2026-01-03_elite_15m",
-      "timestamp": "2026-01-03T09:37:39.603Z",
-      "mode": "ELITE",
-      "timeframe": "15m",
-      "totalTrades": 3,
-      "winRate": 100,
-      "profitFactor": 999,
-      "file": "runs/2026-01-03_elite_15m.json"
-    },
-    {
-      "id": "2026-01-03_elite_5m",
-      "timestamp": "2026-01-03T09:37:35.102Z",
-      "mode": "ELITE",
-      "timeframe": "5m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_elite_5m.json"
-    },
-    {
-      "id": "2026-01-03_aggressive_1h",
-      "timestamp": "2026-01-03T09:37:31.522Z",
-      "mode": "AGGRESSIVE",
-      "timeframe": "1h",
-      "totalTrades": 14,
-      "winRate": 85.71428571428571,
-      "profitFactor": 8.905000000000001,
-      "file": "runs/2026-01-03_aggressive_1h.json"
-    },
-    {
-      "id": "2026-01-03_aggressive_15m",
-      "timestamp": "2026-01-03T09:37:27.054Z",
-      "mode": "AGGRESSIVE",
-      "timeframe": "15m",
-      "totalTrades": 10,
-      "winRate": 90,
-      "profitFactor": 6.26,
-      "file": "runs/2026-01-03_aggressive_15m.json"
-    },
-    {
-      "id": "2026-01-03_aggressive_5m",
-      "timestamp": "2026-01-03T09:37:21.241Z",
-      "mode": "AGGRESSIVE",
-      "timeframe": "5m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_aggressive_5m.json"
-    },
-    {
-      "id": "2026-01-03_moderate_1h",
-      "timestamp": "2026-01-03T09:37:16.429Z",
-      "mode": "MODERATE",
-      "timeframe": "1h",
-      "totalTrades": 16,
-      "winRate": 87.5,
-      "profitFactor": 11.05,
-      "file": "runs/2026-01-03_moderate_1h.json"
-    },
-    {
-      "id": "2026-01-03_moderate_15m",
-      "timestamp": "2026-01-03T09:37:11.971Z",
-      "mode": "MODERATE",
-      "timeframe": "15m",
-      "totalTrades": 9,
-      "winRate": 88.88888888888889,
-      "profitFactor": 6.08,
-      "file": "runs/2026-01-03_moderate_15m.json"
-    },
-    {
-      "id": "2026-01-03_moderate_5m",
-      "timestamp": "2026-01-03T09:37:07.138Z",
-      "mode": "MODERATE",
-      "timeframe": "5m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_moderate_5m.json"
-    },
-    {
-      "id": "2026-01-03_conservative_1h",
-      "timestamp": "2026-01-03T09:37:03.028Z",
-      "mode": "CONSERVATIVE",
-      "timeframe": "1h",
-      "totalTrades": 16,
-      "winRate": 75,
-      "profitFactor": 4.585,
-      "file": "runs/2026-01-03_conservative_1h.json"
-    },
-    {
-      "id": "2026-01-03_conservative_15m",
-      "timestamp": "2026-01-03T09:36:58.432Z",
-      "mode": "CONSERVATIVE",
-      "timeframe": "15m",
-      "totalTrades": 8,
-      "winRate": 87.5,
-      "profitFactor": 4.98,
-      "file": "runs/2026-01-03_conservative_15m.json"
-    },
-    {
-      "id": "2026-01-03_conservative_5m",
-      "timestamp": "2026-01-03T09:36:53.317Z",
-      "mode": "CONSERVATIVE",
-      "timeframe": "5m",
-      "totalTrades": 0,
-      "winRate": 0,
-      "profitFactor": 0,
-      "file": "runs/2026-01-03_conservative_5m.json"
     }
   ]
 }
