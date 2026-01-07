@@ -1,0 +1,3004 @@
+{
+  "exportDate": "2026-01-06T17:50:53.583Z",
+  "summary": {
+    "totalSignals": 66,
+    "byState": {
+      "ENTRY_READY": 12,
+      "WAITING": 54
+    },
+    "byMode": {
+      "AGGRESSIVE": 66
+    },
+    "tracking": {
+      "tracked": 5,
+      "trackedWithOutcome": 0,
+      "wins": 0,
+      "losses": 0,
+      "winRate": 0
+    }
+  },
+  "signals": [
+    {
+      "id": "ETCUSDT_bullish_1767704218084",
+      "timestamp": "2026-01-06T12:56:58.084Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.3,
+        "stopLoss": 12.965714285714283,
+        "takeProfit": 13.634285714285719,
+        "riskReward": 1,
+        "confluenceScore": 85,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LINKUSDT_bullish_1767704218081",
+      "timestamp": "2026-01-06T12:56:58.081Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.78142857142857,
+        "takeProfit": 14.03857142857143,
+        "riskReward": 1,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LTCUSDT_bullish_1767704218079",
+      "timestamp": "2026-01-06T12:56:58.079Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 83.74,
+        "stopLoss": 82.41642857142858,
+        "takeProfit": 85.06357142857141,
+        "riskReward": 1,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767704218077",
+      "timestamp": "2026-01-06T12:56:58.077Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.15155,
+        "stopLoss": 0.14901985714285715,
+        "takeProfit": 0.15416610714285714,
+        "riskReward": 1.033976060075668,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767703897322",
+      "timestamp": "2026-01-06T12:51:37.322Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8986428571428573,
+        "takeProfit": 2.027357142857143,
+        "riskReward": 1,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767703897319",
+      "timestamp": "2026-01-06T12:51:37.319Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.3,
+        "stopLoss": 12.97285714285714,
+        "takeProfit": 13.62714285714286,
+        "riskReward": 1,
+        "confluenceScore": 85,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LINKUSDT_bullish_1767703897316",
+      "timestamp": "2026-01-06T12:51:37.316Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.78142857142857,
+        "takeProfit": 14.03857142857143,
+        "riskReward": 1,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": true,
+      "trackedAt": "2026-01-06T12:51:37.316Z",
+      "outcome": null
+    },
+    {
+      "id": "LTCUSDT_bullish_1767703897314",
+      "timestamp": "2026-01-06T12:51:37.314Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 83.69,
+        "stopLoss": 82.44857142857144,
+        "takeProfit": 84.93142857142855,
+        "riskReward": 1,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767703578899",
+      "timestamp": "2026-01-06T12:46:18.899Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.899714285714286,
+        "takeProfit": 2.0262857142857142,
+        "riskReward": 1,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767703578897",
+      "timestamp": "2026-01-06T12:46:18.897Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.3,
+        "stopLoss": 12.976428571428569,
+        "takeProfit": 13.623571428571433,
+        "riskReward": 1,
+        "confluenceScore": 85,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LINKUSDT_bullish_1767703578894",
+      "timestamp": "2026-01-06T12:46:18.894Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.783214285714285,
+        "takeProfit": 14.036785714285715,
+        "riskReward": 1,
+        "confluenceScore": 135,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LTCUSDT_bullish_1767703578892",
+      "timestamp": "2026-01-06T12:46:18.892Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 83.57,
+        "stopLoss": 82.48428571428572,
+        "takeProfit": 84.65571428571427,
+        "riskReward": 1,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ARBUSDT_bullish_1767703236333",
+      "timestamp": "2026-01-06T12:40:36.333Z",
+      "symbol": "ARBUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.2222,
+        "stopLoss": 0.21637142857142858,
+        "takeProfit": 0.22802857142857144,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767703236330",
+      "timestamp": "2026-01-06T12:40:36.330Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.3,
+        "stopLoss": 12.965714285714284,
+        "takeProfit": 13.634285714285717,
+        "riskReward": 1,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LINKUSDT_bullish_1767703236327",
+      "timestamp": "2026-01-06T12:40:36.327Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.777857142857142,
+        "takeProfit": 14.042142857142858,
+        "riskReward": 1,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LTCUSDT_bullish_1767703236325",
+      "timestamp": "2026-01-06T12:40:36.325Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 83.57,
+        "stopLoss": 82.43428571428572,
+        "takeProfit": 84.70571428571427,
+        "riskReward": 1,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": true,
+      "trackedAt": "2026-01-06T12:40:36.325Z",
+      "outcome": null
+    },
+    {
+      "id": "ARBUSDT_bullish_1767702964381",
+      "timestamp": "2026-01-06T12:36:04.381Z",
+      "symbol": "ARBUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.2222,
+        "stopLoss": 0.21651428571428571,
+        "takeProfit": 0.2278857142857143,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767702964378",
+      "timestamp": "2026-01-06T12:36:04.378Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.3,
+        "stopLoss": 12.969285714285713,
+        "takeProfit": 13.630714285714289,
+        "riskReward": 1,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LINKUSDT_bullish_1767702964375",
+      "timestamp": "2026-01-06T12:36:04.375Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.783214285714285,
+        "takeProfit": 14.036785714285715,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "LTCUSDT_bullish_1767702964373",
+      "timestamp": "2026-01-06T12:36:04.373Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 83.57,
+        "stopLoss": 82.44142857142857,
+        "takeProfit": 84.69857142857141,
+        "riskReward": 1,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ARBUSDT_bullish_1767678483931",
+      "timestamp": "2026-01-06T05:48:03.931Z",
+      "symbol": "ARBUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.2202,
+        "stopLoss": 0.21486428571428573,
+        "takeProfit": 0.22553571428571428,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767678483929",
+      "timestamp": "2026-01-06T05:48:03.929Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8957857142857144,
+        "takeProfit": 2.030214285714286,
+        "riskReward": 1.0000000000000033,
+        "confluenceScore": 80,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767677841874",
+      "timestamp": "2026-01-06T05:37:21.874Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 1.963,
+        "stopLoss": 1.8936428571428572,
+        "takeProfit": 2.032357142857143,
+        "riskReward": 1.000000000000003,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767677522956",
+      "timestamp": "2026-01-06T05:32:02.956Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8943571428571429,
+        "takeProfit": 2.0316428571428573,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767677205604",
+      "timestamp": "2026-01-06T05:26:45.604Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8936428571428574,
+        "takeProfit": 2.0323571428571428,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767677205601",
+      "timestamp": "2026-01-06T05:26:45.601Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.017857142857142,
+        "takeProfit": 13.395404761904762,
+        "riskReward": 1.8571171171171066,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767677205598",
+      "timestamp": "2026-01-06T05:26:45.598Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448354285714286,
+        "takeProfit": 0.15413514285714286,
+        "riskReward": 1.1307279392511178,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ADAUSDT_bullish_1767677205595",
+      "timestamp": "2026-01-06T05:26:45.595Z",
+      "symbol": "ADAUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.4178,
+        "stopLoss": 0.4048571428571428,
+        "takeProfit": 0.4307428571428572,
+        "riskReward": 1,
+        "confluenceScore": 80,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676845498",
+      "timestamp": "2026-01-06T05:20:45.498Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 1.963,
+        "stopLoss": 1.8961428571428574,
+        "takeProfit": 2.029857142857143,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676845495",
+      "timestamp": "2026-01-06T05:20:45.495Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676845493",
+      "timestamp": "2026-01-06T05:20:45.493Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.14486400000000002,
+        "takeProfit": 0.154136,
+        "riskReward": 1.1383763837638423,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676821773",
+      "timestamp": "2026-01-06T05:20:21.773Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 1.963,
+        "stopLoss": 1.8965,
+        "takeProfit": 2.0295,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": true,
+      "trackedAt": "2026-01-06T05:20:21.773Z",
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676821770",
+      "timestamp": "2026-01-06T05:20:21.770Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": true,
+      "trackedAt": "2026-01-06T05:20:21.770Z",
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676821767",
+      "timestamp": "2026-01-06T05:20:21.767Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448997142857143,
+        "takeProfit": 0.15413707142857141,
+        "riskReward": 1.148079861803203,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676755402",
+      "timestamp": "2026-01-06T05:19:15.402Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8965,
+        "takeProfit": 2.0295,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676755399",
+      "timestamp": "2026-01-06T05:19:15.399Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676755397",
+      "timestamp": "2026-01-06T05:19:15.397Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448997142857143,
+        "takeProfit": 0.15413707142857141,
+        "riskReward": 1.148079861803203,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676693067",
+      "timestamp": "2026-01-06T05:18:13.067Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.8965,
+        "takeProfit": 2.0295,
+        "riskReward": 1,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676693064",
+      "timestamp": "2026-01-06T05:18:13.064Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676693063",
+      "timestamp": "2026-01-06T05:18:13.063Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448997142857143,
+        "takeProfit": 0.15413707142857141,
+        "riskReward": 1.148079861803203,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676629163",
+      "timestamp": "2026-01-06T05:17:09.163Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.896857142857143,
+        "takeProfit": 2.0291428571428574,
+        "riskReward": 1.0000000000000033,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676629160",
+      "timestamp": "2026-01-06T05:17:09.160Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676629158",
+      "timestamp": "2026-01-06T05:17:09.158Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448997142857143,
+        "takeProfit": 0.15413707142857141,
+        "riskReward": 1.148079861803203,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "APTUSDT_bullish_1767676561197",
+      "timestamp": "2026-01-06T05:16:01.197Z",
+      "symbol": "APTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.963,
+        "stopLoss": 1.896857142857143,
+        "takeProfit": 2.0291428571428574,
+        "riskReward": 1.0000000000000033,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676561195",
+      "timestamp": "2026-01-06T05:16:01.195Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.023214285714285,
+        "takeProfit": 13.395726190476191,
+        "riskReward": 1.9381220657276912,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676561192",
+      "timestamp": "2026-01-06T05:16:01.192Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448997142857143,
+        "takeProfit": 0.15413707142857141,
+        "riskReward": 1.148079861803203,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676500352",
+      "timestamp": "2026-01-06T05:15:00.352Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.012500000000001,
+        "takeProfit": 13.395083333333334,
+        "riskReward": 1.7824242424242531,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "NEARUSDT_bullish_1767676500350",
+      "timestamp": "2026-01-06T05:15:00.350Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.699428571428571,
+        "takeProfit": 1.8545714285714288,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOTUSDT_bullish_1767676500347",
+      "timestamp": "2026-01-06T05:15:00.347Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 2.182,
+        "stopLoss": 2.0869999999999997,
+        "takeProfit": 2.277,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676500345",
+      "timestamp": "2026-01-06T05:15:00.345Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1447997142857143,
+        "takeProfit": 0.15413407142857144,
+        "riskReward": 1.1213070579832567,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676435217",
+      "timestamp": "2026-01-06T05:13:55.217Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.012500000000001,
+        "takeProfit": 13.395083333333334,
+        "riskReward": 1.7824242424242531,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "NEARUSDT_bullish_1767676435215",
+      "timestamp": "2026-01-06T05:13:55.215Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.699785714285714,
+        "takeProfit": 1.8542142857142858,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOTUSDT_bullish_1767676435212",
+      "timestamp": "2026-01-06T05:13:55.212Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 2.182,
+        "stopLoss": 2.0869999999999997,
+        "takeProfit": 2.277,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676435209",
+      "timestamp": "2026-01-06T05:13:55.209Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1447997142857143,
+        "takeProfit": 0.15413407142857144,
+        "riskReward": 1.1213070579832567,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676368701",
+      "timestamp": "2026-01-06T05:12:48.701Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.012500000000001,
+        "takeProfit": 13.395083333333334,
+        "riskReward": 1.7824242424242531,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "NEARUSDT_bullish_1767676368698",
+      "timestamp": "2026-01-06T05:12:48.698Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.699785714285714,
+        "takeProfit": 1.8542142857142858,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOTUSDT_bullish_1767676368694",
+      "timestamp": "2026-01-06T05:12:48.694Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 2.182,
+        "stopLoss": 2.087714285714285,
+        "takeProfit": 2.2762857142857147,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2
+        },
+        "entryTiming": {
+          "status": "ob_rejection",
+          "bosConfirmed": false,
+          "confirmationType": "REJECTION",
+          "rejectionPattern": "strong_bullish_close",
+          "rejectionStrength": 2,
+          "hasRejectionBonus": true
+        }
+      },
+      "tracked": true,
+      "trackedAt": "2026-01-06T05:12:48.694Z",
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676368692",
+      "timestamp": "2026-01-06T05:12:48.692Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1447997142857143,
+        "takeProfit": 0.15413407142857144,
+        "riskReward": 1.1213070579832567,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676309805",
+      "timestamp": "2026-01-06T05:11:49.805Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.012500000000001,
+        "takeProfit": 13.395083333333334,
+        "riskReward": 1.7824242424242531,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "NEARUSDT_bullish_1767676309802",
+      "timestamp": "2026-01-06T05:11:49.802Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.699785714285714,
+        "takeProfit": 1.8542142857142858,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOTUSDT_bullish_1767676309799",
+      "timestamp": "2026-01-06T05:11:49.799Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 2.182,
+        "stopLoss": 2.0880714285714284,
+        "takeProfit": 2.2759285714285715,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676309796",
+      "timestamp": "2026-01-06T05:11:49.796Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1447997142857143,
+        "takeProfit": 0.15413407142857144,
+        "riskReward": 1.1213070579832567,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "ETCUSDT_bullish_1767676207827",
+      "timestamp": "2026-01-06T05:10:07.827Z",
+      "symbol": "ETCUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.15,
+        "stopLoss": 13.012500000000001,
+        "takeProfit": 13.395083333333334,
+        "riskReward": 1.7824242424242531,
+        "confluenceScore": 75,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "NEARUSDT_bullish_1767676207824",
+      "timestamp": "2026-01-06T05:10:07.825Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.699785714285714,
+        "takeProfit": 1.8542142857142858,
+        "riskReward": 1,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOTUSDT_bullish_1767676207822",
+      "timestamp": "2026-01-06T05:10:07.822Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 2.182,
+        "stopLoss": 2.0880714285714284,
+        "takeProfit": 2.2759285714285715,
+        "riskReward": 1,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    },
+    {
+      "id": "DOGEUSDT_bullish_1767676207819",
+      "timestamp": "2026-01-06T05:10:07.819Z",
+      "symbol": "DOGEUSDT",
+      "timeframe": "15m",
+      "mode": "AGGRESSIVE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 0.1492,
+        "stopLoss": 0.1448354285714286,
+        "takeProfit": 0.15413514285714286,
+        "riskReward": 1.1307279392511178,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        },
+        "entryTiming": {
+          "status": "ob_retest",
+          "bosConfirmed": false,
+          "confirmationType": "OB_RETEST",
+          "hasRejectionBonus": false,
+          "requiresExtraConfluence": true
+        }
+      },
+      "tracked": false,
+      "trackedAt": null,
+      "outcome": null
+    }
+  ]
+}

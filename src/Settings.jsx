@@ -604,6 +604,208 @@ function Settings() {
               </p>
             </div>
 
+            {/* Premium/Discount Zone Configuration */}
+            <div className="form-group">
+              <label className="form-label">Premium/Discount Zone Configuration</label>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ fontSize: '13px', color: '#6b7280', display: 'block', marginBottom: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    checked={settings.premiumDiscountConfig?.mode === 'smc_standard'}
+                    onChange={() => setSettings({
+                      ...settings,
+                      premiumDiscountConfig: { mode: 'smc_standard', discountThreshold: 30, premiumThreshold: 70 }
+                    })}
+                  />
+                  <span style={{ marginLeft: '8px', fontWeight: '600' }}>SMC Standard (30%/70%)</span>
+                  <span style={{ display: 'block', marginLeft: '28px', fontSize: '12px', color: '#9ca3af' }}>
+                    Discount ≤30% (buy zone), Premium ≥70% (sell zone) - Official ICT methodology
+                  </span>
+                </label>
+                <label style={{ fontSize: '13px', color: '#6b7280', display: 'block', marginBottom: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    checked={settings.premiumDiscountConfig?.mode === 'balanced'}
+                    onChange={() => setSettings({
+                      ...settings,
+                      premiumDiscountConfig: { mode: 'balanced', discountThreshold: 45, premiumThreshold: 55 }
+                    })}
+                  />
+                  <span style={{ marginLeft: '8px', fontWeight: '600' }}>Balanced (45%/55%)</span>
+                  <span style={{ display: 'block', marginLeft: '28px', fontSize: '12px', color: '#9ca3af' }}>
+                    Larger equilibrium zone (45-55%) for more trading opportunities
+                  </span>
+                </label>
+              </div>
+              <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '8px', lineHeight: '1.6' }}>
+                <strong>Discount zone</strong> = lower part of range (institutional buying area)<br/>
+                <strong>Premium zone</strong> = upper part of range (institutional selling area)<br/>
+                <strong>Equilibrium</strong> = middle zone (avoid entries here per SMC principles)
+              </p>
+            </div>
+
+            {/* Chart Visualization Limits */}
+            <div className="form-group" style={{ marginTop: '24px' }}>
+              <label className="form-label">📊 Chart Visualization Limits</label>
+              <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '16px' }}>
+                Control how many patterns are displayed on charts for clarity. Shows only the latest/nearest patterns.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                {/* Max FVGs */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max FVG Zones
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={settings.visualizationLimits?.maxFVGs || 3}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxFVGs: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Show latest {settings.visualizationLimits?.maxFVGs || 3} FVGs</span>
+                </div>
+
+                {/* Max Order Blocks */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max Order Blocks
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={settings.visualizationLimits?.maxOrderBlocks || 3}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxOrderBlocks: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Show latest {settings.visualizationLimits?.maxOrderBlocks || 3} OBs</span>
+                </div>
+
+                {/* Max CHoCH */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max CHoCH Lines
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={settings.visualizationLimits?.maxCHOCH || 2}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxCHOCH: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Show latest {settings.visualizationLimits?.maxCHOCH || 2} CHoCH</span>
+                </div>
+
+                {/* Max BOS */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max BOS Lines
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={settings.visualizationLimits?.maxBOS || 2}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxBOS: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Show latest {settings.visualizationLimits?.maxBOS || 2} BOS</span>
+                </div>
+
+                {/* Max Candles Back */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max Candles Back
+                  </label>
+                  <input
+                    type="number"
+                    min="10"
+                    max="200"
+                    step="10"
+                    value={settings.visualizationLimits?.maxCandlesBack || 50}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxCandlesBack: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Only show patterns within {settings.visualizationLimits?.maxCandlesBack || 50} candles</span>
+                </div>
+
+                {/* Max Distance Percent */}
+                <div>
+                  <label style={{ fontSize: '13px', color: '#4b5563', display: 'block', marginBottom: '6px' }}>
+                    Max Distance from Price (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={settings.visualizationLimits?.maxDistancePercent || 10}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      visualizationLimits: {
+                        ...settings.visualizationLimits,
+                        maxDistancePercent: parseInt(e.target.value)
+                      }
+                    })}
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                  <span style={{ fontSize: '11px', color: '#9ca3af' }}>Only show patterns within {settings.visualizationLimits?.maxDistancePercent || 10}% of current price</span>
+                </div>
+              </div>
+
+              <div style={{
+                marginTop: '12px',
+                padding: '12px',
+                background: '#eff6ff',
+                borderRadius: '6px',
+                border: '1px solid #3b82f6'
+              }}>
+                <p style={{ fontSize: '12px', color: '#1e40af', margin: 0 }}>
+                  <strong>💡 Tip:</strong> Lower values = cleaner charts with focus on most recent/relevant patterns.
+                  Higher values = more historical context but busier charts.
+                </p>
+              </div>
+            </div>
+
             <div style={{
               marginTop: '20px',
               padding: '15px',

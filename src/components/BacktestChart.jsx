@@ -204,6 +204,41 @@ const BacktestChart = ({
             };
           });
 
+        // Add BOS/CHoCH structure markers if trade is selected
+        if (selectedTrade && selectedTrade.symbol === symbol) {
+          const structureAnalysis = selectedTrade.signal?.patternDetails?.structureAnalysis;
+
+          // Add BOS markers
+          if (structureAnalysis?.bosEvents) {
+            structureAnalysis.bosEvents.forEach(bos => {
+              if (bos.breakCandle?.openTime) {
+                markers.push({
+                  time: Math.floor(bos.breakCandle.openTime / 1000),
+                  position: bos.direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                  color: bos.direction === 'bullish' ? '#10b981' : '#ef4444',
+                  shape: 'circle',
+                  text: `BOS ${bos.direction === 'bullish' ? '▲' : '▼'}`
+                });
+              }
+            });
+          }
+
+          // Add CHoCH markers
+          if (structureAnalysis?.chochEvents) {
+            structureAnalysis.chochEvents.forEach(choch => {
+              if (choch.breakCandle?.openTime) {
+                markers.push({
+                  time: Math.floor(choch.breakCandle.openTime / 1000),
+                  position: choch.direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                  color: '#fbbf24', // Gold for CHoCH
+                  shape: 'circle',
+                  text: `CHoCH ${choch.direction === 'bullish' ? '▲' : '▼'}`
+                });
+              }
+            });
+          }
+        }
+
         candlestickSeries.setMarkers(markers);
 
         // If a trade is selected, show its TP/SL lines and pattern zones
@@ -295,48 +330,118 @@ const BacktestChart = ({
             ]);
           }
 
-          // Draw FVG zone if present
+          // Draw TradingView-style structure lines (limited duration)
+          const structureAnalysis = selectedTrade.signal?.patternDetails?.structureAnalysis;
+          const timeIncrement = {
+            '1m': 60, '5m': 300, '15m': 900, '1h': 3600,
+            '4h': 14400, '1d': 86400
+          }[timeframe] || 3600;
+
+          // Helper function to get end time by counting actual candles (not time-based)
+          const getEndTimeAfterCandles = (startTime, candleCount) => {
+            const startIndex = candlestickData.findIndex(c => c.time >= startTime);
+            if (startIndex === -1) return startTime;
+            const endIndex = Math.min(startIndex + candleCount, candlestickData.length - 1);
+            return candlestickData[endIndex].time;
+          };
+
+          // Draw BOS (Break of Structure) level lines - limited duration (20 candles)
+          if (structureAnalysis?.bosEvents && structureAnalysis.bosEvents.length > 0) {
+            structureAnalysis.bosEvents.forEach(bos => {
+              if (bos.breakCandle?.openTime) {
+                const bosTime = Math.floor(bos.breakCandle.openTime / 1000);
+                const endTime = getEndTimeAfterCandles(bosTime, 20); // 20 actual candles
+
+                // Draw as line series for limited duration
+                const bosLine = chart.addLineSeries({
+                  color: bos.direction === 'bullish' ? '#10b981' : '#ef4444',
+                  lineWidth: 2,
+                  lineStyle: 2, // Dashed
+                  lastValueVisible: false,
+                  priceLineVisible: false,
+                });
+                bosLine.setData([
+                  { time: bosTime, value: parseFloat(bos.brokenLevel) },
+                  { time: endTime, value: parseFloat(bos.brokenLevel) }
+                ]);
+              }
+            });
+          }
+
+          // Draw CHoCH (Change of Character) level lines - limited duration (20 candles)
+          if (structureAnalysis?.chochEvents && structureAnalysis.chochEvents.length > 0) {
+            structureAnalysis.chochEvents.forEach(choch => {
+              if (choch.breakCandle?.openTime) {
+                const chochTime = Math.floor(choch.breakCandle.openTime / 1000);
+                const endTime = getEndTimeAfterCandles(chochTime, 20); // 20 actual candles
+
+                // Draw as line series for limited duration
+                const chochLine = chart.addLineSeries({
+                  color: '#fbbf24', // Gold for CHoCH
+                  lineWidth: 2,
+                  lineStyle: 2, // Dashed
+                  lastValueVisible: false,
+                  priceLineVisible: false,
+                });
+                chochLine.setData([
+                  { time: chochTime, value: parseFloat(choch.brokenLevel) },
+                  { time: endTime, value: parseFloat(choch.brokenLevel) }
+                ]);
+              }
+            });
+          }
+
+          // Draw FVG zone if present (TradingView style - limited duration, 25 candles)
           if (selectedTrade.signal?.patternDetails?.fvg) {
             const fvg = selectedTrade.signal.patternDetails.fvg;
 
-            // FVG Top line
-            if (fvg.top) {
-              candlestickSeries.createPriceLine({
-                price: parseFloat(fvg.top),
+            if (fvg.timestamp && fvg.top && fvg.bottom) {
+              const fvgTime = Math.floor(new Date(fvg.timestamp).getTime() / 1000);
+              const fvgEndTime = getEndTimeAfterCandles(fvgTime, 25); // 25 actual candles
+
+              // Draw FVG top boundary line (limited duration)
+              const fvgTopLine = chart.addLineSeries({
                 color: '#8b5cf6',
                 lineWidth: 1,
-                lineStyle: 1, // Dotted
-                axisLabelVisible: false,
-                title: 'FVG Top',
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
               });
-            }
+              fvgTopLine.setData([
+                { time: fvgTime, value: parseFloat(fvg.top) },
+                { time: fvgEndTime, value: parseFloat(fvg.top) }
+              ]);
 
-            // FVG Bottom line
-            if (fvg.bottom) {
-              candlestickSeries.createPriceLine({
-                price: parseFloat(fvg.bottom),
+              // Draw FVG bottom boundary line (limited duration)
+              const fvgBottomLine = chart.addLineSeries({
                 color: '#8b5cf6',
                 lineWidth: 1,
-                lineStyle: 1, // Dotted
-                axisLabelVisible: false,
-                title: 'FVG Bottom',
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
               });
-            }
+              fvgBottomLine.setData([
+                { time: fvgTime, value: parseFloat(fvg.bottom) },
+                { time: fvgEndTime, value: parseFloat(fvg.bottom) }
+              ]);
 
-            // Add shaded FVG zone
-            if (fvg.top && fvg.bottom) {
+              // Add shaded FVG zone (limited duration)
               const fvgShade = chart.addHistogramSeries({
-                color: 'rgba(139, 92, 246, 0.15)',
+                color: 'rgba(139, 92, 246, 0.2)',
                 priceFormat: { type: 'price' },
                 priceScaleId: '',
                 lastValueVisible: false,
               });
 
-              const fvgZoneData = candlestickData.map(candle => ({
-                time: candle.time,
-                value: parseFloat(fvg.top),
-                color: 'rgba(139, 92, 246, 0.15)'
-              }));
+              // Get exactly 25 candles for the zone (index-based, not time-based)
+              const fvgStartIndex = candlestickData.findIndex(c => c.time >= fvgTime);
+              const fvgZoneData = fvgStartIndex >= 0
+                ? candlestickData.slice(fvgStartIndex, fvgStartIndex + 25).map(candle => ({
+                    time: candle.time,
+                    value: parseFloat(fvg.top),
+                    color: 'rgba(139, 92, 246, 0.2)'
+                  }))
+                : [];
 
               fvgShade.setData(fvgZoneData);
               fvgShade.applyOptions({
@@ -345,48 +450,57 @@ const BacktestChart = ({
             }
           }
 
-          // Draw Order Block zone if present
+          // Draw Order Block zone if present (TradingView style - limited duration, 25 candles)
           if (selectedTrade.signal?.patternDetails?.orderBlock) {
             const ob = selectedTrade.signal.patternDetails.orderBlock;
 
-            // OB Top line
-            if (ob.top) {
-              candlestickSeries.createPriceLine({
-                price: parseFloat(ob.top),
+            if (ob.timestamp && ob.top && ob.bottom) {
+              const obTime = Math.floor(new Date(ob.timestamp).getTime() / 1000);
+              const obEndTime = getEndTimeAfterCandles(obTime, 25); // 25 actual candles
+
+              // Draw OB top boundary line (limited duration)
+              const obTopLine = chart.addLineSeries({
                 color: '#ec4899',
                 lineWidth: 1,
-                lineStyle: 1, // Dotted
-                axisLabelVisible: false,
-                title: 'OB Top',
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
               });
-            }
+              obTopLine.setData([
+                { time: obTime, value: parseFloat(ob.top) },
+                { time: obEndTime, value: parseFloat(ob.top) }
+              ]);
 
-            // OB Bottom line
-            if (ob.bottom) {
-              candlestickSeries.createPriceLine({
-                price: parseFloat(ob.bottom),
+              // Draw OB bottom boundary line (limited duration)
+              const obBottomLine = chart.addLineSeries({
                 color: '#ec4899',
                 lineWidth: 1,
-                lineStyle: 1, // Dotted
-                axisLabelVisible: false,
-                title: 'OB Bottom',
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
               });
-            }
+              obBottomLine.setData([
+                { time: obTime, value: parseFloat(ob.bottom) },
+                { time: obEndTime, value: parseFloat(ob.bottom) }
+              ]);
 
-            // Add shaded OB zone
-            if (ob.top && ob.bottom) {
+              // Add shaded OB zone (limited duration)
               const obShade = chart.addHistogramSeries({
-                color: 'rgba(236, 72, 153, 0.15)',
+                color: 'rgba(236, 72, 153, 0.2)',
                 priceFormat: { type: 'price' },
                 priceScaleId: '',
                 lastValueVisible: false,
               });
 
-              const obZoneData = candlestickData.map(candle => ({
-                time: candle.time,
-                value: parseFloat(ob.top),
-                color: 'rgba(236, 72, 153, 0.15)'
-              }));
+              // Get exactly 25 candles for the zone (index-based, not time-based)
+              const obStartIndex = candlestickData.findIndex(c => c.time >= obTime);
+              const obZoneData = obStartIndex >= 0
+                ? candlestickData.slice(obStartIndex, obStartIndex + 25).map(candle => ({
+                    time: candle.time,
+                    value: parseFloat(ob.top),
+                    color: 'rgba(236, 72, 153, 0.2)'
+                  }))
+                : [];
 
               obShade.setData(obZoneData);
               obShade.applyOptions({

@@ -7,6 +7,9 @@ import axios from 'axios';
 import { getUSDTSymbols, testConnection } from './binanceService.js';
 import { scanMultipleSymbols, formatSignalsForDisplay } from './smcAnalyzer.js';
 import backtestRoutes from './routes/backtestRoutes.js';
+import autoTrackerRoutes from './routes/autoTracker.js';
+import scannerRoutes from './routes/scanner.js';
+import { logSignalDetection } from '../services/validationLogger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +23,8 @@ app.use(express.json());
 
 // Register API routes
 app.use('/api/backtest-results', backtestRoutes);
+app.use('/api/auto-tracker', autoTrackerRoutes);
+app.use('/api/scanner', scannerRoutes);
 
 // Config file path
 const CONFIG_PATH = path.join(__dirname, '../../config.json');
@@ -146,10 +151,29 @@ app.post('/api/scan', async (req, res) => {
       console.log(`Progress: ${progress.percentage}% (${progress.completed}/${progress.total})`);
     });
 
+    // Log signals to validation system (Option A)
+    const config = await loadConfig();
+    const currentMode = (config.strategyMode || 'moderate').toUpperCase();
+
+    for (const result of results) {
+      if (result.success && result.signals && result.signals.length > 0) {
+        for (const signal of result.signals) {
+          logSignalDetection(signal, {
+            symbol: result.symbol,
+            timeframe: result.timeframe,
+            mode: currentMode
+          });
+        }
+      }
+    }
+
     // Format signals for display
     const signals = formatSignalsForDisplay(results);
 
     console.log(`Scan complete. Found ${signals.length} signals.`);
+    if (signals.length > 0) {
+      console.log(`[VALIDATION] Logged ${signals.length} signal(s) to validation system`);
+    }
 
     res.json({
       success: true,

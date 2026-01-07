@@ -529,16 +529,27 @@ function SignalTracker() {
                         </span>
                       </td>
                       <td>
-                        {signal.entryTiming ? (
-                          signal.entryTiming.status === 'immediate' ? (
-                            <span className="badge badge-success" title="Price is in Order Block - can enter now">
-                              ⚡ READY
-                            </span>
-                          ) : (
-                            <span className="badge badge-warning" title="Waiting for price to reach Order Block">
-                              ⏳ PENDING
-                            </span>
-                          )
+                        {signal.entryState === 'ENTRY_READY' ? (
+                          <span
+                            className="badge badge-success"
+                            title="✓ BOS/CHOCH confirmed ✓ Price at zone ✓ Rejection confirmed - Entry ready per SMC methodology"
+                          >
+                            ⚡ READY
+                          </span>
+                        ) : signal.entryState === 'WAITING' ? (
+                          <span
+                            className="badge badge-warning"
+                            title="BOS/CHOCH ✓ | Price at zone ✓ | Waiting for rejection pattern to confirm entry"
+                          >
+                            👀 WAITING
+                          </span>
+                        ) : signal.entryState === 'MONITORING' ? (
+                          <span
+                            className="badge badge-secondary"
+                            title="Setup detected - monitoring for BOS/CHOCH structure break and price return to OB/FVG"
+                          >
+                            📊 MONITORING
+                          </span>
                         ) : (
                           <span className="badge badge-secondary" title="Entry status unknown">
                             - N/A
@@ -602,17 +613,30 @@ function SignalTracker() {
                       </td>
                       <td onClick={(e) => e.stopPropagation()}>
                         <button
-                          className="btn btn-success"
+                          className="btn btn-primary"
+                          disabled={!signal.canTrack}
+                          title={
+                            signal.canTrack
+                              ? 'Track this signal'
+                              : signal.entryState === 'WAITING'
+                                ? 'Waiting for rejection confirmation'
+                                : 'Waiting for BOS/CHOCH structure break'
+                          }
                           style={{
                             fontSize: '12px',
-                            padding: '6px 12px'
+                            padding: '6px 12px',
+                            opacity: signal.canTrack ? 1 : 0.5,
+                            cursor: signal.canTrack ? 'pointer' : 'not-allowed',
+                            background: signal.canTrack ? '#667eea' : '#9ca3af'
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleTrackSignal(signal);
+                            if (signal.canTrack) {
+                              handleTrackSignal(signal);
+                            }
                           }}
                         >
-                          Track
+                          {signal.canTrack ? 'Track Signal' : 'Wait for Confirmation'}
                         </button>
                       </td>
                     </tr>

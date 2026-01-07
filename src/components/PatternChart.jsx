@@ -8,6 +8,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ohlcData, setOhlcData] = useState(null);
+  const [visualizationLimits, setVisualizationLimits] = useState(null);
 
   // Convert timeframe to Binance API interval
   const getInterval = (tf) => {
@@ -17,6 +18,41 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
     };
     return map[tf] || '1d';
   };
+
+  // Fetch visualization limits from settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/settings');
+        const data = await response.json();
+
+        // Extract visualization limits or use defaults
+        const limits = data.visualizationLimits || {
+          maxFVGs: 3,
+          maxOrderBlocks: 3,
+          maxCHOCH: 2,
+          maxBOS: 2,
+          maxCandlesBack: 50,
+          maxDistancePercent: 10
+        };
+
+        setVisualizationLimits(limits);
+      } catch (err) {
+        console.error('Error fetching visualization limits:', err);
+        // Use defaults if fetch fails
+        setVisualizationLimits({
+          maxFVGs: 3,
+          maxOrderBlocks: 3,
+          maxCHOCH: 2,
+          maxBOS: 2,
+          maxCandlesBack: 50,
+          maxDistancePercent: 10
+        });
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -127,8 +163,101 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
         volumeSeries.setData(volumeData);
 
+        // Helper function to get end time by counting actual candles (not time-based)
+        const getEndTimeAfterCandles = (startTime, candleCount) => {
+          const startIndex = candlestickData.findIndex(c => c.time >= startTime);
+          if (startIndex === -1) return startTime;
+          const endIndex = Math.min(startIndex + candleCount, candlestickData.length - 1);
+          return candlestickData[endIndex].time;
+        };
+
         // Get the latest timestamp for pattern markers
         const latestTime = candlestickData[candlestickData.length - 1].time;
+        const latestPrice = latestCandle.close;
+        const latestCandleIndex = candlestickData.length - 1;
+
+        /**
+         * Filter patterns based on visualization limits
+         * @param {Array} patterns - Array of patterns to filter
+         * @param {number} maxCount - Maximum number of patterns to show
+         * @returns {Array} Filtered patterns
+         */
+        const filterPatterns = (patterns, maxCount) => {
+          if (!patterns || patterns.length === 0 || !visualizationLimits) {
+            return patterns || [];
+          }
+
+          // Filter by distance from current price
+          const filteredByDistance = patterns.filter(pattern => {
+            // Calculate midpoint of pattern zone
+            const patternMidpoint = (pattern.top + pattern.bottom) / 2;
+            const distancePercent = Math.abs((patternMidpoint - latestPrice) / latestPrice * 100);
+
+            return distancePercent <= visualizationLimits.maxDistancePercent;
+          });
+
+          // Filter by recency (candles back from current)
+          const filteredByRecency = filteredByDistance.filter(pattern => {
+            if (!pattern.timestamp) return true; // Keep patterns without timestamp
+
+            const patternTime = new Date(pattern.timestamp).getTime() / 1000;
+            const patternIndex = candlestickData.findIndex(c => c.time >= patternTime);
+
+            if (patternIndex === -1) return true; // Keep if can't find index
+
+            const candlesBack = latestCandleIndex - patternIndex;
+            return candlesBack <= visualizationLimits.maxCandlesBack;
+          });
+
+          // Sort by recency (most recent first) and take only maxCount
+          const sorted = filteredByRecency.sort((a, b) => {
+            const aTime = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+            const bTime = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+            return bTime - aTime; // Most recent first
+          });
+
+          return sorted.slice(0, maxCount);
+        };
+
+        /**
+         * Filter structure events (CHoCH, BOS) based on visualization limits
+         * @param {Array} events - Array of structure events to filter
+         * @param {number} maxCount - Maximum number of events to show
+         * @returns {Array} Filtered events
+         */
+        const filterStructureEvents = (events, maxCount) => {
+          if (!events || events.length === 0 || !visualizationLimits) {
+            return events || [];
+          }
+
+          // Filter by distance from current price
+          const filteredByDistance = events.filter(event => {
+            const distancePercent = Math.abs((event.brokenLevel - latestPrice) / latestPrice * 100);
+            return distancePercent <= visualizationLimits.maxDistancePercent;
+          });
+
+          // Filter by recency (candles back from current)
+          const filteredByRecency = filteredByDistance.filter(event => {
+            if (!event.timestamp) return true; // Keep events without timestamp
+
+            const eventTime = new Date(event.timestamp).getTime() / 1000;
+            const eventIndex = candlestickData.findIndex(c => c.time >= eventTime);
+
+            if (eventIndex === -1) return true; // Keep if can't find index
+
+            const candlesBack = latestCandleIndex - eventIndex;
+            return candlesBack <= visualizationLimits.maxCandlesBack;
+          });
+
+          // Sort by recency (most recent first) and take only maxCount
+          const sorted = filteredByRecency.sort((a, b) => {
+            const aTime = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+            const bTime = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+            return bTime - aTime; // Most recent first
+          });
+
+          return sorted.slice(0, maxCount);
+        };
 
         // Draw Entry, Stop Loss, Take Profit lines
         const entryLine = {
@@ -162,7 +291,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
         candlestickSeries.createPriceLine(stopLossLine);
         candlestickSeries.createPriceLine(takeProfitLine);
 
-        // Draw FVG zone as filled rectangle
+        // Draw FVG zone as filled rectangle (time-limited to 25 candles)
         if (patternDetails?.fvg) {
           const fvgTop = patternDetails.fvg.top;
           const fvgBottom = patternDetails.fvg.bottom;
@@ -170,89 +299,69 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             ? new Date(patternDetails.fvg.timestamp).getTime() / 1000
             : null;
 
-          // Create filled area series for FVG zone
-          const fvgAreaSeries = chart.addLineSeries({
-            color: '#8b5cf6',
-            lineWidth: 2,
-            priceLineVisible: false,
-            lastValueVisible: false,
-            crosshairMarkerVisible: false,
-          });
+          if (fvgTimestamp) {
+            const fvgEndTime = getEndTimeAfterCandles(fvgTimestamp, 25); // 25 actual candles
 
-          // Only draw zone from FVG formation time onwards
-          const fvgTopData = candlestickData
-            .filter(candle => !fvgTimestamp || candle.time >= fvgTimestamp)
-            .map(candle => ({
-              time: candle.time,
-              value: fvgTop
-            }));
+            // Draw FVG top boundary line (limited duration)
+            const fvgTopLine = chart.addLineSeries({
+              color: '#8b5cf6',
+              lineWidth: 1,
+              lineStyle: 2, // Dashed
+              lastValueVisible: false,
+              priceLineVisible: false,
+            });
+            fvgTopLine.setData([
+              { time: fvgTimestamp, value: parseFloat(fvgTop) },
+              { time: fvgEndTime, value: parseFloat(fvgTop) }
+            ]);
 
-          fvgAreaSeries.setData(fvgTopData);
+            // Draw FVG bottom boundary line (limited duration)
+            const fvgBottomLine = chart.addLineSeries({
+              color: '#8b5cf6',
+              lineWidth: 1,
+              lineStyle: 2, // Dashed
+              lastValueVisible: false,
+              priceLineVisible: false,
+            });
+            fvgBottomLine.setData([
+              { time: fvgTimestamp, value: parseFloat(fvgBottom) },
+              { time: fvgEndTime, value: parseFloat(fvgBottom) }
+            ]);
 
-          // Create baseline at bottom price to fill the zone
-          fvgAreaSeries.applyOptions({
-            lineWidth: 0,
-            color: 'transparent',
-            priceFormat: {
-              type: 'price',
-              precision: 8,
-              minMove: 0.00000001,
-            },
-          });
+            // Simply use price range with the boundary lines (the shaded histogram doesn't render well)
+            // The dashed boundary lines above and below will clearly mark the FVG zone
 
-          fvgAreaSeries.createPriceLine({
-            price: fvgTop,
-            color: '#8b5cf6',
-            lineWidth: 1,
-            lineStyle: 1, // Dotted
-            axisLabelVisible: false,
-            title: 'FVG Top',
-          });
+            // Add FVG label at midpoint
+            const fvgMidpoint = (parseFloat(fvgTop) + parseFloat(fvgBottom)) / 2;
+            const labelTime = fvgTimestamp + ((fvgEndTime - fvgTimestamp) / 2);
 
-          fvgAreaSeries.createPriceLine({
-            price: fvgBottom,
-            color: '#8b5cf6',
-            lineWidth: 1,
-            lineStyle: 1, // Dotted
-            axisLabelVisible: false,
-            title: 'FVG Bottom',
-          });
+            const fvgLabel = chart.addLineSeries({
+              color: 'transparent',
+              lineWidth: 0,
+              priceLineVisible: false,
+              lastValueVisible: false,
+            });
 
-          // Add shaded area using histogram series
-          const fvgShade = chart.addHistogramSeries({
-            color: 'rgba(139, 92, 246, 0.15)', // Purple with transparency
-            priceFormat: {
-              type: 'price',
-            },
-            priceScaleId: '',
-            lastValueVisible: false,
-          });
-
-          // Create histogram data for the zone (only from FVG formation time)
-          const fvgZoneData = candlestickData
-            .filter(candle => !fvgTimestamp || candle.time >= fvgTimestamp)
-            .map(candle => ({
-              time: candle.time,
-              value: fvgTop,
-              color: 'rgba(139, 92, 246, 0.15)'
-            }));
-
-          fvgShade.setData(fvgZoneData);
-
-          // Set baseline to create filled area
-          fvgShade.applyOptions({
-            baseValue: {
-              type: 'price',
-              price: fvgBottom
-            }
-          });
+            fvgLabel.setMarkers([{
+              time: labelTime,
+              position: 'inBar',
+              color: '#8b5cf6',
+              shape: 'circle',
+              text: 'FVG',
+              size: 0.5
+            }]);
+          }
         }
 
         // Draw HTF FVG zones as filled rectangles (if present)
         if (htfData?.fvgs) {
           // Draw HTF Bullish FVGs (for bullish signals)
           if (direction === 'bullish' && htfData.fvgs.bullish && htfData.fvgs.bullish.length > 0) {
-            htfData.fvgs.bullish.slice(0, 3).forEach((fvg, index) => {
+            const filteredBullishFVGs = filterPatterns(
+              htfData.fvgs.bullish,
+              visualizationLimits?.maxFVGs || 3
+            );
+            filteredBullishFVGs.forEach((fvg, index) => {
               // Add shaded area for HTF FVG
               const htfFvgShade = chart.addHistogramSeries({
                 color: 'rgba(34, 197, 94, 0.12)', // Light green with transparency
@@ -301,7 +410,11 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
           // Draw HTF Bearish FVGs (for bearish signals)
           if (direction === 'bearish' && htfData.fvgs.bearish && htfData.fvgs.bearish.length > 0) {
-            htfData.fvgs.bearish.slice(0, 3).forEach((fvg, index) => {
+            const filteredBearishFVGs = filterPatterns(
+              htfData.fvgs.bearish,
+              visualizationLimits?.maxFVGs || 3
+            );
+            filteredBearishFVGs.forEach((fvg, index) => {
               // Add shaded area for HTF FVG
               const htfFvgShade = chart.addHistogramSeries({
                 color: 'rgba(239, 68, 68, 0.12)', // Light red with transparency
@@ -349,7 +462,7 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
           }
         }
 
-        // Draw Order Block zone as filled rectangle
+        // Draw Order Block zone as filled rectangle (time-limited to 25 candles)
         if (patternDetails?.orderBlock) {
           const obTop = patternDetails.orderBlock.top;
           const obBottom = patternDetails.orderBlock.bottom;
@@ -357,53 +470,69 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
             ? new Date(patternDetails.orderBlock.timestamp).getTime() / 1000
             : null;
 
-          // Add shaded area for Order Block
-          const obShade = chart.addHistogramSeries({
-            color: 'rgba(236, 72, 153, 0.15)', // Pink with transparency
-            priceFormat: { type: 'price' },
-            priceScaleId: '',
-            lastValueVisible: false,
-          });
+          if (obTimestamp) {
+            const obEndTime = getEndTimeAfterCandles(obTimestamp, 25); // 25 actual candles
 
-          // Only draw zone from Order Block formation time onwards
-          const obZoneData = candlestickData
-            .filter(candle => !obTimestamp || candle.time >= obTimestamp)
-            .map(candle => ({
-              time: candle.time,
-              value: obTop,
-              color: 'rgba(236, 72, 153, 0.15)'
-            }));
+            // Draw OB top boundary line (limited duration)
+            const obTopLine = chart.addLineSeries({
+              color: '#ec4899',
+              lineWidth: 1,
+              lineStyle: 2, // Dashed
+              lastValueVisible: false,
+              priceLineVisible: false,
+            });
+            obTopLine.setData([
+              { time: obTimestamp, value: parseFloat(obTop) },
+              { time: obEndTime, value: parseFloat(obTop) }
+            ]);
 
-          obShade.setData(obZoneData);
-          obShade.applyOptions({
-            baseValue: { type: 'price', price: obBottom }
-          });
+            // Draw OB bottom boundary line (limited duration)
+            const obBottomLine = chart.addLineSeries({
+              color: '#ec4899',
+              lineWidth: 1,
+              lineStyle: 2, // Dashed
+              lastValueVisible: false,
+              priceLineVisible: false,
+            });
+            obBottomLine.setData([
+              { time: obTimestamp, value: parseFloat(obBottom) },
+              { time: obEndTime, value: parseFloat(obBottom) }
+            ]);
 
-          // Add border lines
-          candlestickSeries.createPriceLine({
-            price: obTop,
-            color: '#ec4899',
-            lineWidth: 1,
-            lineStyle: 1, // Dotted
-            axisLabelVisible: false,
-            title: 'OB Top',
-          });
+            // Simply use price range with the boundary lines (the shaded histogram doesn't render well)
+            // The dashed boundary lines above and below will clearly mark the OB zone
 
-          candlestickSeries.createPriceLine({
-            price: obBottom,
-            color: '#ec4899',
-            lineWidth: 1,
-            lineStyle: 1, // Dotted
-            axisLabelVisible: false,
-            title: 'OB Bottom',
-          });
+            // Add OB label at midpoint
+            const obMidpoint = (parseFloat(obTop) + parseFloat(obBottom)) / 2;
+            const obLabelTime = obTimestamp + ((obEndTime - obTimestamp) / 2);
+
+            const obLabel = chart.addLineSeries({
+              color: 'transparent',
+              lineWidth: 0,
+              priceLineVisible: false,
+              lastValueVisible: false,
+            });
+
+            obLabel.setMarkers([{
+              time: obLabelTime,
+              position: 'inBar',
+              color: '#ec4899',
+              shape: 'circle',
+              text: 'OB',
+              size: 0.5
+            }]);
+          }
         }
 
         // Draw HTF Order Block zones as filled rectangles (if present)
         if (htfData?.orderBlocks) {
           // Draw HTF Bullish Order Blocks (for bullish signals)
           if (direction === 'bullish' && htfData.orderBlocks.bullish && htfData.orderBlocks.bullish.length > 0) {
-            htfData.orderBlocks.bullish.slice(0, 3).forEach((ob, index) => {
+            const filteredBullishOBs = filterPatterns(
+              htfData.orderBlocks.bullish,
+              visualizationLimits?.maxOrderBlocks || 3
+            );
+            filteredBullishOBs.forEach((ob, index) => {
               // Add shaded area for HTF Order Block
               const htfOBShade = chart.addHistogramSeries({
                 color: 'rgba(34, 197, 94, 0.1)', // Light green with transparency
@@ -452,7 +581,11 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
           // Draw HTF Bearish Order Blocks (for bearish signals)
           if (direction === 'bearish' && htfData.orderBlocks.bearish && htfData.orderBlocks.bearish.length > 0) {
-            htfData.orderBlocks.bearish.slice(0, 3).forEach((ob, index) => {
+            const filteredBearishOBs = filterPatterns(
+              htfData.orderBlocks.bearish,
+              visualizationLimits?.maxOrderBlocks || 3
+            );
+            filteredBearishOBs.forEach((ob, index) => {
               // Add shaded area for HTF Order Block
               const htfOBShade = chart.addHistogramSeries({
                 color: 'rgba(239, 68, 68, 0.1)', // Light red with transparency
@@ -532,23 +665,32 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
           candlestickSeries.createPriceLine(bmsLine);
         }
 
-        // Draw ChoCH (Change of Character) levels
+        // Draw ChoCH (Change of Character) levels - time-limited (20 candles)
         if (structureAnalysis?.chochEvents && structureAnalysis.chochEvents.length > 0) {
-          structureAnalysis.chochEvents.forEach((choch, index) => {
-            const chochLine = {
-              price: choch.brokenLevel,
-              color: '#f59e0b', // Amber for ChoCH
-              lineWidth: 2,
-              lineStyle: 1, // Dotted
-              axisLabelVisible: index === 0, // Only show label for first ChoCH
-              title: index === 0 ? 'ChoCH' : '',
-            };
-
-            candlestickSeries.createPriceLine(chochLine);
-
+          const filteredChochEvents = filterStructureEvents(
+            structureAnalysis.chochEvents,
+            visualizationLimits?.maxCHOCH || 2
+          );
+          filteredChochEvents.forEach((choch, index) => {
             // Add marker at the break point
             if (choch.breakCandle && choch.timestamp) {
-              const markerTime = new Date(choch.timestamp).getTime() / 1000;
+              const chochTime = new Date(choch.timestamp).getTime() / 1000;
+              const chochEndTime = getEndTimeAfterCandles(chochTime, 20); // 20 actual candles
+
+              // Draw as time-limited line series
+              const chochLine = chart.addLineSeries({
+                color: '#fbbf24', // Gold for CHoCH
+                lineWidth: 2,
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
+              });
+              chochLine.setData([
+                { time: chochTime, value: parseFloat(choch.brokenLevel) },
+                { time: chochEndTime, value: parseFloat(choch.brokenLevel) }
+              ]);
+
+              // Add circle marker
               const markerSeries = chart.addLineSeries({
                 color: 'transparent',
                 lineWidth: 0,
@@ -557,34 +699,43 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               });
 
               markerSeries.setMarkers([{
-                time: markerTime,
-                position: direction === 'bullish' ? 'belowBar' : 'aboveBar',
-                color: '#f59e0b',
+                time: chochTime,
+                position: choch.direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                color: '#fbbf24',
                 shape: 'circle',
-                text: 'ChoCH',
+                text: `CHoCH ${choch.direction === 'bullish' ? '▲' : '▼'}`,
                 size: 1
               }]);
             }
           });
         }
 
-        // Draw BOS (Break of Structure) levels
+        // Draw BOS (Break of Structure) levels - time-limited (20 candles)
         if (structureAnalysis?.bosEvents && structureAnalysis.bosEvents.length > 0) {
-          structureAnalysis.bosEvents.forEach((bos, index) => {
-            const bosLine = {
-              price: bos.brokenLevel,
-              color: '#10b981', // Green for BOS (continuation)
-              lineWidth: 2,
-              lineStyle: 3, // Dashed
-              axisLabelVisible: index === 0, // Only show label for first BOS
-              title: index === 0 ? 'BOS' : '',
-            };
-
-            candlestickSeries.createPriceLine(bosLine);
-
+          const filteredBosEvents = filterStructureEvents(
+            structureAnalysis.bosEvents,
+            visualizationLimits?.maxBOS || 2
+          );
+          filteredBosEvents.forEach((bos, index) => {
             // Add marker at the break point
             if (bos.breakCandle && bos.timestamp) {
-              const markerTime = new Date(bos.timestamp).getTime() / 1000;
+              const bosTime = new Date(bos.timestamp).getTime() / 1000;
+              const bosEndTime = getEndTimeAfterCandles(bosTime, 20); // 20 actual candles
+
+              // Draw as time-limited line series
+              const bosLine = chart.addLineSeries({
+                color: bos.direction === 'bullish' ? '#10b981' : '#ef4444',
+                lineWidth: 2,
+                lineStyle: 2, // Dashed
+                lastValueVisible: false,
+                priceLineVisible: false,
+              });
+              bosLine.setData([
+                { time: bosTime, value: parseFloat(bos.brokenLevel) },
+                { time: bosEndTime, value: parseFloat(bos.brokenLevel) }
+              ]);
+
+              // Add circle marker
               const markerSeries = chart.addLineSeries({
                 color: 'transparent',
                 lineWidth: 0,
@@ -593,16 +744,191 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               });
 
               markerSeries.setMarkers([{
-                time: markerTime,
-                position: direction === 'bullish' ? 'belowBar' : 'aboveBar',
-                color: '#10b981',
-                shape: 'square',
-                text: 'BOS',
+                time: bosTime,
+                position: bos.direction === 'bullish' ? 'belowBar' : 'aboveBar',
+                color: bos.direction === 'bullish' ? '#10b981' : '#ef4444',
+                shape: 'circle',
+                text: `BOS ${bos.direction === 'bullish' ? '▲' : '▼'}`,
                 size: 1
               }]);
             }
           });
         }
+
+        // Draw Trading Sessions (Asia, London, New York)
+        const drawTradingSessions = () => {
+          /**
+           * Trading Session Times (UTC):
+           * - Asia (Tokyo): 00:00 - 09:00 UTC
+           * - London: 08:00 - 17:00 UTC
+           * - New York: 13:00 - 22:00 UTC
+           */
+
+          // Get today's date at midnight UTC
+          const now = new Date();
+          const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+          const todayMidnight = todayUTC.getTime() / 1000; // Unix timestamp in seconds
+
+          // Define session times (in seconds from midnight UTC)
+          const sessions = [
+            {
+              name: 'Asia',
+              start: todayMidnight + (0 * 3600), // 00:00 UTC
+              end: todayMidnight + (9 * 3600),   // 09:00 UTC
+              color: 'rgba(59, 130, 246, 0.08)', // Blue
+              borderColor: 'rgba(59, 130, 246, 0.3)'
+            },
+            {
+              name: 'London',
+              start: todayMidnight + (8 * 3600),  // 08:00 UTC
+              end: todayMidnight + (17 * 3600),   // 17:00 UTC
+              color: 'rgba(16, 185, 129, 0.08)', // Green
+              borderColor: 'rgba(16, 185, 129, 0.3)'
+            },
+            {
+              name: 'New York',
+              start: todayMidnight + (13 * 3600), // 13:00 UTC
+              end: todayMidnight + (22 * 3600),   // 22:00 UTC
+              color: 'rgba(239, 68, 68, 0.08)', // Red (distinct from blue Asia and green London)
+              borderColor: 'rgba(239, 68, 68, 0.3)'
+            }
+          ];
+
+          // Filter candles to only include today's data
+          const todayCandles = candlestickData.filter(candle => candle.time >= todayMidnight);
+
+          if (todayCandles.length === 0) {
+            console.log('No candles from today to highlight sessions');
+            return;
+          }
+
+          // Get price range from ALL visible candles (not just today) for full-height rectangles
+          const allPrices = candlestickData.map(c => [c.high, c.low]).flat();
+          const maxPrice = Math.max(...allPrices);
+          const minPrice = Math.min(...allPrices);
+
+          // Draw each session
+          sessions.forEach(session => {
+            // Check if this session has occurred yet or is ongoing
+            const currentTime = Date.now() / 1000;
+            if (currentTime < session.start) {
+              // Session hasn't started yet
+              return;
+            }
+
+            // Find candles within this session
+            const sessionCandles = candlestickData.filter(
+              candle => candle.time >= session.start && candle.time <= session.end
+            );
+
+            if (sessionCandles.length === 0) {
+              return;
+            }
+
+            // Draw session background using baseline series for continuous fill (no gaps)
+            const sessionSeries = chart.addBaselineSeries({
+              baseValue: { type: 'price', price: minPrice },
+              topLineColor: 'transparent',
+              topFillColor1: session.color,
+              topFillColor2: session.color,
+              bottomLineColor: 'transparent',
+              bottomFillColor1: 'transparent',
+              bottomFillColor2: 'transparent',
+              lineWidth: 0,
+              priceFormat: { type: 'price' },
+              priceScaleId: '',
+              lastValueVisible: false,
+              priceLineVisible: false,
+            });
+
+            // Create continuous data points for the session background
+            const sessionData = sessionCandles.map(candle => ({
+              time: candle.time,
+              value: maxPrice
+            }));
+
+            sessionSeries.setData(sessionData);
+
+            // Add session label marker
+            const sessionLabelTime = session.start + ((session.end - session.start) / 2);
+
+            const sessionLabel = chart.addLineSeries({
+              color: 'transparent',
+              lineWidth: 0,
+              priceLineVisible: false,
+              lastValueVisible: false,
+            });
+
+            sessionLabel.setMarkers([{
+              time: sessionLabelTime,
+              position: 'inBar',
+              color: session.borderColor.replace('0.3', '0.7'),
+              shape: 'circle',
+              text: session.name,
+              size: 0.3
+            }]);
+
+            // Calculate session high and low
+            const sessionHighs = sessionCandles.map(c => c.high);
+            const sessionLows = sessionCandles.map(c => c.low);
+            const sessionHigh = Math.max(...sessionHighs);
+            const sessionLow = Math.min(...sessionLows);
+
+            // Draw session HIGH line
+            const sessionHighLine = {
+              price: sessionHigh,
+              color: session.borderColor.replace('0.3', '0.8'),
+              lineWidth: 2,
+              lineStyle: 2, // Dashed
+              axisLabelVisible: true,
+              title: `${session.name} High`,
+            };
+            candlestickSeries.createPriceLine(sessionHighLine);
+
+            // Draw session LOW line
+            const sessionLowLine = {
+              price: sessionLow,
+              color: session.borderColor.replace('0.3', '0.8'),
+              lineWidth: 2,
+              lineStyle: 2, // Dashed
+              axisLabelVisible: true,
+              title: `${session.name} Low`,
+            };
+            candlestickSeries.createPriceLine(sessionLowLine);
+
+            // Add HIGH/LOW markers at the session end
+            const markerTime = Math.min(session.end, currentTime);
+
+            const highLowMarkers = chart.addLineSeries({
+              color: 'transparent',
+              lineWidth: 0,
+              priceLineVisible: false,
+              lastValueVisible: false,
+            });
+
+            highLowMarkers.setMarkers([
+              {
+                time: markerTime,
+                position: 'aboveBar',
+                color: session.borderColor.replace('0.3', '0.9'),
+                shape: 'arrowDown',
+                text: `${session.name} H: ${sessionHigh.toFixed(2)}`,
+                size: 0.5
+              },
+              {
+                time: markerTime,
+                position: 'belowBar',
+                color: session.borderColor.replace('0.3', '0.9'),
+                shape: 'arrowUp',
+                text: `${session.name} L: ${sessionLow.toFixed(2)}`,
+                size: 0.5
+              }
+            ]);
+          });
+        };
+
+        // Draw trading sessions
+        drawTradingSessions();
 
         // Fit content
         chart.timeScale().fitContent();
@@ -811,9 +1137,12 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
 
           {patternDetails?.fvg && (
             <div>
-              <span style={{ color: '#8b5cf6', fontWeight: '600' }}>█ FVG Zone: </span>
+              <span style={{ color: '#8b5cf6', fontWeight: '600' }}>█ FVG (Fair Value Gap): </span>
               <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
                 {patternDetails.fvg.bottom.toFixed(8)} - {patternDetails.fvg.top.toFixed(8)}
+              </span>
+              <span style={{ fontSize: '11px', color: '#9ca3af', marginLeft: '8px' }}>
+                (Unfilled gap between 3 candles - price imbalance)
               </span>
             </div>
           )}
@@ -823,6 +1152,9 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               <span style={{ color: '#ec4899', fontWeight: '600' }}>█ Order Block: </span>
               <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
                 {patternDetails.orderBlock.bottom.toFixed(8)} - {patternDetails.orderBlock.top.toFixed(8)}
+              </span>
+              <span style={{ fontSize: '11px', color: '#9ca3af', marginLeft: '8px' }}>
+                (Last {patternDetails.orderBlock.type === 'bullish' ? 'bearish' : 'bullish'} candle before institutional impulse)
               </span>
             </div>
           )}
@@ -858,6 +1190,74 @@ const PatternChart = ({ symbol, timeframe, patternDetails, entry, stopLoss, take
               <span style={{ fontFamily: 'monospace' }}>{patternDetails.bms.breakLevel.toFixed(8)}</span>
             </div>
           )}
+        </div>
+
+        {/* Trading Sessions Section */}
+        <div style={{
+          marginTop: '12px',
+          paddingTop: '12px',
+          borderTop: '2px solid #e5e7eb'
+        }}>
+          <div style={{ fontWeight: '600', marginBottom: '8px', color: '#6366f1' }}>
+            🌍 Trading Sessions (Current Day - UTC):
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
+            <div>
+              <span style={{
+                background: 'rgba(59, 130, 246, 0.15)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                color: '#2563eb',
+                fontWeight: '600',
+                fontSize: '12px'
+              }}>
+                █ Asia Session
+              </span>
+              <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '8px' }}>
+                00:00 - 09:00 UTC
+              </span>
+            </div>
+            <div>
+              <span style={{
+                background: 'rgba(16, 185, 129, 0.15)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                color: '#059669',
+                fontWeight: '600',
+                fontSize: '12px'
+              }}>
+                █ London Session
+              </span>
+              <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '8px' }}>
+                08:00 - 17:00 UTC
+              </span>
+            </div>
+            <div>
+              <span style={{
+                background: 'rgba(245, 158, 11, 0.15)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                color: '#d97706',
+                fontWeight: '600',
+                fontSize: '12px'
+              }}>
+                █ New York Session
+              </span>
+              <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '8px' }}>
+                13:00 - 22:00 UTC
+              </span>
+            </div>
+            <div style={{ gridColumn: '1 / -1', fontSize: '11px', color: '#6b7280', fontStyle: 'italic', marginTop: '8px' }}>
+              <strong>Session Features:</strong>
+              <br/>• Colored backgrounds mark session times
+              <br/>• <strong>Dashed horizontal lines</strong> show session high and low prices
+              <br/>• High/Low markers (▼ ▲) display at session end with exact values
+              <br/>• Sessions overlap during London-NY hours (13:00-17:00 UTC) = highest liquidity period
+            </div>
+            <div style={{ gridColumn: '1 / -1', fontSize: '11px', color: '#6366f1', background: 'rgba(99, 102, 241, 0.1)', padding: '8px', borderRadius: '4px', marginTop: '8px' }}>
+              <strong>💡 Trading Tip:</strong> Session highs and lows act as key support/resistance levels. Breakouts above session highs or below session lows often signal strong momentum.
+            </div>
+          </div>
         </div>
 
         {/* HTF Patterns Section */}

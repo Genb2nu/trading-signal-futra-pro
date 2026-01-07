@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas';
 const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
   const modalContentRef = useRef(null);
   const shareMenuRef = useRef(null);
+  const chartSectionRef = useRef(null); // Ref for chart + risk/reward section only
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   // Close share menu when clicking outside
@@ -111,6 +112,43 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
     setShowShareMenu(false);
   };
 
+  // Capture Chart Section Only (Chart + Risk/Reward)
+  const handleCaptureChartScreenshot = async () => {
+    if (!chartSectionRef.current) {
+      console.error('Chart section ref not available');
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(chartSectionRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2, // Higher quality
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        windowWidth: chartSectionRef.current.scrollWidth,
+        windowHeight: chartSectionRef.current.scrollHeight
+      });
+
+      // Download the image
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${symbol}_${timeframe}_chart_analysis.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+
+      // Close share menu after screenshot
+      setShowShareMenu(false);
+    } catch (error) {
+      console.error('Failed to capture chart screenshot:', error);
+    }
+  };
+
   // Ensure patterns is always an array (handle both string and array cases)
   const patternsArray = Array.isArray(patterns)
     ? patterns
@@ -183,6 +221,114 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
             <span style={{ marginLeft: '12px', fontSize: '14px', opacity: 0.9 }}>
               ({confidence?.toUpperCase() || 'STANDARD'} TIER)
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* PHASE 3: SMC Entry Confirmation Checklist */}
+      {signal.confirmationDetails && (
+        <div style={{
+          marginBottom: '20px',
+          padding: '16px',
+          background: signal.entryState === 'ENTRY_READY' ? '#d1fae5' :
+                      signal.entryState === 'WAITING' ? '#fef3c7' : '#f3f4f6',
+          borderRadius: '8px',
+          border: `2px solid ${
+            signal.entryState === 'ENTRY_READY' ? '#10b981' :
+            signal.entryState === 'WAITING' ? '#f59e0b' : '#9ca3af'
+          }`
+        }}>
+          <div style={{ fontWeight: '600', marginBottom: '12px', fontSize: '16px', color: '#1f2937' }}>
+            📋 SMC Entry Confirmation Checklist (ICT Official)
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px', fontSize: '14px' }}>
+
+            {/* 1. Setup Detection */}
+            <div style={{ fontWeight: '600', color: '#4b5563' }}>1. Order Block:</div>
+            <div style={{ color: signal.confirmationDetails.setupDetected ? '#059669' : '#dc2626' }}>
+              {signal.confirmationDetails.setupDetected ? '✓ ICT-validated OB detected' : '✗ No setup'}
+            </div>
+
+            {/* 2. Structure Break - CRITICAL */}
+            <div style={{ fontWeight: '600', color: '#4b5563' }}>
+              2. Structure Break: <span style={{ fontSize: '11px', color: '#9ca3af' }}>(Required - ICT)</span>
+            </div>
+            <div style={{ color: signal.confirmationDetails.structureBreakConfirmed ? '#059669' : '#dc2626' }}>
+              {signal.confirmationDetails.structureBreakConfirmed ? (
+                <span>
+                  ✓ {signal.confirmationDetails.bosDetected && 'BOS'}
+                  {signal.confirmationDetails.bosDetected && signal.confirmationDetails.chochDetected && ' + '}
+                  {signal.confirmationDetails.chochDetected && 'CHoCH'}
+                </span>
+              ) : (
+                <span>✗ Waiting for BOS or CHoCH</span>
+              )}
+            </div>
+
+            {/* 3. Price at Zone */}
+            <div style={{ fontWeight: '600', color: '#4b5563' }}>3. Price Position:</div>
+            <div style={{ color: signal.confirmationDetails.priceAtZone ? '#059669' : '#9ca3af' }}>
+              {signal.confirmationDetails.priceAtZone ? '✓ Price returned to OB zone' : '○ Waiting for return'}
+            </div>
+
+            {/* 4. LTF Confirmation - CRITICAL */}
+            <div style={{ fontWeight: '600', color: '#4b5563' }}>
+              4. Rejection Pattern: <span style={{ fontSize: '11px', color: '#9ca3af' }}>(Required - ICT Page 4)</span>
+            </div>
+            <div style={{ color: signal.confirmationDetails.rejectionConfirmed ? '#059669' : '#dc2626' }}>
+              {signal.confirmationDetails.rejectionConfirmed ? (
+                <span>✓ {signal.confirmationDetails.rejectionPattern || 'Strong rejection'}</span>
+              ) : (
+                <span>✗ Waiting for rejection candle</span>
+              )}
+            </div>
+
+            {/* ICT OB Quality (if available) */}
+            {signal.patternDetails?.orderBlock?.ictValidation && (
+              <>
+                <div style={{ fontWeight: '600', color: '#4b5563', marginTop: '8px' }}>ICT OB Quality:</div>
+                <div style={{ marginTop: '8px' }}>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                    {signal.patternDetails.orderBlock.ictValidation.isCleanCandle && '✓ Clean candle '}
+                    {signal.patternDetails.orderBlock.ictValidation.hasVolumeConfirmation && '✓ Volume confirmed '}
+                    {signal.patternDetails.orderBlock.ictValidation.hasBOSNearby && '✓ BOS nearby '}
+                    {signal.patternDetails.orderBlock.ictValidation.hasFVGNearby && '✓ FVG association '}
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '4px' }}>
+                    Quality Score: {signal.patternDetails.orderBlock.ictValidation.enhancedQualityScore || 'N/A'}/145
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Current State */}
+            <div style={{
+              marginTop: '12px',
+              gridColumn: '1 / -1',
+              padding: '12px',
+              background: 'white',
+              borderRadius: '6px',
+              fontWeight: '600',
+              fontSize: '15px'
+            }}>
+              <div style={{ marginBottom: '6px', color: '#6b7280' }}>Current State:</div>
+              {signal.entryState === 'ENTRY_READY' && (
+                <div style={{ color: '#059669' }}>
+                  🟢 ENTRY READY - All SMC/ICT confirmations met. Can track and enter trade.
+                </div>
+              )}
+              {signal.entryState === 'WAITING' && (
+                <div style={{ color: '#f59e0b' }}>
+                  🟡 WAITING - Structure confirmed, price at zone. Waiting for rejection pattern.
+                </div>
+              )}
+              {signal.entryState === 'MONITORING' && (
+                <div style={{ color: '#6b7280' }}>
+                  🔵 MONITORING - Setup identified. Waiting for BOS/CHoCH structure break.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -615,57 +761,63 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
         )}
       </div>
 
-      {/* Chart Analysis */}
-      <div style={{ marginBottom: '24px' }}>
-        <h3 style={{ marginBottom: '12px' }}>Chart Analysis with Pattern Visualization</h3>
-        <PatternChart
-          symbol={symbol}
-          timeframe={timeframe}
-          patternDetails={patternDetails}
-          entry={entry}
-          stopLoss={stopLoss}
-          takeProfit={takeProfit}
-          direction={type === 'BUY' ? 'bullish' : 'bearish'}
-          htfData={htfData}
-          htfTimeframe={htfTimeframe}
-          structureAnalysis={structureAnalysis}
-        />
-      </div>
+      {/* Chart Section (Chart Analysis + Risk/Reward) - For Screenshot */}
+      <div ref={chartSectionRef} style={{ background: '#ffffff', padding: '20px', borderRadius: '8px' }}>
 
-      {/* Risk/Reward Breakdown */}
-      <div className="pattern-section" style={{ borderLeftColor: '#f59e0b' }}>
-        <h3>Risk/Reward Analysis</h3>
-        <div className="pattern-detail-row">
-          <div className="pattern-detail-label">Entry Price:</div>
-          <div className="pattern-detail-value">{entry}</div>
+        {/* Chart Analysis */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{ marginBottom: '12px' }}>Chart Analysis with Pattern Visualization</h3>
+          <PatternChart
+            symbol={symbol}
+            timeframe={timeframe}
+            patternDetails={patternDetails}
+            entry={entry}
+            stopLoss={stopLoss}
+            takeProfit={takeProfit}
+            direction={type === 'BUY' ? 'bullish' : 'bearish'}
+            htfData={htfData}
+            htfTimeframe={htfTimeframe}
+            structureAnalysis={structureAnalysis}
+          />
         </div>
-        <div className="pattern-detail-row">
-          <div className="pattern-detail-label">Stop Loss:</div>
-          <div className="pattern-detail-value">
-            {stopLoss} {rrBreakdown.stopLossDistance && `(${rrBreakdown.stopLossDistance})`}
+
+        {/* Risk/Reward Breakdown */}
+        <div className="pattern-section" style={{ borderLeftColor: '#f59e0b' }}>
+          <h3>Risk/Reward Analysis</h3>
+          <div className="pattern-detail-row">
+            <div className="pattern-detail-label">Entry Price:</div>
+            <div className="pattern-detail-value">{entry}</div>
           </div>
-        </div>
-        <div className="pattern-detail-row">
-          <div className="pattern-detail-label">Take Profit:</div>
-          <div className="pattern-detail-value">
-            {takeProfit} {rrBreakdown.takeProfitDistance && `(${rrBreakdown.takeProfitDistance})`}
+          <div className="pattern-detail-row">
+            <div className="pattern-detail-label">Stop Loss:</div>
+            <div className="pattern-detail-value">
+              {stopLoss} {rrBreakdown.stopLossDistance && `(${rrBreakdown.stopLossDistance})`}
+            </div>
           </div>
-        </div>
-        <div className="pattern-detail-row">
-          <div className="pattern-detail-label">Risk/Reward Ratio:</div>
-          <div className="pattern-detail-value" style={{ color: '#10b981', fontWeight: 'bold' }}>
-            1:{rrBreakdown.ratio?.toFixed(2) || '2.00'}
+          <div className="pattern-detail-row">
+            <div className="pattern-detail-label">Take Profit:</div>
+            <div className="pattern-detail-value">
+              {takeProfit} {rrBreakdown.takeProfitDistance && `(${rrBreakdown.takeProfitDistance})`}
+            </div>
           </div>
+          <div className="pattern-detail-row">
+            <div className="pattern-detail-label">Risk/Reward Ratio:</div>
+            <div className="pattern-detail-value" style={{ color: '#10b981', fontWeight: 'bold' }}>
+              1:{rrBreakdown.ratio?.toFixed(2) || '2.00'}
+            </div>
+          </div>
+          {rrBreakdown.reasoning && (
+            <p style={{ marginTop: '12px', fontSize: '14px', color: '#6b7280' }}>
+              {rrBreakdown.reasoning}
+            </p>
+          )}
         </div>
-        {rrBreakdown.reasoning && (
-          <p style={{ marginTop: '12px', fontSize: '14px', color: '#6b7280' }}>
-            {rrBreakdown.reasoning}
-          </p>
-        )}
+
       </div>
 
       {/* Action Buttons */}
       <div style={{ marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'flex-end', alignItems: 'center' }}>
+
         <button className="btn btn-secondary" onClick={onClose}>
           Close
         </button>
@@ -718,7 +870,7 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
               zIndex: 1000,
               overflow: 'hidden'
             }}>
-              {/* Download Image */}
+              {/* Download Full Screenshot */}
               <button
                 onClick={handleDownloadImage}
                 style={{
@@ -739,7 +891,31 @@ const SignalDetailsModal = ({ isOpen, onClose, signal }) => {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
               >
                 <span style={{ fontSize: '18px' }}>💾</span>
-                <span style={{ fontWeight: '500' }}>Download Image</span>
+                <span style={{ fontWeight: '500' }}>Download Full Signal</span>
+              </button>
+
+              {/* Screenshot Chart Only */}
+              <button
+                onClick={handleCaptureChartScreenshot}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'white',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#374151',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'background 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+              >
+                <span style={{ fontSize: '18px' }}>📸</span>
+                <span style={{ fontWeight: '500' }}>Save Chart Only</span>
               </button>
 
               {/* Divider */}

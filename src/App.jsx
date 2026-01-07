@@ -4,6 +4,7 @@ import Settings from './Settings';
 import TrackedSignals from './TrackedSignals';
 import LiveTrading from './LiveTrading';
 import BacktestResults from './BacktestResults';
+import AutoTracker from './AutoTracker';
 import notificationService from './services/notificationService';
 
 function App() {
@@ -35,6 +36,12 @@ function App() {
           Tracked Signals
         </button>
         <button
+          className={`nav-link ${currentPage === 'autotracker' ? 'active' : ''}`}
+          onClick={() => setCurrentPage('autotracker')}
+        >
+          Auto-Tracker
+        </button>
+        <button
           className={`nav-link ${currentPage === 'live' ? 'active' : ''}`}
           onClick={() => setCurrentPage('live')}
         >
@@ -59,6 +66,9 @@ function App() {
       </div>
       <div style={{ display: currentPage === 'tracked' ? 'block' : 'none' }}>
         <TrackedSignals />
+      </div>
+      <div style={{ display: currentPage === 'autotracker' ? 'block' : 'none' }}>
+        <AutoTracker />
       </div>
       <div style={{ display: currentPage === 'live' ? 'block' : 'none' }}>
         <LiveTrading />

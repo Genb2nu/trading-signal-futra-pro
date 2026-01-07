@@ -17,13 +17,23 @@ const serverFiles = [
 
 // Copy server routes
 const routesFiles = [
-  'src/server/routes/backtestRoutes.js'
+  'src/server/routes/backtestRoutes.js',
+  'src/server/routes/autoTracker.js',
+  'src/server/routes/scanner.js'
+];
+
+// Copy service files
+const serviceFiles = [
+  'src/services/database.js',
+  'src/services/validationLogger.js',
+  'src/services/continuousScanner.js'
 ];
 
 const distDir = path.join(__dirname, 'dist');
 const serverDir = path.join(distDir, 'server');
 const sharedDir = path.join(distDir, 'shared');
 const routesDir = path.join(distDir, 'server/routes');
+const servicesDir = path.join(distDir, 'services');
 
 // Create directories
 if (!fs.existsSync(serverDir)) {
@@ -34,6 +44,9 @@ if (!fs.existsSync(sharedDir)) {
 }
 if (!fs.existsSync(routesDir)) {
   fs.mkdirSync(routesDir, { recursive: true });
+}
+if (!fs.existsSync(servicesDir)) {
+  fs.mkdirSync(servicesDir, { recursive: true });
 }
 
 // Copy server files
@@ -52,6 +65,20 @@ serverFiles.forEach(file => {
 
 // Copy routes files
 routesFiles.forEach(file => {
+  const srcPath = path.join(__dirname, file);
+  const destPath = path.join(distDir, file.replace('src/', ''));
+  const destDir = path.dirname(destPath);
+
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+
+  fs.copyFileSync(srcPath, destPath);
+  console.log(`Copied: ${file} -> ${destPath}`);
+});
+
+// Copy service files
+serviceFiles.forEach(file => {
   const srcPath = path.join(__dirname, file);
   const destPath = path.join(distDir, file.replace('src/', ''));
   const destDir = path.dirname(destPath);

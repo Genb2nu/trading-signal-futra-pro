@@ -558,52 +558,109 @@ export function detectFairValueGaps(candles, config = null) {
   const fvgs = [];
 
   // Timeframe-adaptive minimum gap size (filters out noise)
-  // BALANCED: Finding sweet spot between too loose and too strict
   const timeframe = config?.timeframe || '1h';
   const minGapConfig = {
-    '15m': 0.0010, // 0.10% minimum gap for 15m - BALANCED: 0.03% → 0.10% (3.3x stricter)
-    '1h': 0.0008,  // 0.08% minimum gap for 1h - BALANCED: 0.05% → 0.08% (1.6x stricter)
-    '4h': 0.0008   // 0.08% minimum gap for 4h (keeps balance)
+    '15m': 0.0010, // 0.10% minimum gap for 15m
+    '1h': 0.0008,  // 0.08% minimum gap for 1h
+    '4h': 0.0008   // 0.08% minimum gap for 4h
   };
   const minGapSize = minGapConfig[timeframe] || minGapConfig['1h'];
 
-  for (let i = 2; i < candles.length; i++) {
-    const prev2 = candles[i - 2];
-    const prev1 = candles[i - 1];
-    const current = candles[i];
+  // ICT/SMC DISPLACEMENT requirement - middle candle must be STRONG move
+  const displacementThreshold = {
+    '15m': 0.004,  // 0.4% minimum displacement for 15m
+    '1h': 0.005,   // 0.5% minimum displacement for 1h
+    '4h': 0.006    // 0.6% minimum displacement for 4h
+  };
+  const minDisplacement = displacementThreshold[timeframe] || displacementThreshold['1h'];
 
-    // Bullish FVG (gap up)
+  for (let i = 2; i < candles.length; i++) {
+    const prev2 = candles[i - 2];  // Candle 1
+    const prev1 = candles[i - 1];  // Candle 2 (DISPLACEMENT candle)
+    const current = candles[i];    // Candle 3
+
+    // ===== BULLISH FVG VALIDATION (ICT/SMC Criteria) =====
     const bullishGap = current.low - prev2.high;
     const bullishGapPercent = Math.abs(bullishGap / prev2.high);
 
     if (bullishGap > 0 && bullishGapPercent >= minGapSize) {
-      fvgs.push({
-        type: 'bullish',
-        index: i,
-        top: current.low,
-        bottom: prev2.high,
-        gap: bullishGap,
-        gapPercent: bullishGapPercent,
-        timestamp: current.timestamp,
-        mitigated: false
-      });
+      // 1. Check DISPLACEMENT - Middle candle must be a STRONG bullish move
+      const prev1Body = Math.abs(prev1.close - prev1.open);
+      const prev1Range = prev1.high - prev1.low;
+      const prev1BodyPercent = prev1Body / prev1.open;
+      const prev1IsBullish = prev1.close > prev1.open;
+
+      // 2. Check candle colors - Prefer 3 bullish OR 2 bullish + 1 small bearish
+      const currentIsBullish = current.close > current.open;
+      const prev2Body = Math.abs(prev2.close - prev2.open);
+      const prev2BodyPercent = prev2Body / prev2.open;
+
+      // 3. Validate DISPLACEMENT candle (middle candle must be strong)
+      const hasDisplacement = prev1IsBullish && prev1BodyPercent >= minDisplacement;
+
+      // 4. Check candle alignment (3 bullish OR 2 bullish + 1 small opposite)
+      const threeStrongBullish = prev1IsBullish && currentIsBullish;
+      const twoStrongOneTiny = prev1IsBullish && currentIsBullish; // Middle + current bullish is enough
+
+      // 5. Wicks validation - Wicks of candle 1 & 3 shouldn't fully cover candle 2 body
+      const wicksOverlap = prev2.high >= prev1.close || current.low <= prev1.open;
+
+      // VALID FVG CRITERIA (per ICT/SMC):
+      // - Must have displacement (strong middle candle)
+      // - Candles moving in same direction
+      // - Wicks don't invalidate the displacement
+      if (hasDisplacement && twoStrongOneTiny && !wicksOverlap) {
+        fvgs.push({
+          type: 'bullish',
+          index: i,
+          top: current.low,
+          bottom: prev2.high,
+          gap: bullishGap,
+          gapPercent: bullishGapPercent,
+          displacement: prev1BodyPercent,
+          timestamp: current.timestamp,
+          mitigated: false
+        });
+      }
     }
 
-    // Bearish FVG (gap down)
+    // ===== BEARISH FVG VALIDATION (ICT/SMC Criteria) =====
     const bearishGap = prev2.low - current.high;
     const bearishGapPercent = Math.abs(bearishGap / current.high);
 
     if (bearishGap > 0 && bearishGapPercent >= minGapSize) {
-      fvgs.push({
-        type: 'bearish',
-        index: i,
-        top: prev2.low,
-        bottom: current.high,
-        gap: bearishGap,
-        gapPercent: bearishGapPercent,
-        timestamp: current.timestamp,
-        mitigated: false
-      });
+      // 1. Check DISPLACEMENT - Middle candle must be a STRONG bearish move
+      const prev1Body = Math.abs(prev1.close - prev1.open);
+      const prev1Range = prev1.high - prev1.low;
+      const prev1BodyPercent = prev1Body / prev1.open;
+      const prev1IsBearish = prev1.close < prev1.open;
+
+      // 2. Check candle colors
+      const currentIsBearish = current.close < current.open;
+
+      // 3. Validate DISPLACEMENT candle
+      const hasDisplacement = prev1IsBearish && prev1BodyPercent >= minDisplacement;
+
+      // 4. Check candle alignment
+      const twoStrongOneTiny = prev1IsBearish && currentIsBearish;
+
+      // 5. Wicks validation
+      const wicksOverlap = prev2.low <= prev1.close || current.high >= prev1.open;
+
+      // VALID FVG CRITERIA (per ICT/SMC):
+      if (hasDisplacement && twoStrongOneTiny && !wicksOverlap) {
+        fvgs.push({
+          type: 'bearish',
+          index: i,
+          top: prev2.low,
+          bottom: current.high,
+          gap: bearishGap,
+          gapPercent: bearishGapPercent,
+          displacement: prev1BodyPercent,
+          timestamp: current.timestamp,
+          mitigated: false
+        });
+      }
     }
   }
 
@@ -675,6 +732,7 @@ export function detectOrderBlocks(candles, impulseThreshold = null, config = nul
           timestamp: current.timestamp,
           candle: current,
           strength: maxUpMove,
+          impulseStrength: maxUpMove / 100, // Store as decimal (e.g., 0.05 for 5%)
           impulseCandle: impulseCandle
         });
       }
@@ -708,47 +766,150 @@ export function detectOrderBlocks(candles, impulseThreshold = null, config = nul
           timestamp: current.timestamp,
           candle: current,
           strength: maxDownMove,
+          impulseStrength: maxDownMove / 100, // Store as decimal (e.g., 0.05 for 5%)
           impulseCandle: impulseCandle
         });
       }
     }
   }
 
-  // PHASE 12 ENHANCEMENT: Filter out already-mitigated (tested) Order Blocks
-  // Only keep FRESH OBs that haven't been touched yet
-  const freshOrderBlocks = orderBlocks.filter(ob => {
-    // Check if price has tested this OB after it was created
+  // PHASE 12 ENHANCEMENT: Track OB mitigation status
+  // An OB is only invalid if price BREAKS THROUGH it (closes beyond zone)
+  // Touching/testing the OB is NORMAL and expected in SMC (that's when we enter!)
+  const validOrderBlocks = orderBlocks.map(ob => {
+    // Check if price has BROKEN (not just touched) this OB
+    let isBroken = false;
     let touches = 0;
+    let isFresh = true;
 
     for (let j = ob.index + 1; j < candles.length; j++) {
       const testCandle = candles[j];
 
       if (ob.type === 'bullish') {
         // For bullish OB, check if price came back down to test it
-        // Consider it tested if low touches within OB zone
-        const touchedOB = testCandle.low <= ob.top * 1.001 && testCandle.low >= ob.bottom * 0.999;
-        if (touchedOB) touches++;
+        const touchedOB = testCandle.low <= ob.top * 1.002 && testCandle.high >= ob.bottom * 0.998;
+
+        if (touchedOB) {
+          touches++;
+          if (touches === 1) {
+            isFresh = false; // Been tested once (this is actually GOOD for entry!)
+          }
+
+          // OB is BROKEN if price closes BELOW the bottom (invalidates support)
+          if (testCandle.close < ob.bottom * 0.998) {
+            isBroken = true;
+            break;
+          }
+        }
       } else {
         // For bearish OB, check if price came back up to test it
-        // Consider it tested if high touches within OB zone
-        const touchedOB = testCandle.high >= ob.bottom * 0.999 && testCandle.high <= ob.top * 1.001;
-        if (touchedOB) touches++;
-      }
+        const touchedOB = testCandle.high >= ob.bottom * 0.998 && testCandle.low <= ob.top * 1.002;
 
-      // CRITICAL: Only accept FIRST touch (fresh OBs)
-      // Retested OBs have much lower success rate
-      if (touches > 0) {
-        return false; // This OB has been tested - skip it
+        if (touchedOB) {
+          touches++;
+          if (touches === 1) {
+            isFresh = false; // Been tested once (this is actually GOOD for entry!)
+          }
+
+          // OB is BROKEN if price closes ABOVE the top (invalidates resistance)
+          if (testCandle.close > ob.top * 1.002) {
+            isBroken = true;
+            break;
+          }
+        }
       }
     }
 
-    return true; // Fresh OB - never tested before
+    // Only filter out BROKEN OBs, keep touched/tested OBs (those are valid!)
+    return {
+      ...ob,
+      isFresh: isFresh,
+      touches: touches,
+      isBroken: isBroken
+    };
+  }).filter(ob => !ob.isBroken); // Only remove OBs that are BROKEN, keep all others
+
+  // ===== ICT OFFICIAL CRITERIA VALIDATION =====
+  // Per official ICT/SMC methodology (2026):
+  // 1. Must be associated with BOS (Break of Structure)
+  // 2. Should have FVG (imbalance) nearby
+  // 3. Volume confirmation at OB candle
+  // 4. Quality check (clean candle, not messy structure)
+
+  const ictValidatedOBs = validOrderBlocks.map(ob => {
+    const obCandle = candles[ob.index];
+    const prevCandle = ob.index > 0 ? candles[ob.index - 1] : null;
+    const nextCandle = ob.index < candles.length - 1 ? candles[ob.index + 1] : null;
+
+    // === 1. CANDLE QUALITY CHECK ===
+    // "Avoid OBs formed in messy, overlapping structures"
+    const candleRange = obCandle.high - obCandle.low;
+    const candleBody = Math.abs(obCandle.close - obCandle.open);
+    const bodyRatio = candleBody / candleRange;
+
+    // Quality: Body should be at least 40% of range (decisive candle)
+    // Messy candles have small bodies with large wicks (indecision)
+    const isCleanCandle = bodyRatio >= 0.4;
+
+    // Check if not in overlapping/choppy area (compare with surrounding candles)
+    let isCleanStructure = true;
+    if (prevCandle && nextCandle) {
+      const prevRange = prevCandle.high - prevCandle.low;
+      const nextRange = nextCandle.high - nextCandle.low;
+      const avgRange = (prevRange + candleRange + nextRange) / 3;
+
+      // If all candles are very small (choppy), structure is messy
+      const relativePrice = avgRange / obCandle.close;
+      if (relativePrice < 0.005) { // Less than 0.5% average range = choppy
+        isCleanStructure = false;
+      }
+    }
+
+    // === 2. VOLUME CONFIRMATION ===
+    // "Always confirm with volume"
+    const candleVolume = obCandle.volume || 0;
+
+    // Calculate average volume of last 10 candles
+    let avgVolume = 0;
+    let volumeCount = 0;
+    for (let j = Math.max(0, ob.index - 10); j < ob.index; j++) {
+      avgVolume += candles[j].volume || 0;
+      volumeCount++;
+    }
+    avgVolume = volumeCount > 0 ? avgVolume / volumeCount : 0;
+
+    // OB candle should have above-average volume (institutional activity)
+    const hasVolumeConfirmation = avgVolume > 0 ? candleVolume >= avgVolume * 0.8 : true;
+    const volumeStrength = avgVolume > 0 ? candleVolume / avgVolume : 1;
+
+    // === 3. Calculate ICT Quality Score ===
+    let ictQualityScore = 0;
+
+    if (isCleanCandle) ictQualityScore += 30;
+    if (isCleanStructure) ictQualityScore += 20;
+    if (hasVolumeConfirmation) ictQualityScore += 25;
+    if (volumeStrength >= 1.5) ictQualityScore += 15; // Strong volume spike
+    if (ob.impulseStrength >= 0.01) ictQualityScore += 10; // Strong displacement (>1%)
+
+    return {
+      ...ob,
+      ictValidation: {
+        isCleanCandle,
+        isCleanStructure,
+        hasVolumeConfirmation,
+        volumeStrength: volumeStrength.toFixed(2),
+        qualityScore: ictQualityScore,
+        // BOS and FVG checks will be done in signal generation
+        // (we need access to BOS and FVG arrays which aren't available here)
+        isValidICT: isCleanCandle && isCleanStructure && hasVolumeConfirmation
+      }
+    };
   });
 
   // Group by type for easier access
   const grouped = {
-    bullish: freshOrderBlocks.filter(ob => ob.type === 'bullish'),
-    bearish: freshOrderBlocks.filter(ob => ob.type === 'bearish')
+    bullish: ictValidatedOBs.filter(ob => ob.type === 'bullish'),
+    bearish: ictValidatedOBs.filter(ob => ob.type === 'bearish')
   };
 
   return grouped;
@@ -1882,7 +2043,8 @@ function detectRejectionPattern(candle, prevCandle, direction) {
     const wickRatio = lowerWick / candleRange;
     const bodyPosition = (candle.close - candle.low) / candleRange;
 
-    const isHammer = wickRatio > 0.6 && bodyPosition > 0.6 && candleRange / candle.close > 0.015;
+    // RELAXED: Lower wick 50% (was 60%), body in top 50% (was 60%), range 0.8% (was 1.5%)
+    const isHammer = wickRatio > 0.5 && bodyPosition > 0.5 && candleRange / candle.close > 0.008;
 
     // 2. Bullish Engulfing (current candle engulfs previous bearish candle)
     const isBullishEngulfing = candle.close > prevCandle.open &&
@@ -1890,8 +2052,9 @@ function detectRejectionPattern(candle, prevCandle, direction) {
                                candle.close > prevCandle.high &&
                                candle.close > candle.open;
 
-    // 3. Strong Bullish Close (closes in top 25% of range after testing lows)
-    const strongClose = bodyPosition > 0.75 && wickRatio > 0.4 && candle.close > candle.open;
+    // 3. Strong Bullish Close (closes in top 30% of range after testing lows)
+    // RELAXED: Body in top 30% (was 25%), lower wick 35% (was 40%)
+    const strongClose = bodyPosition > 0.7 && wickRatio > 0.35 && candle.close > candle.open;
 
     // 4. Inverse Hammer (long upper wick rejected, then closed bullish)
     const isInverseHammer = upperWick / candleRange > 0.5 &&
@@ -1917,7 +2080,8 @@ function detectRejectionPattern(candle, prevCandle, direction) {
     const wickRatio = upperWick / candleRange;
     const bodyPosition = (candle.high - candle.close) / candleRange;
 
-    const isShootingStar = wickRatio > 0.6 && bodyPosition > 0.6 && candleRange / candle.close > 0.015;
+    // RELAXED: Upper wick 50% (was 60%), body in bottom 50% (was 60%), range 0.8% (was 1.5%)
+    const isShootingStar = wickRatio > 0.5 && bodyPosition > 0.5 && candleRange / candle.close > 0.008;
 
     // 2. Bearish Engulfing (current candle engulfs previous bullish candle)
     const isBearishEngulfing = candle.close < prevCandle.open &&
@@ -1925,8 +2089,9 @@ function detectRejectionPattern(candle, prevCandle, direction) {
                                candle.close < prevCandle.low &&
                                candle.close < candle.open;
 
-    // 3. Strong Bearish Close (closes in bottom 25% of range after testing highs)
-    const strongClose = bodyPosition > 0.75 && wickRatio > 0.4 && candle.close < candle.open;
+    // 3. Strong Bearish Close (closes in bottom 30% of range after testing highs)
+    // RELAXED: Body in bottom 30% (was 25%), upper wick 35% (was 40%)
+    const strongClose = bodyPosition > 0.7 && wickRatio > 0.35 && candle.close < candle.open;
 
     // 4. Hammer Rejection (long lower wick, but bearish close)
     const isHammerRejection = lowerWick / candleRange > 0.5 &&
@@ -2164,16 +2329,105 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
   const sweepLookback = config.requireAllConfirmations ? 5 : 15; // Conservative: 5, Moderate: 15
 
   const recentBullishFVG = fvgLookback === Infinity ? allBullishFVGs : allBullishFVGs.filter(f => f.index >= candles.length - fvgLookback);
-  const recentBullishOB = orderBlocks.bullish ? orderBlocks.bullish.filter(ob => ob.index >= candles.length - 20) : [];
+  const recentBullishOBRaw = orderBlocks.bullish ? orderBlocks.bullish.filter(ob => ob.index >= candles.length - 20) : [];
   const recentBullishSweep = liquiditySweeps.filter(s => s.direction === 'bullish' && s.index >= candles.length - sweepLookback);
   const recentBullishBMS = bmsEvents.filter(b => b.type === 'bullish' && b.index >= candles.length - sweepLookback);
   const recentBullishBreaker = breakerBlocks.bullish || [];
 
   const recentBearishFVG = fvgLookback === Infinity ? allBearishFVGs : allBearishFVGs.filter(f => f.index >= candles.length - fvgLookback);
-  const recentBearishOB = orderBlocks.bearish ? orderBlocks.bearish.filter(ob => ob.index >= candles.length - 20) : [];
+  const recentBearishOBRaw = orderBlocks.bearish ? orderBlocks.bearish.filter(ob => ob.index >= candles.length - 20) : [];
   const recentBearishSweep = liquiditySweeps.filter(s => s.direction === 'bearish' && s.index >= candles.length - sweepLookback);
   const recentBearishBMS = bmsEvents.filter(b => b.type === 'bearish' && b.index >= candles.length - sweepLookback);
   const recentBearishBreaker = breakerBlocks.bearish || [];
+
+  // ===== ICT OFFICIAL CRITERIA: BOS + FVG ASSOCIATION =====
+  // "An Order Block is the last opposing candle before a strong impulsive move that causes a Break of Structure (BOS)"
+  // "Genuine order blocks are typically paired with fair value gaps"
+
+  /**
+   * Find the nearest/most relevant FVG for trading
+   * Prioritizes: 1) Proximity to current price, 2) Recency
+   * @param {Array} fvgArray - Array of FVG objects
+   * @param {number} currentPrice - Current price for proximity check
+   * @param {string} direction - 'bullish' or 'bearish'
+   * @returns {Object|null} - Nearest FVG or null
+   */
+  const findNearestFVG = (fvgArray, currentPrice, direction) => {
+    if (!fvgArray || fvgArray.length === 0) return null;
+
+    // Sort FVGs by:
+    // 1. Distance to current price (closer is better)
+    // 2. Recency (newer is better if equally close)
+    const sortedFVGs = [...fvgArray].sort((a, b) => {
+      // Calculate distance from current price to FVG midpoint
+      const aMidpoint = (a.top + a.bottom) / 2;
+      const bMidpoint = (b.top + b.bottom) / 2;
+      const aDistance = Math.abs(currentPrice - aMidpoint);
+      const bDistance = Math.abs(currentPrice - bMidpoint);
+
+      // If distance difference is significant (>1%), sort by distance
+      const distanceDiffPercent = Math.abs(aDistance - bDistance) / currentPrice * 100;
+      if (distanceDiffPercent > 1) {
+        return aDistance - bDistance; // Closer FVG wins
+      }
+
+      // If equally close (within 1%), prefer more recent FVG
+      return b.index - a.index; // Higher index = more recent
+    });
+
+    // Return the nearest FVG (first in sorted array)
+    return sortedFVGs[0];
+  };
+
+  /**
+   * Validate OB against ICT official criteria (BOS + FVG association)
+   */
+  const validateOBWithICTCriteria = (ob, direction, bosArray, fvgArray) => {
+    // 1. Check if BOS occurred near this OB (within 10 candles after OB)
+    const hasBOSNearby = bosArray.some(bosEvent => {
+      const bosIndex = candles.findIndex(c => c.timestamp === bosEvent.timestamp);
+      const timeDiff = bosIndex - ob.index;
+      // BOS should happen AFTER the OB (within next 10 candles)
+      return timeDiff >= 0 && timeDiff <= 10;
+    });
+
+    // 2. Check if FVG exists near this OB (within 5 candles before or after)
+    const hasFVGNearby = fvgArray.some(fvg => {
+      const timeDiff = Math.abs(fvg.index - ob.index);
+      // FVG within 5 candles of OB
+      if (timeDiff > 5) return false;
+
+      // Also check price overlap (FVG and OB should be in similar price zone)
+      const priceOverlap = !(fvg.top < ob.bottom * 0.95 || fvg.bottom > ob.top * 1.05);
+      return priceOverlap;
+    });
+
+    // Calculate enhanced ICT score
+    let enhancedScore = ob.ictValidation.qualityScore;
+    if (hasBOSNearby) enhancedScore += 25; // BOS is critical per ICT
+    if (hasFVGNearby) enhancedScore += 20; // FVG (imbalance) is important
+
+    return {
+      ...ob,
+      ictValidation: {
+        ...ob.ictValidation,
+        hasBOSNearby,
+        hasFVGNearby,
+        enhancedQualityScore: enhancedScore,
+        isValidICT: ob.ictValidation.isValidICT && hasBOSNearby // Require BOS for strict ICT
+      }
+    };
+  };
+
+  // Validate bullish OBs
+  const recentBullishOB = recentBullishOBRaw.map(ob =>
+    validateOBWithICTCriteria(ob, 'bullish', bos.bullish, recentBullishFVG)
+  );
+
+  // Validate bearish OBs
+  const recentBearishOB = recentBearishOBRaw.map(ob =>
+    validateOBWithICTCriteria(ob, 'bearish', bos.bearish, recentBearishFVG)
+  );
 
   // ========================================================================
   // BULLISH SIGNAL GENERATION
@@ -2191,14 +2445,36 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
 
 
   if (validZoneForBullish) {
-    // Prefer breaker blocks over regular OBs
-    const bullishOB = recentBullishBreaker.length > 0 ? recentBullishBreaker[0] : recentBullishOB[0];
+    // ===== ICT OB SELECTION PRIORITY =====
+    // 1. Prefer ICT-validated OBs (with BOS + clean structure)
+    // 2. Then breaker blocks
+    // 3. Finally regular OBs
+
+    let bullishOB = null;
+
+    // First, try to find an ICT-validated OB
+    const ictValidatedOBs = recentBullishOB.filter(ob => ob.ictValidation?.isValidICT);
+    if (ictValidatedOBs.length > 0) {
+      // Sort by ICT quality score (higher is better)
+      ictValidatedOBs.sort((a, b) => b.ictValidation.enhancedQualityScore - a.ictValidation.enhancedQualityScore);
+      bullishOB = ictValidatedOBs[0];
+    }
+    // If no ICT-validated OB, prefer breaker blocks
+    else if (recentBullishBreaker.length > 0) {
+      bullishOB = recentBullishBreaker[0];
+    }
+    // Finally, use any available OB (even if not ICT-validated)
+    else if (recentBullishOB.length > 0) {
+      bullishOB = recentBullishOB[0];
+    }
 
     // DEBUG
     if (!bullishOB && recentBullishOB.length === 0) {
     }
 
     if (bullishOB) {
+      // ===== PHASE 3: 3-STATE ENTRY SYSTEM =====
+      // Per official SMC (XS.com Page 17): Structure break → Liquidity → Return → Confirmation
 
       // Check confirmations based on strategy mode
       const hasLiquiditySweep = recentBullishSweep.length > 0;
@@ -2206,7 +2482,49 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
       const hasFVG = recentBullishFVG.length > 0; // Use recent FVGs (includes touched/partial in moderate mode)
       const hasValidZone = validZoneForBullish;
 
+      // PHASE 3: Check if BOS/CHOCH exists (REQUIRED per ICT)
+      const hasCHOCH = chochEvents.bullish.length > 0;
+      const structureBreakConfirmed = hasBOS || hasCHOCH;
 
+      // PHASE 3: Check if price is at OB zone
+      const priceAtZone = latestCandle.low <= bullishOB.top * 1.002 &&
+                          latestCandle.high >= bullishOB.bottom * 0.998;
+
+      // PHASE 3: Check for rejection pattern (LTF confirmation per ICT Page 4)
+      const prevCandle = candles[candles.length - 2];
+      const rejectionCheck = detectRejectionPattern(latestCandle, prevCandle, 'bullish');
+      const hasRejection = rejectionCheck.hasRejection;
+
+      // PHASE 3: Determine entry state based on SMC methodology
+      let entryState = 'MONITORING'; // Default state
+      let canTrack = false; // Whether user can track this signal
+
+      if (!structureBreakConfirmed) {
+        // No BOS/CHOCH yet - MONITORING phase
+        entryState = 'MONITORING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && !priceAtZone) {
+        // BOS exists but price hasn't returned to OB
+        entryState = 'MONITORING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && priceAtZone && !hasRejection) {
+        // At zone but no rejection - WAITING
+        entryState = 'WAITING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && priceAtZone && hasRejection) {
+        // All confirmations met - ENTRY READY
+        entryState = 'ENTRY_READY';
+        canTrack = true;
+      }
+
+      // PHASE 3: For Conservative/Moderate modes, enforce structure break requirement
+      const requiresStructureBreak = config.requireStructureBreak !== undefined ? config.requireStructureBreak : false;
+      const allowsEntryWithoutStructure = config.allowEntryWithoutStructure !== undefined ? config.allowEntryWithoutStructure : true;
+
+      // Only proceed with signal generation if structure break requirement is met (or not required)
+      const shouldGenerateSignal = !requiresStructureBreak || allowsEntryWithoutStructure || structureBreakConfirmed;
+
+      if (shouldGenerateSignal) {
       // Determine if confirmations pass based on strategy
       let confirmationsPassed = false;
 
@@ -2453,6 +2771,21 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         if (recentBullishBreaker.length > 0) confluenceScore += config.confluenceWeights.breakerBlock;
         if (recentBullishBMS.length > 0) confluenceScore += config.confluenceWeights.bms;
 
+        // ===== ICT OFFICIAL VALIDATION BONUS =====
+        // Reward OBs that meet official ICT criteria
+        if (bullishOB.ictValidation) {
+          // Base quality bonus (clean candle + volume)
+          if (bullishOB.ictValidation.isCleanCandle) confluenceScore += 5;
+          if (bullishOB.ictValidation.hasVolumeConfirmation) confluenceScore += 5;
+
+          // Critical ICT requirements
+          if (bullishOB.ictValidation.hasBOSNearby) confluenceScore += 15; // BOS is critical per ICT
+          if (bullishOB.ictValidation.hasFVGNearby) confluenceScore += 10; // FVG association (imbalance)
+
+          // Full ICT validation bonus
+          if (bullishOB.ictValidation.isValidICT) confluenceScore += 10; // All criteria met
+        }
+
         // ===== INDUCEMENT CONFLUENCE SCORING (NEW) =====
         if (validInducement) {
           let inducementPoints = 0;
@@ -2588,7 +2921,7 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
 
           // Pattern details (existing)
           patternDetails: {
-            fvg: mitigatedFVGs.unfilled && mitigatedFVGs.unfilled.bullish && mitigatedFVGs.unfilled.bullish.length > 0 ? mitigatedFVGs.unfilled.bullish[0] : null,
+            fvg: findNearestFVG(allBullishFVGs, latestCandle.close, 'bullish'), // Use nearest FVG to current price
             orderBlock: bullishOB,
             liquiditySweep: recentBullishSweep.length > 0 ? recentBullishSweep[0] : null,
             bms: recentBullishBMS.length > 0 ? recentBullishBMS[0] : null
@@ -2664,6 +2997,21 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
             fillPercentage: 0,
             strength: 'strong'
           } : null,
+
+          // ===== PHASE 3: ENTRY STATE AND CONFIRMATION =====
+          entryState: entryState,
+          canTrack: canTrack,
+          confirmationDetails: {
+            setupDetected: true,
+            structureBreakConfirmed: structureBreakConfirmed,
+            bosDetected: hasBOS,
+            chochDetected: hasCHOCH,
+            priceAtZone: priceAtZone,
+            rejectionConfirmed: hasRejection,
+            rejectionPattern: rejectionCheck.pattern || null,
+            rejectionStrength: rejectionCheck.strength || null
+          },
+
           orderBlockDetails: {
             type: recentBullishBreaker.length > 0 ? 'breakerBlock' : 'orderBlock',
             top: bullishOB.top,
@@ -2727,6 +3075,7 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         } // End if (confluenceScore >= 35)
         } // End if (riskReward >= 1.5)
         } // End if (validEntry)
+      } // End if (shouldGenerateSignal) - PHASE 3
       }
     }
   }
@@ -2744,13 +3093,78 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
       : zoneAnalysis.zone === 'premium';
 
   if (validZoneForBearish) {
-    // Prefer breaker blocks over regular OBs
-    const bearishOB = recentBearishBreaker.length > 0 ? recentBearishBreaker[0] : recentBearishOB[0];
+    // ===== ICT OB SELECTION PRIORITY =====
+    // 1. Prefer ICT-validated OBs (with BOS + clean structure)
+    // 2. Then breaker blocks
+    // 3. Finally regular OBs
+
+    let bearishOB = null;
+
+    // First, try to find an ICT-validated OB
+    const ictValidatedOBs = recentBearishOB.filter(ob => ob.ictValidation?.isValidICT);
+    if (ictValidatedOBs.length > 0) {
+      // Sort by ICT quality score (higher is better)
+      ictValidatedOBs.sort((a, b) => b.ictValidation.enhancedQualityScore - a.ictValidation.enhancedQualityScore);
+      bearishOB = ictValidatedOBs[0];
+    }
+    // If no ICT-validated OB, prefer breaker blocks
+    else if (recentBearishBreaker.length > 0) {
+      bearishOB = recentBearishBreaker[0];
+    }
+    // Finally, use any available OB (even if not ICT-validated)
+    else if (recentBearishOB.length > 0) {
+      bearishOB = recentBearishOB[0];
+    }
 
     if (bearishOB) {
+      // ===== PHASE 3: 3-STATE ENTRY SYSTEM =====
+      // Per official SMC (XS.com Page 17): Structure break → Liquidity → Return → Confirmation
+
+      const hasBOS = bos.bearish.length > 0;
+      const hasCHOCH = chochEvents.bearish.length > 0;
+      const structureBreakConfirmed = hasBOS || hasCHOCH;
+
+      // Check if price is at OB zone
+      const priceAtZone = latestCandle.high >= bearishOB.bottom * 0.998 &&
+                          latestCandle.low <= bearishOB.top * 1.002;
+
+      // Check for rejection pattern (LTF confirmation per ICT Page 4)
+      const prevCandle = candles[candles.length - 2];
+      const rejectionCheck = detectRejectionPattern(latestCandle, prevCandle, 'bearish');
+      const hasRejection = rejectionCheck.hasRejection;
+
+      // Determine entry state based on SMC methodology
+      let entryState = 'MONITORING'; // Default state
+      let canTrack = false; // Whether user can track this signal
+
+      if (!structureBreakConfirmed) {
+        // No BOS/CHoCH yet - MONITORING phase
+        entryState = 'MONITORING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && !priceAtZone) {
+        // BOS confirmed but price hasn't returned to OB yet
+        entryState = 'MONITORING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && priceAtZone && !hasRejection) {
+        // At zone but no rejection - WAITING
+        entryState = 'WAITING';
+        canTrack = false;
+      } else if (structureBreakConfirmed && priceAtZone && hasRejection) {
+        // All confirmations met - ENTRY READY
+        entryState = 'ENTRY_READY';
+        canTrack = true;
+      }
+
+      // For Conservative/Moderate modes, enforce structure break requirement
+      const requiresStructureBreak = config.requireStructureBreak !== undefined ? config.requireStructureBreak : false;
+      const allowsEntryWithoutStructure = config.allowEntryWithoutStructure !== undefined ? config.allowEntryWithoutStructure : true;
+
+      // Only proceed with signal generation if structure break requirement is met (or not required)
+      const shouldGenerateSignal = !requiresStructureBreak || allowsEntryWithoutStructure || structureBreakConfirmed;
+
+      if (shouldGenerateSignal) {
       // Check confirmations based on strategy mode
       const hasLiquiditySweep = recentBearishSweep.length > 0;
-      const hasBOS = bos.bearish.length > 0;
       const hasFVG = recentBearishFVG.length > 0; // Use recent FVGs (includes touched/partial in moderate mode)
       const hasValidZone = validZoneForBearish;
 
@@ -2998,6 +3412,21 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         if (recentBearishBreaker.length > 0) confluenceScore += config.confluenceWeights.breakerBlock;
         if (recentBearishBMS.length > 0) confluenceScore += config.confluenceWeights.bms;
 
+        // ===== ICT OFFICIAL VALIDATION BONUS =====
+        // Reward OBs that meet official ICT criteria
+        if (bearishOB.ictValidation) {
+          // Base quality bonus (clean candle + volume)
+          if (bearishOB.ictValidation.isCleanCandle) confluenceScore += 5;
+          if (bearishOB.ictValidation.hasVolumeConfirmation) confluenceScore += 5;
+
+          // Critical ICT requirements
+          if (bearishOB.ictValidation.hasBOSNearby) confluenceScore += 15; // BOS is critical per ICT
+          if (bearishOB.ictValidation.hasFVGNearby) confluenceScore += 10; // FVG association (imbalance)
+
+          // Full ICT validation bonus
+          if (bearishOB.ictValidation.isValidICT) confluenceScore += 10; // All criteria met
+        }
+
         // ===== INDUCEMENT CONFLUENCE SCORING (NEW) =====
         if (validInducement) {
           let inducementPoints = 0;
@@ -3133,7 +3562,7 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
 
           // Pattern details (existing)
           patternDetails: {
-            fvg: mitigatedFVGs.unfilled.bearish.length > 0 ? mitigatedFVGs.unfilled.bearish[0] : null,
+            fvg: findNearestFVG(allBearishFVGs, latestCandle.close, 'bearish'), // Use nearest FVG to current price
             orderBlock: bearishOB,
             liquiditySweep: recentBearishSweep.length > 0 ? recentBearishSweep[0] : null,
             bms: recentBearishBMS.length > 0 ? recentBearishBMS[0] : null
@@ -3209,6 +3638,21 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
             fillPercentage: 0,
             strength: 'strong'
           } : null,
+
+          // ===== PHASE 3: ENTRY STATE AND CONFIRMATION =====
+          entryState: entryState,
+          canTrack: canTrack,
+          confirmationDetails: {
+            setupDetected: true,
+            structureBreakConfirmed: structureBreakConfirmed,
+            bosDetected: hasBOS,
+            chochDetected: hasCHOCH,
+            priceAtZone: priceAtZone,
+            rejectionConfirmed: hasRejection,
+            rejectionPattern: rejectionCheck.pattern || null,
+            rejectionStrength: rejectionCheck.strength || null
+          },
+
           orderBlockDetails: {
             type: recentBearishBreaker.length > 0 ? 'breakerBlock' : 'orderBlock',
             top: bearishOB.top,
@@ -3272,6 +3716,7 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         } // End if (confluenceScore >= 35)
         } // End if (riskReward >= config.minimumRiskReward)
       } // End if (validEntry)
+      } // End if (shouldGenerateSignal) - PHASE 3
     }
   }
   }
@@ -3499,17 +3944,23 @@ function calculatePremiumDiscount(candles, swingPoints, currentPrice) {
     percentage = ((currentPrice - swingLow.price) / range) * 100;
   }
 
-  // Classify zone
-  // Discount: 0-50% (below equilibrium) - LONG ENTRIES ONLY
-  // Premium: 50-100% (above equilibrium) - SHORT ENTRIES ONLY
-  // Neutral: Within 5% of equilibrium (45-55%) - can be either
+  // Classify zone using configurable thresholds
+  // Get zone thresholds from config (default to SMC standard 30/70)
+  const config = getCurrentConfig();
+  const discountThreshold = config.premiumDiscountConfig?.discountThreshold || 30;
+  const premiumThreshold = config.premiumDiscountConfig?.premiumThreshold || 70;
+
+  // SMC Zone Classification:
+  // Discount: ≤30% (lower range) - LONG ENTRIES (institutional buying area)
+  // Premium: ≥70% (upper range) - SHORT ENTRIES (institutional selling area)
+  // Neutral: Middle range (30-70%) - Equilibrium zone (avoid entries)
   let zone;
-  if (percentage < 45) {
-    zone = 'discount';
-  } else if (percentage > 55) {
-    zone = 'premium';
+  if (percentage <= discountThreshold) {
+    zone = 'discount';     // Buy zone (lower part of range)
+  } else if (percentage >= premiumThreshold) {
+    zone = 'premium';      // Sell zone (upper part of range)
   } else {
-    zone = 'neutral'; // Near equilibrium
+    zone = 'neutral';      // Equilibrium (middle zone)
   }
 
   return {
@@ -4964,22 +5415,22 @@ function trackFVGMitigation(fvgs, candles) {
 
     let fillPercentage = 0;
     let touchCount = 0;
-    let highestFill = fvg.gap.bottom; // Start from bottom of gap
+    let highestFill = fvg.bottom; // FIX: Use fvg.bottom directly
 
     for (const candle of laterCandles) {
-      // Check if price entered the FVG
-      if (candle.low <= fvg.gap.top && candle.high >= fvg.gap.bottom) {
+      // Check if price entered the FVG zone
+      if (candle.low <= fvg.top && candle.high >= fvg.bottom) {
         touchCount++;
 
         // Calculate how much of the gap was filled
-        const gapSize = fvg.gap.top - fvg.gap.bottom;
-        const fillLevel = Math.min(candle.low, fvg.gap.top);
+        const gapSize = fvg.top - fvg.bottom; // FIX: Use fvg.top and fvg.bottom
+        const fillLevel = Math.min(candle.low, fvg.top); // FIX
 
         if (fillLevel > highestFill) {
           highestFill = fillLevel;
         }
 
-        const filled = highestFill - fvg.gap.bottom;
+        const filled = highestFill - fvg.bottom; // FIX
         fillPercentage = (filled / gapSize) * 100;
       }
     }
@@ -5013,20 +5464,20 @@ function trackFVGMitigation(fvgs, candles) {
 
     let fillPercentage = 0;
     let touchCount = 0;
-    let lowestFill = fvg.gap.top; // Start from top of gap
+    let lowestFill = fvg.top; // FIX: Use fvg.top directly
 
     for (const candle of laterCandles) {
-      if (candle.high >= fvg.gap.bottom && candle.low <= fvg.gap.top) {
+      if (candle.high >= fvg.bottom && candle.low <= fvg.top) {
         touchCount++;
 
-        const gapSize = fvg.gap.top - fvg.gap.bottom;
-        const fillLevel = Math.max(candle.high, fvg.gap.bottom);
+        const gapSize = fvg.top - fvg.bottom; // FIX: Use fvg.top and fvg.bottom
+        const fillLevel = Math.max(candle.high, fvg.bottom); // FIX
 
         if (fillLevel < lowestFill) {
           lowestFill = fillLevel;
         }
 
-        const filled = fvg.gap.top - lowestFill;
+        const filled = fvg.top - lowestFill; // FIX
         fillPercentage = (filled / gapSize) * 100;
       }
     }

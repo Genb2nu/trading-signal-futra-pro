@@ -115,7 +115,6 @@
     "SCUSDT",
     "REZUSDT",
     "RAREUSDT",
-    "RADUSDT",
     "RESOLVUSDT",
     "RPLUSDT",
     "PORTALUSDT",
@@ -170,12 +169,10 @@
     "ARUSDT",
     "ARPAUSDT",
     "BBUSDT",
-    "BIFIUSDT",
     "BICOUSDT",
     "BATUSDT",
     "COSUSDT",
     "CVXUSDT",
-    "DATAUSDT",
     "CTKUSDT",
     "DUSKUSDT",
     "DUSDT",
@@ -199,20 +196,36 @@
     "LUNCUSDT",
     "LDOUSDT",
     "KAIAUSDT",
-    "KAITOUSDT"
+    "KAITOUSDT",
+    "ZBTUSDT",
+    "ZENUSDT",
+    "RUNEUSDT"
   ],
   "limit": 200,
   "defaultTimeframes": [
     "1h"
   ],
-  "strategyMode": "moderate",
+  "strategyMode": "aggressive",
   "riskPerTrade": 2,
   "maxConcurrentTrades": 3,
   "stopLossATRMultiplier": 2.5,
-  "minimumConfluence": 40,
-  "minimumRiskReward": 2,
+  "minimumConfluence": 28,
+  "minimumRiskReward": 1.5,
   "minimumConfidenceLevel": "premium",
   "requireHTFAlignment": true,
   "allowNeutralZone": true,
-  "obImpulseThreshold": 0.005
+  "obImpulseThreshold": 0.005,
+  "premiumDiscountConfig": {
+    "mode": "smc_standard",
+    "discountThreshold": 30,
+    "premiumThreshold": 70
+  },
+  "visualizationLimits": {
+    "maxFVGs": 5,
+    "maxOrderBlocks": 5,
+    "maxCHOCH": 3,
+    "maxBOS": 3,
+    "maxCandlesBack": 100,
+    "maxDistancePercent": 15
+  }
 }

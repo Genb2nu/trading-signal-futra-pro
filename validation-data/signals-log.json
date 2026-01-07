@@ -1,0 +1,2965 @@
+{
+  "signals": [
+    {
+      "id": "BTCUSDT_bullish_1767625892866",
+      "timestamp": "2026-01-05T15:11:32.866Z",
+      "symbol": "BTCUSDT",
+      "timeframe": "1h",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "MONITORING",
+        "canTrack": false,
+        "entry": 42150,
+        "stopLoss": 41900,
+        "takeProfit": 42600,
+        "riskReward": 1.8,
+        "confluenceScore": 65,
+        "patterns": {
+          "hasOrderBlock": true,
+          "hasFVG": true,
+          "hasBOS": false,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": false,
+          "bosDetected": false,
+          "chochDetected": false,
+          "priceAtZone": false,
+          "rejectionConfirmed": false
+        }
+      },
+      "tracked": true,
+      "outcome": {
+        "result": "win",
+        "timestamp": "2026-01-05T15:11:32.903Z",
+        "exitPrice": 42580,
+        "riskRewardAchieved": "1.72",
+        "profitLoss": "1.02",
+        "notes": "Hit TP almost exactly"
+      },
+      "notes": [
+        {
+          "timestamp": "2026-01-05T15:11:32.893Z",
+          "text": "Test note: Strong rejection at OB zone"
+        }
+      ],
+      "trackedAt": "2026-01-05T15:11:32.883Z"
+    },
+    {
+      "id": "BNBUSDT_bullish_1767626869883",
+      "timestamp": "2026-01-05T15:27:49.883Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 901.88,
+        "stopLoss": 885.7838095238096,
+        "takeProfit": 921.1954285714285,
+        "riskReward": 1.2000000000000015,
+        "confluenceScore": 67,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "DOTUSDT_bullish_1767626874382",
+      "timestamp": "2026-01-05T15:27:54.382Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 2.165,
+        "stopLoss": 2.0765000000000007,
+        "takeProfit": 2.2711999999999994,
+        "riskReward": 1.200000000000002,
+        "confluenceScore": 90,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LTCUSDT_bullish_1767626880434",
+      "timestamp": "2026-01-05T15:28:00.434Z",
+      "symbol": "LTCUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 82.58,
+        "stopLoss": 79.95940476190475,
+        "takeProfit": 85.7247142857143,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "DOTUSDT_bearish_1767626908751",
+      "timestamp": "2026-01-05T15:28:28.751Z",
+      "symbol": "DOTUSDT",
+      "timeframe": "4h",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bearish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 2.17,
+        "stopLoss": 2.3107499999999996,
+        "takeProfit": 1.8345321428571428,
+        "riskReward": 2.383430601370215,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "XRPUSDT_bullish_1767661210788",
+      "timestamp": "2026-01-06T01:00:10.788Z",
+      "symbol": "XRPUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 2.3084,
+        "stopLoss": 2.254935714285714,
+        "takeProfit": 2.372557142857143,
+        "riskReward": 1.2000000000000017,
+        "confluenceScore": 50,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767661274380",
+      "timestamp": "2026-01-06T01:01:14.380Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 1.777,
+        "stopLoss": 1.6885,
+        "takeProfit": 1.8832,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "bullish_engulfing",
+          "rejectionStrength": 3
+        }
+      },
+      "tracked": true,
+      "outcome": null,
+      "notes": [
+        {
+          "timestamp": "2026-01-06T01:01:33.252Z",
+          "text": "Auto-tracked by paper trading system"
+        }
+      ],
+      "trackedAt": "2026-01-06T01:01:33.240Z"
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661333922",
+      "timestamp": "2026-01-06T01:02:13.922Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.4167857142857,
+        "takeProfit": 917.2378571428571,
+        "riskReward": 1.2,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661333936",
+      "timestamp": "2026-01-06T01:02:13.936Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.107857142857142,
+        "takeProfit": 14.87257142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "bullish_engulfing",
+          "rejectionStrength": 3
+        }
+      },
+      "tracked": true,
+      "outcome": null,
+      "notes": [
+        {
+          "timestamp": "2026-01-06T01:02:35.464Z",
+          "text": "Auto-tracked by paper trading system"
+        }
+      ],
+      "trackedAt": "2026-01-06T01:02:35.451Z"
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661394359",
+      "timestamp": "2026-01-06T01:03:14.359Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.104285714285714,
+        "takeProfit": 14.876857142857144,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "bullish_engulfing",
+          "rejectionStrength": 3
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661457777",
+      "timestamp": "2026-01-06T01:04:17.777Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.104285714285714,
+        "takeProfit": 14.876857142857144,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "bullish_engulfing",
+          "rejectionStrength": 3
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661521144",
+      "timestamp": "2026-01-06T01:05:21.144Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.104285714285714,
+        "takeProfit": 14.876857142857144,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "bullish_engulfing",
+          "rejectionStrength": 3
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661577994",
+      "timestamp": "2026-01-06T01:06:17.994Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3614285714285,
+        "takeProfit": 917.3042857142857,
+        "riskReward": 1.2,
+        "confluenceScore": 115,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661578005",
+      "timestamp": "2026-01-06T01:06:18.005Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.104285714285714,
+        "takeProfit": 14.876857142857144,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661648497",
+      "timestamp": "2026-01-06T01:07:28.497Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3614285714285,
+        "takeProfit": 917.3042857142857,
+        "riskReward": 1.2,
+        "confluenceScore": 115,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767661648508",
+      "timestamp": "2026-01-06T01:07:28.508Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 13.91,
+        "stopLoss": 13.104285714285714,
+        "takeProfit": 14.876857142857144,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 105,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661704054",
+      "timestamp": "2026-01-06T01:08:24.054Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 115,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661766756",
+      "timestamp": "2026-01-06T01:09:26.756Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": true,
+      "outcome": null,
+      "notes": [
+        {
+          "timestamp": "2026-01-06T01:09:46.951Z",
+          "text": "Auto-tracked by paper trading system"
+        }
+      ],
+      "trackedAt": "2026-01-06T01:09:46.941Z"
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661825966",
+      "timestamp": "2026-01-06T01:10:25.966Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661888634",
+      "timestamp": "2026-01-06T01:11:28.634Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767661949804",
+      "timestamp": "2026-01-06T01:12:29.804Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767662007899",
+      "timestamp": "2026-01-06T01:13:27.899Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "BNBUSDT_bullish_1767662070065",
+      "timestamp": "2026-01-06T01:14:30.065Z",
+      "symbol": "BNBUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 910.79,
+        "stopLoss": 905.3257142857143,
+        "takeProfit": 917.3471428571428,
+        "riskReward": 1.2000000000000042,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662135235",
+      "timestamp": "2026-01-06T01:15:35.235Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6849285714285713,
+        "takeProfit": 1.8874857142857142,
+        "riskReward": 1.2,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662318634",
+      "timestamp": "2026-01-06T01:18:38.634Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6842142857142857,
+        "takeProfit": 1.888342857142857,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662383932",
+      "timestamp": "2026-01-06T01:19:43.932Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.097142857142858,
+        "takeProfit": 14.885428571428571,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662383944",
+      "timestamp": "2026-01-06T01:19:43.944Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6842142857142857,
+        "takeProfit": 1.888342857142857,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662446531",
+      "timestamp": "2026-01-06T01:20:46.531Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.093571428571428,
+        "takeProfit": 14.889714285714287,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662506746",
+      "timestamp": "2026-01-06T01:21:46.746Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662506757",
+      "timestamp": "2026-01-06T01:21:46.757Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662567339",
+      "timestamp": "2026-01-06T01:22:47.339Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662567350",
+      "timestamp": "2026-01-06T01:22:47.350Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662681775",
+      "timestamp": "2026-01-06T01:24:41.775Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662681786",
+      "timestamp": "2026-01-06T01:24:41.786Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662693119",
+      "timestamp": "2026-01-06T01:24:53.119Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662693133",
+      "timestamp": "2026-01-06T01:24:53.133Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662752832",
+      "timestamp": "2026-01-06T01:25:52.832Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662752845",
+      "timestamp": "2026-01-06T01:25:52.845Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662815238",
+      "timestamp": "2026-01-06T01:26:55.238Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662815251",
+      "timestamp": "2026-01-06T01:26:55.251Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662879507",
+      "timestamp": "2026-01-06T01:27:59.507Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662879519",
+      "timestamp": "2026-01-06T01:27:59.519Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767662938890",
+      "timestamp": "2026-01-06T01:28:58.890Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767662938902",
+      "timestamp": "2026-01-06T01:28:58.902Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767663000409",
+      "timestamp": "2026-01-06T01:30:00.409Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.079285714285716,
+        "takeProfit": 14.906857142857142,
+        "riskReward": 1.2,
+        "confluenceScore": 100,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663000421",
+      "timestamp": "2026-01-06T01:30:00.421Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 140,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663064038",
+      "timestamp": "2026-01-06T01:31:04.038Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6849285714285713,
+        "takeProfit": 1.8874857142857142,
+        "riskReward": 1.2,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663120697",
+      "timestamp": "2026-01-06T01:32:00.697Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6842142857142857,
+        "takeProfit": 1.888342857142857,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663186754",
+      "timestamp": "2026-01-06T01:33:06.754Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6842142857142857,
+        "takeProfit": 1.888342857142857,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663247358",
+      "timestamp": "2026-01-06T01:34:07.358Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6842142857142857,
+        "takeProfit": 1.888342857142857,
+        "riskReward": 1.200000000000001,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663309891",
+      "timestamp": "2026-01-06T01:35:09.891Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6838571428571427,
+        "takeProfit": 1.8887714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663374519",
+      "timestamp": "2026-01-06T01:36:14.519Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.6838571428571427,
+        "takeProfit": 1.8887714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767663432246",
+      "timestamp": "2026-01-06T01:37:12.246Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.086428571428572,
+        "takeProfit": 14.898285714285715,
+        "riskReward": 1.2000000000000004,
+        "confluenceScore": 110,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "NEARUSDT_bullish_1767663432259",
+      "timestamp": "2026-01-06T01:37:12.259Z",
+      "symbol": "NEARUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 1.777,
+        "stopLoss": 1.683142857142857,
+        "takeProfit": 1.8896285714285714,
+        "riskReward": 1.2000000000000008,
+        "confluenceScore": 125,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "LINKUSDT_bullish_1767663868304",
+      "timestamp": "2026-01-06T01:44:28.304Z",
+      "symbol": "LINKUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 13.91,
+        "stopLoss": 13.06857142857143,
+        "takeProfit": 14.919714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 115,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767663928440",
+      "timestamp": "2026-01-06T01:45:28.440Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.2475,
+        "takeProfit": 139.905,
+        "riskReward": 1.2000000000000068,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767663991926",
+      "timestamp": "2026-01-06T01:46:31.926Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.21714285714285,
+        "takeProfit": 139.9414285714286,
+        "riskReward": 1.2000000000000066,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664053249",
+      "timestamp": "2026-01-06T01:47:33.249Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.15821428571428,
+        "takeProfit": 140.01214285714286,
+        "riskReward": 1.2000000000000033,
+        "confluenceScore": 115,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664112845",
+      "timestamp": "2026-01-06T01:48:32.845Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3201.2171428571432,
+        "takeProfit": 3268.4114285714286,
+        "riskReward": 1.2,
+        "confluenceScore": 70,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664112858",
+      "timestamp": "2026-01-06T01:48:32.858Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 137.91,
+        "stopLoss": 136.15821428571428,
+        "takeProfit": 140.01214285714286,
+        "riskReward": 1.2000000000000033,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": true,
+      "outcome": null,
+      "notes": [
+        {
+          "timestamp": "2026-01-06T01:48:46.946Z",
+          "text": "Auto-tracked by paper trading system"
+        }
+      ],
+      "trackedAt": "2026-01-06T01:48:46.934Z"
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664221208",
+      "timestamp": "2026-01-06T01:50:21.208Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 137.91,
+        "stopLoss": 136.15821428571428,
+        "takeProfit": 140.01214285714286,
+        "riskReward": 1.2000000000000033,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664236914",
+      "timestamp": "2026-01-06T01:50:36.914Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.15821428571428,
+        "takeProfit": 140.01214285714286,
+        "riskReward": 1.2000000000000033,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664298547",
+      "timestamp": "2026-01-06T01:51:38.547Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.7332142857144,
+        "takeProfit": 3270.192142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 95,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664298566",
+      "timestamp": "2026-01-06T01:51:38.566Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.15285714285713,
+        "takeProfit": 140.01857142857145,
+        "riskReward": 1.2000000000000064,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664364601",
+      "timestamp": "2026-01-06T01:52:44.601Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.7332142857144,
+        "takeProfit": 3270.192142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 95,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664364616",
+      "timestamp": "2026-01-06T01:52:44.616Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "ENTRY_READY",
+        "canTrack": true,
+        "entry": 137.91,
+        "stopLoss": 136.15285714285713,
+        "takeProfit": 140.01857142857145,
+        "riskReward": 1.2000000000000064,
+        "confluenceScore": 120,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": true
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": true,
+          "rejectionPattern": "inverse_hammer",
+          "rejectionStrength": 1
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664434321",
+      "timestamp": "2026-01-06T01:53:54.321Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.7332142857144,
+        "takeProfit": 3270.192142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 95,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664490117",
+      "timestamp": "2026-01-06T01:54:50.117Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.7332142857144,
+        "takeProfit": 3270.192142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 95,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664554833",
+      "timestamp": "2026-01-06T01:55:54.833Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.7332142857144,
+        "takeProfit": 3270.192142857143,
+        "riskReward": 1.2,
+        "confluenceScore": 97,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664612956",
+      "timestamp": "2026-01-06T01:56:52.956Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.6778571428576,
+        "takeProfit": 3270.2585714285715,
+        "riskReward": 1.2000000000000057,
+        "confluenceScore": 97,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664612968",
+      "timestamp": "2026-01-06T01:56:52.968Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.12071428571429,
+        "takeProfit": 140.05714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664674452",
+      "timestamp": "2026-01-06T01:57:54.452Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.6778571428576,
+        "takeProfit": 3270.2585714285715,
+        "riskReward": 1.2000000000000057,
+        "confluenceScore": 97,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664674464",
+      "timestamp": "2026-01-06T01:57:54.464Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.12071428571429,
+        "takeProfit": 140.05714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 145,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664735475",
+      "timestamp": "2026-01-06T01:58:55.475Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.6778571428576,
+        "takeProfit": 3270.2585714285715,
+        "riskReward": 1.2000000000000057,
+        "confluenceScore": 97,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664735488",
+      "timestamp": "2026-01-06T01:58:55.488Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.12071428571429,
+        "takeProfit": 140.05714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "ETHUSDT_bullish_1767664796698",
+      "timestamp": "2026-01-06T01:59:56.698Z",
+      "symbol": "ETHUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 3231.76,
+        "stopLoss": 3199.6778571428576,
+        "takeProfit": 3270.2585714285715,
+        "riskReward": 1.2000000000000057,
+        "confluenceScore": 97,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": false,
+          "hasCHOCH": true,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": false,
+          "chochDetected": true,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    },
+    {
+      "id": "SOLUSDT_bullish_1767664796710",
+      "timestamp": "2026-01-06T01:59:56.710Z",
+      "symbol": "SOLUSDT",
+      "timeframe": "15m",
+      "mode": "MODERATE",
+      "signal": {
+        "direction": "bullish",
+        "entryState": "WAITING",
+        "canTrack": false,
+        "entry": 137.91,
+        "stopLoss": 136.12071428571429,
+        "takeProfit": 140.05714285714285,
+        "riskReward": 1.2,
+        "confluenceScore": 130,
+        "patterns": {
+          "hasOrderBlock": false,
+          "hasFVG": false,
+          "hasBOS": true,
+          "hasCHOCH": false,
+          "hasLiquiditySweep": false,
+          "hasRejection": false
+        },
+        "confirmationDetails": {
+          "setupDetected": true,
+          "structureBreakConfirmed": true,
+          "bosDetected": true,
+          "chochDetected": false,
+          "priceAtZone": true,
+          "rejectionConfirmed": false,
+          "rejectionPattern": null,
+          "rejectionStrength": null
+        }
+      },
+      "tracked": false,
+      "outcome": null,
+      "notes": []
+    }
+  ]
+}

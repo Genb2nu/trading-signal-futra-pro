@@ -32,6 +32,23 @@ export const STRATEGY_CONFIG = {
     allowNeutralZone: false, // STRICT: Only trade in discount/premium zones (SMC PDF)
     neutralZoneScore: 0,
 
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 30,  // SMC Standard: ≤30% is discount (buy zone)
+      premiumThreshold: 70,   // SMC Standard: ≥70% is premium (sell zone)
+      mode: 'smc_standard'    // SMC standard zones for conservative trading
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 3,              // Show only latest 3 FVGs
+      maxOrderBlocks: 3,       // Show only latest 3 OBs
+      maxCHOCH: 2,             // Show only latest 2 CHoCH lines
+      maxBOS: 2,               // Show only latest 2 BOS lines
+      maxCandlesBack: 50,      // Only show patterns within 50 candles
+      maxDistancePercent: 10   // Only show patterns within 10% of current price
+    },
+
     // Stop Loss Settings
     stopLossATRMultiplier: 2.5,
 
@@ -62,7 +79,9 @@ export const STRATEGY_CONFIG = {
 
     // Entry Settings
     requireBOSConfirmation: false,
-    requireRejectionPattern: false, // Rejection is optional, adds confluence bonus
+    requireRejectionPattern: true,  // PHASE 3: Rejection required per ICT Page 4
+    requireStructureBreak: true,    // PHASE 3: BOS/CHOCH required per ICT Page 3 Step 3
+    allowEntryWithoutStructure: false, // PHASE 3: No shortcuts - follow official SMC
     bosLookback: 10, // candles
     strictHTFAlignment: true,       // STRICT: Only trade WITH HTF trend (SMC PDF principle)
 
@@ -90,6 +109,23 @@ export const STRATEGY_CONFIG = {
     // Zone Settings
     allowNeutralZone: false,   // ENHANCED: Disable neutral zone (strict SMC principles)
     neutralZoneScore: 5,       // Lower score for neutral (was 10)
+
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 30,  // SMC Standard: ≤30% is discount (buy zone)
+      premiumThreshold: 70,   // SMC Standard: ≥70% is premium (sell zone)
+      mode: 'smc_standard'    // SMC standard zones for balanced trading
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 3,              // Show only latest 3 FVGs
+      maxOrderBlocks: 3,       // Show only latest 3 OBs
+      maxCHOCH: 2,             // Show only latest 2 CHoCH lines
+      maxBOS: 2,               // Show only latest 2 BOS lines
+      maxCandlesBack: 50,      // Only show patterns within 50 candles
+      maxDistancePercent: 10   // Only show patterns within 10% of current price
+    },
 
     // Stop Loss Settings
     stopLossATRMultiplier: 2.5,
@@ -122,7 +158,9 @@ export const STRATEGY_CONFIG = {
 
     // Entry Settings
     requireBOSConfirmation: false,
-    requireRejectionPattern: true,  // Add rejection requirement
+    requireRejectionPattern: true,  // PHASE 3: Rejection required per ICT Page 4
+    requireStructureBreak: true,    // PHASE 3: BOS/CHOCH required per ICT Page 3 Step 3
+    allowEntryWithoutStructure: false, // PHASE 3: No shortcuts - follow official SMC
     strictHTFAlignment: true,       // STRICT: Only trade WITH HTF trend (SMC PDF principle)
     bosLookback: 10,
 
@@ -150,6 +188,23 @@ export const STRATEGY_CONFIG = {
     // Zone Settings
     allowNeutralZone: true,
     neutralZoneScore: 10,
+
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 45,  // Balanced: <45% is discount (more trade opportunities)
+      premiumThreshold: 55,   // Balanced: >55% is premium (more trade opportunities)
+      mode: 'balanced'        // Balanced zones for aggressive trading
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 5,              // Show more FVGs for aggressive trading
+      maxOrderBlocks: 5,       // Show more OBs for aggressive trading
+      maxCHOCH: 3,             // Show more CHoCH lines
+      maxBOS: 3,               // Show more BOS lines
+      maxCandlesBack: 100,     // Look back further for patterns
+      maxDistancePercent: 15   // Allow patterns further from price
+    },
 
     // Stop Loss Settings
     stopLossATRMultiplier: 2.0,
@@ -182,7 +237,10 @@ export const STRATEGY_CONFIG = {
 
     // Entry Settings
     requireBOSConfirmation: false,
-    requireRejectionPattern: false, // More lenient
+    requireRejectionPattern: false, // PHASE 3: Optional for speed
+    requireStructureBreak: false,   // PHASE 3: Optional for speed
+    allowEntryWithoutStructure: true, // PHASE 3: Accepts faster entries
+    structureBreakBonus: 30,        // Large bonus if structure present
     strictHTFAlignment: true,       // STRICT: Only trade WITH HTF trend (SMC PDF principle)
     bosLookback: 10,
 
@@ -198,6 +256,23 @@ export const STRATEGY_CONFIG = {
   [STRATEGY_MODES.SCALPING]: {
     name: 'Scalping (High-Frequency Quality)',
     description: 'Optimized for fast trades with strict trend-following per SMC PDF',
+
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 45,  // Balanced: <45% is discount (more scalping opportunities)
+      premiumThreshold: 55,   // Balanced: >55% is premium (more scalping opportunities)
+      mode: 'balanced'        // Balanced zones for scalping
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 2,              // Show fewer patterns for scalping clarity
+      maxOrderBlocks: 2,       // Focus on most recent OBs
+      maxCHOCH: 1,             // Minimal lines for fast decisions
+      maxBOS: 1,               // Minimal lines for fast decisions
+      maxCandlesBack: 20,      // Short lookback for scalping
+      maxDistancePercent: 5    // Very close to price for scalping
+    },
 
     // TIMEFRAME-ADAPTIVE PARAMETERS (KEY INNOVATION)
     timeframeParams: {
@@ -279,7 +354,9 @@ export const STRATEGY_CONFIG = {
     // Entry Settings
     requireDirectionalConfirmation: false, // Faster entries
     requireBOSConfirmation: false,
-    requireRejectionPattern: false,  // Optional for scalping
+    requireRejectionPattern: false,  // PHASE 3: Optional for scalping speed
+    requireStructureBreak: false,    // PHASE 3: Optional for scalping speed
+    allowEntryWithoutStructure: true, // PHASE 3: Allows faster scalping entries
     strictHTFAlignment: true,        // STRICT: Only trade WITH HTF trend (SMC PDF principle)
     bosLookback: 5,
 
@@ -334,6 +411,23 @@ export const STRATEGY_CONFIG = {
     allowNeutralZone: true, // Winners were in neutral, allow it
     neutralZoneScore: 10,
 
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 30,  // SMC Standard: ≤30% is discount (quality setups)
+      premiumThreshold: 70,   // SMC Standard: ≥70% is premium (quality setups)
+      mode: 'smc_standard'    // SMC standard zones for elite precision
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 2,              // Elite mode: show only best patterns
+      maxOrderBlocks: 2,       // Elite mode: focus on highest quality
+      maxCHOCH: 1,             // Single most relevant structure
+      maxBOS: 1,               // Single most relevant structure
+      maxCandlesBack: 30,      // Recent patterns only
+      maxDistancePercent: 8    // Close to price for elite setups
+    },
+
     // Stop Loss Settings - WIDER for better tolerance (reduce -0.83R MAE)
     stopLossATRMultiplier: 3.0, // 1.5x wider than normal for 15m volatility
 
@@ -364,7 +458,9 @@ export const STRATEGY_CONFIG = {
     // Entry Settings - STRICT CONFIRMATION
     requireDirectionalConfirmation: true,
     requireBOSConfirmation: false,
-    requireRejectionPattern: true,  // MUST have rejection candle (reduce MAE)
+    requireRejectionPattern: true,  // PHASE 3: MUST have rejection candle (reduce MAE)
+    requireStructureBreak: true,    // PHASE 3: Structure required for elite quality
+    allowEntryWithoutStructure: false, // PHASE 3: No shortcuts for elite setups
     strictHTFAlignment: false,      // Winners were neutral/bearish, don't filter by HTF
     bosLookback: 10,
 
@@ -419,6 +515,23 @@ export const STRATEGY_CONFIG = {
     allowNeutralZone: false,
     neutralZoneScore: 0,
 
+    // Premium/Discount Zone Configuration
+    premiumDiscountConfig: {
+      discountThreshold: 30,  // SMC Standard: ≤30% is discount (sniper precision)
+      premiumThreshold: 70,   // SMC Standard: ≥70% is premium (sniper precision)
+      mode: 'smc_standard'    // SMC standard zones for sniper accuracy
+    },
+
+    // Chart Visualization Limits
+    visualizationLimits: {
+      maxFVGs: 1,              // Sniper mode: single best FVG only
+      maxOrderBlocks: 1,       // Sniper mode: single best OB only
+      maxCHOCH: 1,             // Single most relevant structure
+      maxBOS: 1,               // Single most relevant structure
+      maxCandlesBack: 25,      // Very recent patterns only
+      maxDistancePercent: 5    // Very close to price for sniper precision
+    },
+
     // Stop Loss Settings - Normal for 1H
     stopLossATRMultiplier: 2.5, // Standard 1H stop
 
@@ -444,7 +557,9 @@ export const STRATEGY_CONFIG = {
     // Entry Settings - STRICT SNIPER REQUIREMENTS
     requireDirectionalConfirmation: true,  // Must confirm direction
     requireBOSConfirmation: false,
-    requireRejectionPattern: true,         // MUST have rejection candle pattern
+    requireRejectionPattern: true,         // PHASE 3: MUST have rejection candle pattern
+    requireStructureBreak: true,           // PHASE 3: Structure required for sniper precision
+    allowEntryWithoutStructure: false,     // PHASE 3: No shortcuts for sniper setups
     strictHTFAlignment: true,              // Must align with HTF trend
     bosLookback: 15,
 

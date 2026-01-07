@@ -1,0 +1,26 @@
+{
+  "transitions": [
+    {
+      "signalId": "BTCUSDT_bullish_1767625892866",
+      "timestamp": "2026-01-05T15:11:32.870Z",
+      "fromState": "MONITORING",
+      "toState": "WAITING",
+      "context": {
+        "reason": "BOS confirmed",
+        "timeSinceCreation": 45
+      },
+      "timeSinceCreation": 45
+    },
+    {
+      "signalId": "BTCUSDT_bullish_1767625892866",
+      "timestamp": "2026-01-05T15:11:32.879Z",
+      "fromState": "WAITING",
+      "toState": "ENTRY_READY",
+      "context": {
+        "reason": "Rejection confirmed",
+        "timeSinceCreation": 120
+      },
+      "timeSinceCreation": 120
+    }
+  ]
+}
