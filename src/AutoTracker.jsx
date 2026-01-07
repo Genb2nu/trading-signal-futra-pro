@@ -107,7 +107,15 @@ function AutoTracker() {
       });
 
       if (response.data.success) {
-        alert(`✅ Continuous scanner started!\n\nScanning ${symbols.length} symbols every 5 minutes.\nSignals will be auto-tracked when they reach ENTRY_READY.`);
+        // Check if we're in serverless mode
+        const statusRes = await axios.get(`${API_URL}/api/scanner/status`);
+        const isServerless = statusRes.data?.status?.mode === 'serverless';
+
+        if (isServerless) {
+          alert(`✅ Manual scan completed!\n\nScanned ${symbols.length} symbols.\nFound ${response.data.signalsFound || 0} signals.\n\n⚠️ Note: Continuous scanning not available on Vercel serverless.\nUse "Run Manual Scan" button to scan again.`);
+        } else {
+          alert(`✅ Continuous scanner started!\n\nScanning ${symbols.length} symbols every 5 minutes.\nSignals will be auto-tracked when they reach ENTRY_READY.`);
+        }
         await loadScannerStatus();
       }
     } catch (error) {
@@ -293,7 +301,7 @@ function AutoTracker() {
                 border: 'none'
               }}
             >
-              {scannerLoading ? '⏳ Starting...' : '▶ Start Continuous Scanner'}
+              {scannerLoading ? '⏳ Scanning...' : scannerStatus?.mode === 'serverless' ? '🔄 Run Manual Scan' : '▶ Start Continuous Scanner'}
             </button>
           ) : (
             <button
@@ -327,6 +335,26 @@ function AutoTracker() {
           </button>
         </div>
 
+        {/* Serverless Mode Info */}
+        {scannerStatus?.mode === 'serverless' && (
+          <div style={{
+            padding: '12px 16px',
+            background: 'rgba(251, 191, 36, 0.15)',
+            border: '1px solid rgba(251, 191, 36, 0.3)',
+            borderRadius: '8px',
+            marginBottom: '15px',
+            fontSize: '13px',
+            lineHeight: '1.5'
+          }}>
+            <div style={{ fontWeight: '600', marginBottom: '4px', color: '#f59e0b' }}>
+              ℹ️ Serverless Mode
+            </div>
+            <div style={{ opacity: 0.9 }}>
+              Continuous scanning not available on Vercel. Click "Run Manual Scan" to scan once, then manually refresh to check for new signals.
+            </div>
+          </div>
+        )}
+
         {scannerStatus && (
           <div style={{
             padding: '15px',
@@ -338,7 +366,7 @@ function AutoTracker() {
               <div>
                 <div style={{ opacity: 0.8, marginBottom: '4px' }}>Status</div>
                 <div style={{ fontWeight: '700', fontSize: '15px' }}>
-                  {scannerStatus.isRunning ? '🟢 RUNNING' : '⚫ STOPPED'}
+                  {scannerStatus.isRunning ? '🟢 RUNNING' : scannerStatus.mode === 'serverless' ? '🔵 READY' : '⚫ STOPPED'}
                 </div>
               </div>
               {scannerStatus?.stats?.totalScans > 0 && (
