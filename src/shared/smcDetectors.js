@@ -2225,6 +2225,389 @@ function detectRejectionPattern(candle, prevCandle, direction) {
 }
 
 /**
+ * ============================================================================
+ * PRIORITY 1 FIX: SMC-COMPLIANT RETEST DETECTION
+ * ============================================================================
+ * Based on official SMC methodology (Page 20):
+ * "Wait for the return to a clean order block or fair value gap before entering"
+ *
+ * Problem: We were entering DURING displacement (chasing price after BOS)
+ * Solution: Require BOS → Displacement → Return to OB/FVG → Rejection → Entry
+ */
+
+/**
+ * Detects if price has displaced (moved away) from OB/FVG zone after BOS
+ * @param {Array} candles - Price candles
+ * @param {Object} zone - OB or FVG zone {top, bottom, index, timestamp}
+ * @param {Object} bosEvent - BOS event {index, timestamp, breakLevel}
+ * @param {Number} atr - Average True Range for displacement threshold
+ * @returns {Object} { hasDisplaced, displacementDistance, displacementCandles, furthestPoint }
+ */
+function detectDisplacement(candles, zone, bosEvent, atr) {
+  if (!candles || !zone || !bosEvent || !atr) {
+    return { hasDisplaced: false, displacementDistance: 0, displacementCandles: 0, furthestPoint: null };
+  }
+
+  // Find BOS candle index
+  const bosIndex = candles.findIndex(c => c.timestamp === bosEvent.timestamp);
+  if (bosIndex === -1 || bosIndex >= candles.length - 1) {
+    return { hasDisplaced: false, displacementDistance: 0, displacementCandles: 0, furthestPoint: null };
+  }
+
+  // Track price movement after BOS
+  let maxDistance = 0;
+  let displacementCandles = 0;
+  let furthestPoint = null;
+  const displacementThreshold = atr * 1.0; // Minimum 1 ATR move = displacement
+
+  // Determine direction from BOS event type (bullish BOS = expect move up, bearish BOS = expect move down)
+  const isBullishMove = bosEvent.type === 'bullish';
+
+  // Check candles after BOS
+  for (let i = bosIndex + 1; i < candles.length; i++) {
+    const candle = candles[i];
+
+    // Calculate distance from zone
+    let distanceFromZone;
+    if (isBullishMove) {
+      // For bullish: measure how far ABOVE the zone price went
+      distanceFromZone = candle.low > zone.top ? candle.low - zone.top : 0;
+    } else {
+      // For bearish: measure how far BELOW the zone price went
+      distanceFromZone = candle.high < zone.bottom ? zone.bottom - candle.high : 0;
+    }
+
+    if (distanceFromZone > maxDistance) {
+      maxDistance = distanceFromZone;
+      furthestPoint = {
+        index: i,
+        timestamp: candle.timestamp,
+        price: zone.type === 'bullish' ? candle.high : candle.low,
+        distance: distanceFromZone
+      };
+    }
+
+    // Count candles that moved away from zone
+    if (distanceFromZone > 0) {
+      displacementCandles++;
+    }
+  }
+
+  const hasDisplaced = maxDistance >= displacementThreshold && displacementCandles >= 2;
+
+  return {
+    hasDisplaced,
+    displacementDistance: maxDistance,
+    displacementDistanceATR: (maxDistance / atr).toFixed(2),
+    displacementCandles,
+    furthestPoint
+  };
+}
+
+/**
+ * Detects if price has returned (retested) to OB/FVG zone after displacement
+ * @param {Array} candles - Price candles
+ * @param {Object} zone - OB or FVG zone {top, bottom, index, timestamp}
+ * @param {Object} displacementData - Result from detectDisplacement()
+ * @returns {Object} { hasRetested, retestCandle, retestQuality, inZoneNow }
+ */
+function detectRetest(candles, zone, displacementData) {
+  if (!candles || !zone || !displacementData || !displacementData.hasDisplaced) {
+    return { hasRetested: false, retestCandle: null, retestQuality: null, inZoneNow: false };
+  }
+
+  const furthestIndex = displacementData.furthestPoint?.index;
+  if (!furthestIndex || furthestIndex >= candles.length - 1) {
+    return { hasRetested: false, retestCandle: null, retestQuality: null, inZoneNow: false };
+  }
+
+  // Check if price has returned to zone after reaching furthest point
+  let retestCandle = null;
+  let retestQuality = null;
+
+  for (let i = furthestIndex + 1; i < candles.length; i++) {
+    const candle = candles[i];
+
+    // Check if price is back in the zone (with 0.2% tolerance)
+    const tolerance = 0.002;
+    const inZone = candle.low <= zone.top * (1 + tolerance) &&
+                   candle.high >= zone.bottom * (1 - tolerance);
+
+    if (inZone) {
+      retestCandle = {
+        index: i,
+        timestamp: candle.timestamp,
+        open: candle.open,
+        high: candle.high,
+        low: candle.low,
+        close: candle.close
+      };
+
+      // Assess retest quality
+      const zoneRange = zone.top - zone.bottom;
+      // Use displacement direction to determine penetration calculation
+      const isBullishMove = displacementData.furthestPoint &&
+                           displacementData.furthestPoint.price > zone.top;
+      const penetration = isBullishMove
+        ? Math.max(0, Math.min(candle.low, zone.top) - zone.bottom) / zoneRange
+        : Math.max(0, zone.top - Math.max(candle.high, zone.bottom)) / zoneRange;
+
+      // Quality based on how deep into zone price went
+      if (penetration > 0.5) {
+        retestQuality = 'deep'; // Penetrated 50%+ of zone (best quality)
+      } else if (penetration > 0.25) {
+        retestQuality = 'moderate'; // Penetrated 25-50% of zone
+      } else {
+        retestQuality = 'shallow'; // Just touched zone edge
+      }
+
+      break; // Found first retest
+    }
+  }
+
+  // Check if current price is in zone
+  const latestCandle = candles[candles.length - 1];
+  const inZoneNow = latestCandle.low <= zone.top * 1.002 &&
+                    latestCandle.high >= zone.bottom * 0.998;
+
+  return {
+    hasRetested: retestCandle !== null,
+    retestCandle,
+    retestQuality,
+    inZoneNow
+  };
+}
+
+/**
+ * Validates if a signal meets SMC-compliant retest requirements
+ * @param {Array} candles - Price candles
+ * @param {Object} zone - OB or FVG zone
+ * @param {Object} bosEvent - BOS event
+ * @param {Number} atr - Average True Range
+ * @param {Boolean} requireRetest - Whether retest is required (config option)
+ * @returns {Object} { meetsRequirement, reason, displacement, retest }
+ */
+function validateRetestRequirement(candles, zone, bosEvent, atr, requireRetest = true) {
+  if (!requireRetest) {
+    return {
+      meetsRequirement: true,
+      reason: 'Retest requirement disabled',
+      displacement: null,
+      retest: null
+    };
+  }
+
+  // Step 1: Check for displacement
+  const displacement = detectDisplacement(candles, zone, bosEvent, atr);
+
+  if (!displacement.hasDisplaced) {
+    return {
+      meetsRequirement: false,
+      reason: `No displacement detected (moved ${displacement.displacementDistanceATR} ATR, need ≥1.0 ATR)`,
+      displacement,
+      retest: null
+    };
+  }
+
+  // Step 2: Check for retest after displacement
+  const retest = detectRetest(candles, zone, displacement);
+
+  if (!retest.hasRetested) {
+    return {
+      meetsRequirement: false,
+      reason: 'Price displaced but has not retested the zone yet',
+      displacement,
+      retest
+    };
+  }
+
+  if (!retest.inZoneNow) {
+    return {
+      meetsRequirement: false,
+      reason: 'Retest occurred but price is no longer in zone',
+      displacement,
+      retest
+    };
+  }
+
+  return {
+    meetsRequirement: true,
+    reason: `Valid retest: ${displacement.displacementDistanceATR} ATR displacement → ${retest.retestQuality} retest`,
+    displacement,
+    retest
+  };
+}
+
+/**
+ * ============================================================================
+ * PRIORITY 2: SMC-COMPLIANT MULTI-TIMEFRAME ANALYSIS
+ * ============================================================================
+ * Based on official SMC methodology (Page 17):
+ * "HTF (4h/1D) → Define bias | ITF (1h/15m) → Find OB/FVG | LTF (5m/1m) → Confirm entry"
+ *
+ * Problem: Missing proper multi-timeframe alignment
+ * Solution: Require HTF bias + LTF confirmation for entry
+ */
+
+/**
+ * Gets the appropriate higher timeframe for a given intermediate timeframe
+ * @param {String} itfTimeframe - Intermediate timeframe (e.g., '15m', '1h')
+ * @returns {String} Higher timeframe to use for bias
+ */
+function getHTFForBias(itfTimeframe) {
+  const htfMap = {
+    '1m': '15m',
+    '5m': '1h',
+    '15m': '4h',
+    '1h': '1d',
+    '4h': '1w'
+  };
+  return htfMap[itfTimeframe] || '4h'; // Default to 4h if unknown
+}
+
+/**
+ * Gets the appropriate lower timeframe for entry confirmation
+ * @param {String} itfTimeframe - Intermediate timeframe (e.g., '15m', '1h')
+ * @returns {String} Lower timeframe to use for confirmation
+ */
+function getLTFForConfirmation(itfTimeframe) {
+  const ltfMap = {
+    '15m': '5m',
+    '1h': '15m',
+    '4h': '1h',
+    '1d': '4h'
+  };
+  return ltfMap[itfTimeframe] || '5m'; // Default to 5m if unknown
+}
+
+/**
+ * Validates HTF bias alignment with signal direction
+ * @param {Array} htfCandles - Higher timeframe candles
+ * @param {String} signalDirection - 'bullish' or 'bearish'
+ * @param {Boolean} requireStrict - Whether to require strict alignment
+ * @returns {Object} { aligned, bias, strength, reason }
+ */
+function validateHTFBias(htfCandles, signalDirection, requireStrict = true) {
+  if (!htfCandles || htfCandles.length < 50) {
+    return {
+      aligned: !requireStrict, // If not strict, allow when HTF data unavailable
+      bias: 'unknown',
+      strength: null,
+      reason: 'Insufficient HTF data'
+    };
+  }
+
+  // Calculate HTF trend using existing function
+  const htfTrend = calculateHTFTrendStrength(htfCandles);
+
+  // Determine bias from trend
+  let bias = 'neutral';
+  if (htfTrend.signals >= 3) {
+    bias = 'bullish';
+  } else if (htfTrend.signals <= -3) {
+    bias = 'bearish';
+  }
+
+  // Check alignment
+  let aligned = false;
+  let reason = '';
+
+  if (!requireStrict) {
+    // Non-strict: Allow neutral or aligned
+    aligned = bias === 'neutral' || bias === signalDirection;
+    reason = aligned
+      ? `HTF ${bias} (allows ${signalDirection} - non-strict mode)`
+      : `HTF ${bias} conflicts with ${signalDirection} signal`;
+  } else {
+    // Strict: Require exact alignment
+    aligned = bias === signalDirection;
+    reason = aligned
+      ? `HTF ${bias} aligns with ${signalDirection} signal`
+      : `HTF ${bias} does not align with ${signalDirection} signal (strict mode)`;
+  }
+
+  return {
+    aligned,
+    bias,
+    strength: htfTrend.strength,
+    signals: htfTrend.signals,
+    reason
+  };
+}
+
+/**
+ * Checks for LTF confirmation of entry (rejection candle or mini BOS)
+ * @param {Array} ltfCandles - Lower timeframe candles (last 20-30 candles)
+ * @param {String} direction - 'bullish' or 'bearish'
+ * @param {Number} entryPrice - Entry price level
+ * @returns {Object} { confirmed, confirmationType, reason }
+ */
+function validateLTFConfirmation(ltfCandles, direction, entryPrice) {
+  if (!ltfCandles || ltfCandles.length < 5) {
+    return {
+      confirmed: false,
+      confirmationType: null,
+      reason: 'Insufficient LTF data for confirmation'
+    };
+  }
+
+  const latestCandle = ltfCandles[ltfCandles.length - 1];
+  const prevCandle = ltfCandles[ltfCandles.length - 2];
+
+  // Check for rejection candle pattern
+  const rejectionCheck = detectRejectionPattern(latestCandle, prevCandle, direction);
+
+  if (rejectionCheck.hasRejection) {
+    return {
+      confirmed: true,
+      confirmationType: 'rejection_candle',
+      pattern: rejectionCheck.pattern,
+      strength: rejectionCheck.strength,
+      reason: `LTF ${rejectionCheck.pattern} rejection confirms ${direction} entry`
+    };
+  }
+
+  // Check for mini BOS on LTF (price breaking through recent structure in signal direction)
+  const recentSwings = detectSwingPoints(ltfCandles, 2);
+
+  if (direction === 'bullish') {
+    // Look for break above recent swing high
+    const recentHigh = recentSwings.swingHighs.length > 0
+      ? recentSwings.swingHighs[recentSwings.swingHighs.length - 1]
+      : null;
+
+    if (recentHigh && latestCandle.close > recentHigh.price) {
+      return {
+        confirmed: true,
+        confirmationType: 'mini_bos',
+        reason: `LTF bullish BOS: Close ${latestCandle.close.toFixed(2)} > High ${recentHigh.price.toFixed(2)}`,
+        bosLevel: recentHigh.price
+      };
+    }
+  } else {
+    // Look for break below recent swing low
+    const recentLow = recentSwings.swingLows.length > 0
+      ? recentSwings.swingLows[recentSwings.swingLows.length - 1]
+      : null;
+
+    if (recentLow && latestCandle.close < recentLow.price) {
+      return {
+        confirmed: true,
+        confirmationType: 'mini_bos',
+        reason: `LTF bearish BOS: Close ${latestCandle.close.toFixed(2)} < Low ${recentLow.price.toFixed(2)}`,
+        bosLevel: recentLow.price
+      };
+    }
+  }
+
+  return {
+    confirmed: false,
+    confirmationType: null,
+    reason: `No LTF confirmation: Waiting for ${direction} rejection or mini BOS`
+  };
+}
+
+/**
  * Generates trading signals based on SMC pattern confluence
  * @param {Object} analysis - Combined analysis from all detectors
  * @returns {Array} Array of trading signal objects
@@ -2607,7 +2990,27 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
       const rejectionCheck = detectRejectionPattern(latestCandle, prevCandle, 'bullish');
       const hasRejection = rejectionCheck.hasRejection;
 
-      // PHASE 3: Determine entry state based on SMC methodology
+      // PRIORITY 1: Validate retest requirement (SMC-compliant)
+      // Get config setting for retest requirement (defaults to true)
+      const requireRetestBeforeEntry = config.requireRetestBeforeEntry !== undefined
+        ? config.requireRetestBeforeEntry
+        : true;
+
+      // Find the most recent BOS event for this signal
+      const recentBOS = bos.bullish.length > 0 ? bos.bullish[bos.bullish.length - 1] : null;
+
+      let retestValidation = null;
+      if (recentBOS && structureBreakConfirmed) {
+        retestValidation = validateRetestRequirement(
+          candles,
+          bullishOB,
+          recentBOS,
+          atr,
+          requireRetestBeforeEntry
+        );
+      }
+
+      // PHASE 3: Determine entry state based on SMC methodology (ENHANCED WITH RETEST)
       let entryState = 'MONITORING'; // Default state
       let canTrack = false; // Whether user can track this signal
 
@@ -2615,16 +3018,32 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         // No BOS/CHOCH yet - MONITORING phase
         entryState = 'MONITORING';
         canTrack = false;
+      } else if (requireRetestBeforeEntry && retestValidation && !retestValidation.meetsRequirement) {
+        // PRIORITY 1: BOS exists but retest requirement not met
+        if (retestValidation.displacement && !retestValidation.displacement.hasDisplaced) {
+          // Displacement not yet detected
+          entryState = 'MONITORING';
+          canTrack = false;
+        } else if (retestValidation.displacement && retestValidation.displacement.hasDisplaced &&
+                   (!retestValidation.retest || !retestValidation.retest.hasRetested)) {
+          // Displaced but not retested yet - WAITING for retest
+          entryState = 'WAITING';
+          canTrack = false;
+        } else {
+          // Retested but no longer in zone - back to MONITORING
+          entryState = 'MONITORING';
+          canTrack = false;
+        }
       } else if (structureBreakConfirmed && !priceAtZone) {
-        // BOS exists but price hasn't returned to OB
+        // BOS exists but price hasn't returned to OB (or left the zone)
         entryState = 'MONITORING';
         canTrack = false;
       } else if (structureBreakConfirmed && priceAtZone && !hasRejection) {
-        // At zone but no rejection - WAITING
+        // At zone (and retest validated if required) but no rejection - WAITING
         entryState = 'WAITING';
         canTrack = false;
       } else if (structureBreakConfirmed && priceAtZone && hasRejection) {
-        // All confirmations met - ENTRY READY
+        // All confirmations met (including retest if required) - ENTRY READY
         entryState = 'ENTRY_READY';
         canTrack = true;
       }
@@ -3125,7 +3544,18 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
             priceAtZone: priceAtZone,
             rejectionConfirmed: hasRejection,
             rejectionPattern: rejectionCheck.pattern || null,
-            rejectionStrength: rejectionCheck.strength || null
+            rejectionStrength: rejectionCheck.strength || null,
+            // PRIORITY 1: Retest validation (SMC-compliant)
+            retestRequired: requireRetestBeforeEntry,
+            retestValidated: retestValidation?.meetsRequirement || false,
+            retestReason: retestValidation?.reason || 'Not checked',
+            retestDetails: retestValidation ? {
+              hasDisplaced: retestValidation.displacement?.hasDisplaced || false,
+              displacementATR: retestValidation.displacement?.displacementDistanceATR || '0.00',
+              hasRetested: retestValidation.retest?.hasRetested || false,
+              retestQuality: retestValidation.retest?.retestQuality || null,
+              inZoneNow: retestValidation.retest?.inZoneNow || false
+            } : null
           },
 
           orderBlockDetails: {
@@ -3249,7 +3679,27 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
       const rejectionCheck = detectRejectionPattern(latestCandle, prevCandle, 'bearish');
       const hasRejection = rejectionCheck.hasRejection;
 
-      // Determine entry state based on SMC methodology
+      // PRIORITY 1: Validate retest requirement (SMC-compliant)
+      // Get config setting for retest requirement (defaults to true)
+      const requireRetestBeforeEntry = config.requireRetestBeforeEntry !== undefined
+        ? config.requireRetestBeforeEntry
+        : true;
+
+      // Find the most recent BOS event for this signal
+      const recentBOS = bos.bearish.length > 0 ? bos.bearish[bos.bearish.length - 1] : null;
+
+      let retestValidation = null;
+      if (recentBOS && structureBreakConfirmed) {
+        retestValidation = validateRetestRequirement(
+          candles,
+          bearishOB,
+          recentBOS,
+          atr,
+          requireRetestBeforeEntry
+        );
+      }
+
+      // Determine entry state based on SMC methodology (ENHANCED WITH RETEST)
       let entryState = 'MONITORING'; // Default state
       let canTrack = false; // Whether user can track this signal
 
@@ -3257,16 +3707,32 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
         // No BOS/CHoCH yet - MONITORING phase
         entryState = 'MONITORING';
         canTrack = false;
+      } else if (requireRetestBeforeEntry && retestValidation && !retestValidation.meetsRequirement) {
+        // PRIORITY 1: BOS exists but retest requirement not met
+        if (retestValidation.displacement && !retestValidation.displacement.hasDisplaced) {
+          // Displacement not yet detected
+          entryState = 'MONITORING';
+          canTrack = false;
+        } else if (retestValidation.displacement && retestValidation.displacement.hasDisplaced &&
+                   (!retestValidation.retest || !retestValidation.retest.hasRetested)) {
+          // Displaced but not retested yet - WAITING for retest
+          entryState = 'WAITING';
+          canTrack = false;
+        } else {
+          // Retested but no longer in zone - back to MONITORING
+          entryState = 'MONITORING';
+          canTrack = false;
+        }
       } else if (structureBreakConfirmed && !priceAtZone) {
-        // BOS confirmed but price hasn't returned to OB yet
+        // BOS confirmed but price hasn't returned to OB yet (or left the zone)
         entryState = 'MONITORING';
         canTrack = false;
       } else if (structureBreakConfirmed && priceAtZone && !hasRejection) {
-        // At zone but no rejection - WAITING
+        // At zone (and retest validated if required) but no rejection - WAITING
         entryState = 'WAITING';
         canTrack = false;
       } else if (structureBreakConfirmed && priceAtZone && hasRejection) {
-        // All confirmations met - ENTRY READY
+        // All confirmations met (including retest if required) - ENTRY READY
         entryState = 'ENTRY_READY';
         canTrack = true;
       }
@@ -3770,7 +4236,18 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
             priceAtZone: priceAtZone,
             rejectionConfirmed: hasRejection,
             rejectionPattern: rejectionCheck.pattern || null,
-            rejectionStrength: rejectionCheck.strength || null
+            rejectionStrength: rejectionCheck.strength || null,
+            // PRIORITY 1: Retest validation (SMC-compliant)
+            retestRequired: requireRetestBeforeEntry,
+            retestValidated: retestValidation?.meetsRequirement || false,
+            retestReason: retestValidation?.reason || 'Not checked',
+            retestDetails: retestValidation ? {
+              hasDisplaced: retestValidation.displacement?.hasDisplaced || false,
+              displacementATR: retestValidation.displacement?.displacementDistanceATR || '0.00',
+              hasRetested: retestValidation.retest?.hasRetested || false,
+              retestQuality: retestValidation.retest?.retestQuality || null,
+              inZoneNow: retestValidation.retest?.inZoneNow || false
+            } : null
           },
 
           orderBlockDetails: {
