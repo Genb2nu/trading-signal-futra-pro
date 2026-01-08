@@ -3206,7 +3206,8 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
           // Validate HTF bias if required
           let htfBiasCheck = null;
           if (config.requireHTFAlignment && htfCandles) {
-            htfBiasCheck = validateHTFBias(htfCandles, 'bullish', true);
+            const strictMode = config.strictHTFAlignment !== undefined ? config.strictHTFAlignment : true;
+            htfBiasCheck = validateHTFBias(htfCandles, 'bullish', strictMode);
             if (!htfBiasCheck.aligned) {
               validEntry = false; // Block entry if HTF doesn't align
             }
@@ -3942,7 +3943,8 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
           // Validate HTF bias if required
           let htfBiasCheck = null;
           if (config.requireHTFAlignment && htfCandles) {
-            htfBiasCheck = validateHTFBias(htfCandles, 'bearish', true);
+            const strictMode = config.strictHTFAlignment !== undefined ? config.strictHTFAlignment : true;
+            htfBiasCheck = validateHTFBias(htfCandles, 'bearish', strictMode);
             if (!htfBiasCheck.aligned) {
               validEntry = false; // Block entry if HTF doesn't align
             }
