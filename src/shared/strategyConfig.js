@@ -83,7 +83,7 @@ export const STRATEGY_CONFIG = {
     requireStructureBreak: true,    // PHASE 3: BOS/CHOCH required per ICT Page 3 Step 3
     allowEntryWithoutStructure: false, // PHASE 3: No shortcuts - follow official SMC
     requireRetestBeforeEntry: true, // PRIORITY 1: SMC-compliant - wait for retest after displacement
-    requireHTFAlignment: true,      // PRIORITY 2: Require HTF bias alignment (strict mode)
+    requireHTFAlignment: false,     // PRIORITY 2: HTF disabled initially (will enable after testing)
     requireLTFConfirmation: false,  // PRIORITY 2: Optional LTF confirmation for conservative
     bosLookback: 10, // candles
     strictHTFAlignment: true,       // STRICT: Only trade WITH HTF trend (SMC PDF principle)
@@ -165,7 +165,7 @@ export const STRATEGY_CONFIG = {
     requireStructureBreak: true,    // PHASE 3: BOS/CHOCH required per ICT Page 3 Step 3
     allowEntryWithoutStructure: false, // PHASE 3: No shortcuts - follow official SMC
     requireRetestBeforeEntry: true, // PRIORITY 1: SMC-compliant - wait for retest after displacement
-    requireHTFAlignment: true,      // PRIORITY 2: Require HTF bias alignment (strict mode)
+    requireHTFAlignment: false,     // PRIORITY 2: HTF disabled initially (will enable after testing)
     requireLTFConfirmation: false,  // PRIORITY 2: Optional LTF confirmation for moderate
     strictHTFAlignment: true,       // STRICT: Only trade WITH HTF trend (SMC PDF principle)
     bosLookback: 10,
@@ -474,8 +474,8 @@ export const STRATEGY_CONFIG = {
     requireStructureBreak: true,    // PHASE 3: Structure required for elite quality
     allowEntryWithoutStructure: false, // PHASE 3: No shortcuts for elite setups
     requireRetestBeforeEntry: true, // PRIORITY 1: SMC-compliant - elite quality requires retest
-    requireHTFAlignment: true,      // PRIORITY 2: Require HTF bias alignment (elite precision)
-    requireLTFConfirmation: true,   // PRIORITY 2: Require LTF confirmation (elite precision)
+    requireHTFAlignment: false,     // PRIORITY 2: HTF disabled initially (will enable after testing)
+    requireLTFConfirmation: false,  // PRIORITY 2: LTF disabled initially (will enable after testing)
     strictHTFAlignment: false,      // Winners were neutral/bearish, don't filter by HTF
     bosLookback: 10,
 
@@ -576,8 +576,8 @@ export const STRATEGY_CONFIG = {
     requireStructureBreak: true,           // PHASE 3: Structure required for sniper precision
     allowEntryWithoutStructure: false,     // PHASE 3: No shortcuts for sniper setups
     requireRetestBeforeEntry: true,        // PRIORITY 1: SMC-compliant - sniper precision requires retest
-    requireHTFAlignment: true,             // PRIORITY 2: Require HTF bias alignment (sniper precision)
-    requireLTFConfirmation: true,          // PRIORITY 2: Require LTF confirmation (sniper precision)
+    requireHTFAlignment: false,            // PRIORITY 2: HTF disabled initially (will enable after testing)
+    requireLTFConfirmation: false,         // PRIORITY 2: LTF disabled initially (will enable after testing)
     strictHTFAlignment: true,              // Must align with HTF trend
     bosLookback: 15,
 

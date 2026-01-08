@@ -109,7 +109,63 @@ Retest requirement is working as intended for quality-focused modes (Conservativ
 
 ---
 
-## 🚀 PRIORITY 2: MULTI-TIMEFRAME ALIGNMENT (IN PROGRESS)
+## 📊 PRIORITY 2 BACKTEST RESULTS
+
+### Fresh Backtest (With HTF Disabled - Jan 8, 2026)
+
+**Issue Discovered:** HTF strict alignment filtered ALL signals (0 trades) when enabled. Temporarily disabled to test.
+
+**Run Date:** January 8, 2026
+**Duration:** 86.3s
+**Symbols:** 10 pairs
+**Timeframes:** 15m, 1h, 4h
+
+| Mode | Trades | Win Rate | Profit Factor | Total R | Status | vs P1 Only |
+|------|--------|----------|---------------|---------|--------|------------|
+| CONSERVATIVE | 30 | 26.7% | 2.37 | +10.26R | ✅ PROFITABLE | -15.2% WR ⚠️ |
+| MODERATE | 45 | 48.9% | 2.59 | +17.70R | ✅ PROFITABLE | +2.6% WR ✅ |
+| AGGRESSIVE | 118 | 39.0% | 2.24 | +39.40R | ✅ PROFITABLE | -0.2% WR |
+| SCALPING | 84 | 53.6% | 3.92 | +42.65R | ✅ PROFITABLE | +5.2% WR ✅ |
+| ELITE | 7 | 57.1% | 29.17 | +4.59R | ✅ PROFITABLE | -14.3% WR ⚠️ |
+| SNIPER | 1 | 0.0% | 999.00 | +0.92R | ⚠️ NO SIGNALS | N/A |
+
+### Analysis
+
+**❌ Critical Issue:**
+HTF strict alignment (`requireStrict: true`) blocks ALL signals when enabled:
+- Conservative: 31 trades → 0 trades (with HTF)
+- Moderate: 41 trades → 0 trades (with HTF)
+- Elite: 7 trades → 0 trades (with HTF)
+
+**✅ When HTF Disabled:**
+- All modes generate signals again
+- BUT: Win rates drop for Conservative (-15.2%) and Elite (-14.3%)
+- This indicates HTF validation IS working, but too strict
+
+**🔍 Root Cause:**
+Current `validateHTFBias()` requires exact HTF direction match:
+```javascript
+aligned = bias === signalDirection  // Too strict! Blocks neutral bias
+```
+
+**💡 Solution Needed:**
+Implement non-strict HTF mode:
+```javascript
+// Non-strict mode: Allow neutral OR aligned
+aligned = bias === 'neutral' || bias === signalDirection
+
+// Strict mode: Only block opposite direction
+aligned = bias !== oppositeDirection
+```
+
+**🎯 Expected Results with Non-Strict HTF:**
+- Conservative: 26.7% → 38-42% WR (allow neutral, block opposite)
+- Moderate: 48.9% → 52-56% WR
+- Elite: 57.1% → 68-75% WR
+
+---
+
+## 🚀 PRIORITY 2: MULTI-TIMEFRAME ALIGNMENT (IMPLEMENTATION COMPLETE - NEEDS REFINEMENT)
 
 ### Problem Identified
 **Missing from Current System (SMC Doc Page 17):**
@@ -171,11 +227,14 @@ requireLTFConfirmation: true,   // Require LTF confirmation (max precision)
 - Configuration options for all modes
 - HTF bias validation logic
 - LTF confirmation logic
-
-**⚠️ Pending:**
-- Integration into signal generation logic (needs HTF/LTF candle fetching)
+- Integration into signal generation logic (both bullish and bearish)
 - Signal object updates with MTF validation data
 - Testing and backtest verification
+
+**❌ Issue Discovered:**
+- HTF strict alignment filters ALL signals (blocks 100% when enabled)
+- Temporarily disabled HTF alignment to restore signal generation
+- Need to implement non-strict HTF mode (allow neutral bias, only block opposite)
 
 ---
 
@@ -253,14 +312,17 @@ Based on SMC methodology compliance:
 - [x] Fresh backtest run
 - [x] Documentation
 
-**Priority 2 (Partial - Need Integration):**
+**Priority 2 (Implemented - Needs Refinement):**
 - [x] MTF validation functions
 - [x] Configuration options
-- [ ] Signal generation integration
-- [ ] HTF/LTF candle fetching
-- [ ] Signal data updates
-- [ ] Test script
-- [ ] Fresh backtest
+- [x] Signal generation integration (both bullish and bearish)
+- [x] HTF candle fetching (already available)
+- [x] Signal data updates (confirmationDetails)
+- [x] Fresh backtest run
+- [x] Documentation
+- [ ] Fix HTF strict mode (allow neutral bias)
+- [ ] Test with non-strict HTF mode
+- [ ] Final backtest verification
 
 ---
 

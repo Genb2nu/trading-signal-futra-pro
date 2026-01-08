@@ -3200,6 +3200,45 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
           // If 'neutral', allow LONG trades but be selective
         }
 
+        // ===== PRIORITY 2: MULTI-TIMEFRAME ALIGNMENT =====
+        let mtfValidation = null;
+        if (validEntry && (config.requireHTFAlignment || config.requireLTFConfirmation)) {
+          // Validate HTF bias if required
+          let htfBiasCheck = null;
+          if (config.requireHTFAlignment && htfCandles) {
+            htfBiasCheck = validateHTFBias(htfCandles, 'bullish', true);
+            if (!htfBiasCheck.aligned) {
+              validEntry = false; // Block entry if HTF doesn't align
+            }
+          } else if (config.requireHTFAlignment && !htfCandles) {
+            // HTF required but no data - allow if not strict
+            htfBiasCheck = {
+              aligned: true,
+              bias: 'unknown',
+              strength: null,
+              reason: 'HTF data not available - allowed in non-strict mode'
+            };
+          }
+
+          // Validate LTF confirmation if required
+          let ltfConfirmCheck = null;
+          if (config.requireLTFConfirmation) {
+            // Note: LTF candles not yet implemented, skip for now
+            // When implemented: ltfConfirmCheck = validateLTFConfirmation(ltfCandles, 'bullish', entry);
+            ltfConfirmCheck = {
+              confirmed: true,
+              confirmationType: 'not_implemented',
+              reason: 'LTF confirmation not yet implemented (requires LTF candle fetching)'
+            };
+          }
+
+          mtfValidation = {
+            htfBias: htfBiasCheck,
+            ltfConfirmation: ltfConfirmCheck,
+            mtfAligned: validEntry // Overall MTF alignment status
+          };
+        }
+
         if (validEntry) {
 
         // ===== STOP LOSS CALCULATION (PHASE 14: Adaptive) =====
@@ -3555,7 +3594,12 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
               hasRetested: retestValidation.retest?.hasRetested || false,
               retestQuality: retestValidation.retest?.retestQuality || null,
               inZoneNow: retestValidation.retest?.inZoneNow || false
-            } : null
+            } : null,
+            // PRIORITY 2: Multi-timeframe alignment (SMC-compliant)
+            mtfRequired: config.requireHTFAlignment || config.requireLTFConfirmation,
+            mtfValidated: mtfValidation?.mtfAligned || false,
+            htfBias: mtfValidation?.htfBias || null,
+            ltfConfirmation: mtfValidation?.ltfConfirmation || null
           },
 
           orderBlockDetails: {
@@ -3890,6 +3934,45 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
           }
           // If 'bearish', allow SHORT trades (current signal is bearish)
           // If 'neutral', allow SHORT trades but be selective
+        }
+
+        // ===== PRIORITY 2: MULTI-TIMEFRAME ALIGNMENT =====
+        let mtfValidation = null;
+        if (validEntry && (config.requireHTFAlignment || config.requireLTFConfirmation)) {
+          // Validate HTF bias if required
+          let htfBiasCheck = null;
+          if (config.requireHTFAlignment && htfCandles) {
+            htfBiasCheck = validateHTFBias(htfCandles, 'bearish', true);
+            if (!htfBiasCheck.aligned) {
+              validEntry = false; // Block entry if HTF doesn't align
+            }
+          } else if (config.requireHTFAlignment && !htfCandles) {
+            // HTF required but no data - allow if not strict
+            htfBiasCheck = {
+              aligned: true,
+              bias: 'unknown',
+              strength: null,
+              reason: 'HTF data not available - allowed in non-strict mode'
+            };
+          }
+
+          // Validate LTF confirmation if required
+          let ltfConfirmCheck = null;
+          if (config.requireLTFConfirmation) {
+            // Note: LTF candles not yet implemented, skip for now
+            // When implemented: ltfConfirmCheck = validateLTFConfirmation(ltfCandles, 'bearish', entry);
+            ltfConfirmCheck = {
+              confirmed: true,
+              confirmationType: 'not_implemented',
+              reason: 'LTF confirmation not yet implemented (requires LTF candle fetching)'
+            };
+          }
+
+          mtfValidation = {
+            htfBias: htfBiasCheck,
+            ltfConfirmation: ltfConfirmCheck,
+            mtfAligned: validEntry // Overall MTF alignment status
+          };
         }
 
         if (validEntry) {
@@ -4247,7 +4330,12 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
               hasRetested: retestValidation.retest?.hasRetested || false,
               retestQuality: retestValidation.retest?.retestQuality || null,
               inZoneNow: retestValidation.retest?.inZoneNow || false
-            } : null
+            } : null,
+            // PRIORITY 2: Multi-timeframe alignment (SMC-compliant)
+            mtfRequired: config.requireHTFAlignment || config.requireLTFConfirmation,
+            mtfValidated: mtfValidation?.mtfAligned || false,
+            htfBias: mtfValidation?.htfBias || null,
+            ltfConfirmation: mtfValidation?.ltfConfirmation || null
           },
 
           orderBlockDetails: {
