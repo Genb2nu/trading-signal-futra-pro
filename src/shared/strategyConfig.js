@@ -26,7 +26,7 @@ export const STRATEGY_CONFIG = {
     // Confirmation Requirements
     requireAllConfirmations: false,
     requiredConfirmations: [], // No hard requirements, rely on confluence
-    preferredPatterns: ['liquiditySweep', 'fvg', 'bos'], // All add confluence
+    preferredPatterns: ['fvg', 'bos'], // PRIORITY 3: Removed sweep (38.6% WR - poor)
 
     // Zone Settings
     allowNeutralZone: false, // STRICT: Only trade in discount/premium zones (SMC PDF)
@@ -55,7 +55,7 @@ export const STRATEGY_CONFIG = {
     // Confluence Settings
     minimumConfluence: 55, // BALANCED: 45 → 55 (65 without rejection)
     confluenceWeights: {
-      liquiditySweep: 30,      // Best pattern (68% WR) - increased
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
       bos: 15,
       validZone: 10,
@@ -136,7 +136,7 @@ export const STRATEGY_CONFIG = {
     // Confluence Settings
     minimumConfluence: 40, // BALANCED: 30 → 40 (55 without rejection)
     confluenceWeights: {
-      liquiditySweep: 30,      // Best pattern (68% WR) - increased
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
       bos: 15,
       validZone: 10,
@@ -189,7 +189,7 @@ export const STRATEGY_CONFIG = {
     // Confirmation Requirements
     requireAllConfirmations: false,
     requiredConfirmations: [], // No hard requirements
-    preferredPatterns: ['fvg', 'liquiditySweep'], // Bonus scoring
+    preferredPatterns: ['fvg', 'bos'], // PRIORITY 3: Removed sweep (38.6% WR - poor)
 
     // Zone Settings
     allowNeutralZone: true,
@@ -218,7 +218,7 @@ export const STRATEGY_CONFIG = {
     // Confluence Settings
     minimumConfluence: 28, // BALANCED: 20 → 28 (43 without rejection)
     confluenceWeights: {
-      liquiditySweep: 30,      // Best pattern (68% WR)
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
       bos: 15,
       validZone: 10,
@@ -325,7 +325,7 @@ export const STRATEGY_CONFIG = {
     // Confirmation Requirements (High quality) - MODERATE OPTIMIZATION
     requireAllConfirmations: false,
     requiredConfirmations: ['fvg', 'validZone'], // FVG and valid zone required
-    optionalConfirmations: ['liquiditySweep', 'bos'], // Sweep adds bonus points
+    optionalConfirmations: ['bos'], // PRIORITY 3: Removed sweep (38.6% WR)
 
     // Zone Settings
     allowNeutralZone: false,
@@ -417,7 +417,7 @@ export const STRATEGY_CONFIG = {
     // STRICT PATTERN REQUIREMENTS - Use confluence scoring instead of hard requirements
     requireAllConfirmations: false,
     requiredConfirmations: [], // No hard requirements, rely on high confluence
-    preferredPatterns: ['fvg', 'liquiditySweep', 'ote', 'bos'], // All add to confluence
+    preferredPatterns: ['fvg', 'ote', 'bos'], // PRIORITY 3: Removed sweep (38.6% WR)
 
     // Zone Settings - Must be in correct zone
     allowNeutralZone: true, // Winners were in neutral, allow it
@@ -446,7 +446,7 @@ export const STRATEGY_CONFIG = {
     // Confluence Settings - VERY HIGH REQUIREMENT
     minimumConfluence: 60, // Start at 60, will analyze and increase based on win rates
     confluenceWeights: {
-      liquiditySweep: 35,      // Critical pattern
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 25,                 // Critical pattern
       breakerBlock: 25,        // Critical pattern
       ote: 20,                 // Bonus pattern
@@ -524,7 +524,7 @@ export const STRATEGY_CONFIG = {
     // STRICT ENTRY REQUIREMENTS - Simulate waiting for pullback/retest
     requireAllConfirmations: false,
     requiredConfirmations: ['fvg'], // Core requirement
-    preferredPatterns: ['liquiditySweep', 'ote', 'bos'], // All strongly preferred
+    preferredPatterns: ['ote', 'bos', 'fvg'], // PRIORITY 3: Removed sweep (38.6% WR)
 
     // Zone Settings - Must be in correct zone (no neutral)
     allowNeutralZone: false,
@@ -553,7 +553,7 @@ export const STRATEGY_CONFIG = {
     // Confluence Settings - VERY HIGH (75+ for sniper precision)
     minimumConfluence: 75, // High bar for entry
     confluenceWeights: {
-      liquiditySweep: 35,      // Critical for sniper entries
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 30,                 // Critical pattern
       ote: 25,                 // Optimal entry zone
       bos: 20,                 // Structure confirmation

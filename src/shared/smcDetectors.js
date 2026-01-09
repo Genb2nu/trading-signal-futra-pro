@@ -3321,7 +3321,9 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
 
         // Apply weights from strategy config
         if (hasFVG) confluenceScore += config.confluenceWeights.fvg;
-        if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
+        // PRIORITY 3 FIX: Removed liquidity sweep from confluence (38.6% WR - poor predictor)
+        // Sweeps are now informational only, not used for entry decisions
+        // if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
         if (hasBOS) confluenceScore += config.confluenceWeights.bos;
 
         // Zone scoring
@@ -4058,7 +4060,9 @@ function generateSignals(analysis, timeframe = null, symbol = null) {
 
         // Apply weights from strategy config
         if (hasFVG) confluenceScore += config.confluenceWeights.fvg;
-        if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
+        // PRIORITY 3 FIX: Removed liquidity sweep from confluence (38.6% WR - poor predictor)
+        // Sweeps are now informational only, not used for entry decisions
+        // if (hasLiquiditySweep) confluenceScore += config.confluenceWeights.liquiditySweep;
         if (hasBOS) confluenceScore += config.confluenceWeights.bos;
 
         // Zone scoring
