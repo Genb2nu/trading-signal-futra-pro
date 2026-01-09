@@ -155,7 +155,7 @@ function Settings() {
     const presets = {
       conservative: {
         strategyMode: 'conservative',
-        minimumConfluence: 65,
+        minimumConfluence: 40,
         minimumRiskReward: 2.0,
         stopLossATRMultiplier: 2.5,
         obImpulseThreshold: 0.007,
@@ -165,7 +165,7 @@ function Settings() {
       },
       moderate: {
         strategyMode: 'moderate',
-        minimumConfluence: 40,
+        minimumConfluence: 30,
         minimumRiskReward: 2.0,
         stopLossATRMultiplier: 2.5,
         obImpulseThreshold: 0.005,
@@ -175,7 +175,7 @@ function Settings() {
       },
       aggressive: {
         strategyMode: 'aggressive',
-        minimumConfluence: 25,
+        minimumConfluence: 20,
         minimumRiskReward: 1.5,
         stopLossATRMultiplier: 2.0,
         obImpulseThreshold: 0.003,
@@ -185,7 +185,7 @@ function Settings() {
       },
       scalping: {
         strategyMode: 'scalping',
-        minimumConfluence: 62,
+        minimumConfluence: 28,
         minimumRiskReward: 1.5,
         stopLossATRMultiplier: 2.0,
         obImpulseThreshold: 0.003,
@@ -195,13 +195,23 @@ function Settings() {
       },
       sniper: {
         strategyMode: 'sniper',
-        minimumConfluence: 75,
+        minimumConfluence: 55,
         minimumRiskReward: 2.5,
         stopLossATRMultiplier: 2.5,
         obImpulseThreshold: 0.008,
         allowNeutralZone: false,
         requireHTFAlignment: true,
         defaultTimeframes: ['1h']
+      },
+      elite: {
+        strategyMode: 'elite',
+        minimumConfluence: 45,
+        minimumRiskReward: 2.5,
+        stopLossATRMultiplier: 3.0,
+        obImpulseThreshold: 0.007,
+        allowNeutralZone: false,
+        requireHTFAlignment: true,
+        defaultTimeframes: ['15m']
       }
     };
 
@@ -378,7 +388,7 @@ function Settings() {
             <div className="form-group">
               <label className="form-label">Strategy Mode</label>
               <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '10px' }}>
-                {['conservative', 'moderate', 'aggressive', 'scalping', 'sniper'].map(mode => (
+                {['conservative', 'moderate', 'aggressive', 'scalping', 'elite', 'sniper'].map(mode => (
                   <label
                     key={mode}
                     style={{
@@ -402,16 +412,17 @@ function Settings() {
                       />
                       <strong style={{ fontSize: '15px', textTransform: 'capitalize' }}>
                         {mode}
-                        {mode === 'scalping' && ' 🆕'}
-                        {mode === 'sniper' && ' 🎯'}
+                        {mode === 'elite' && ' 🏆'}
+                        {mode === 'moderate' && ' ⭐'}
                       </strong>
                     </div>
                     <p style={{ fontSize: '12px', color: '#6b7280', marginLeft: '26px' }}>
-                      {mode === 'conservative' && '75% WR, 4.58 PF (1h) | 87.5% WR, 4.98 PF (15m) - Consistent, high quality signals'}
-                      {mode === 'moderate' && '🏆 87.5% WR, 11.05 PF (1h) - BEST OVERALL - Balanced and reliable'}
-                      {mode === 'aggressive' && '85.7% WR, 8.91 PF (1h) | 90% WR, 6.26 PF (15m) - More signals, excellent performance'}
-                      {mode === 'scalping' && 'Not yet backtested - Experimental mode for quick scalps'}
-                      {mode === 'sniper' && '⚠️ 60% WR, 0.66 PF (1h) - Ultra-selective but underperforming (not recommended)'}
+                      {mode === 'conservative' && '58.8% WR, 6.21 PF - High quality, selective trades (17 trades, +15.63R)'}
+                      {mode === 'moderate' && '⭐ 65.0% WR, 6.61 PF - BEST BALANCE - Quality + Volume (20 trades, +16.84R)'}
+                      {mode === 'aggressive' && '46.9% WR, 2.32 PF - High volume trading (64 trades, +26.03R total)'}
+                      {mode === 'scalping' && '62.2% WR, 2.81 PF - Active trading style (37 trades, +16.31R)'}
+                      {mode === 'elite' && '🏆 75.0% WR, 4.67 PF - HIGHEST WIN RATE - Ultra-precision (12 trades, +7.34R)'}
+                      {mode === 'sniper' && '⚠️ No signals yet - Ultra-strict filter (80%+ target WR, 1h only)'}
                     </p>
                   </label>
                 ))}
@@ -893,11 +904,12 @@ function Settings() {
                 📊 Expected Signal Frequency
               </strong>
               <p style={{ fontSize: '13px', color: '#4b5563', lineHeight: '1.6' }}>
-                {settings.strategyMode === 'conservative' && 'Conservative: 5-15 signals/day across 50 symbols (1h/4h timeframes)'}
-                {settings.strategyMode === 'moderate' && 'Moderate: 15-30 signals/day across 50 symbols (1h recommended)'}
-                {settings.strategyMode === 'aggressive' && 'Aggressive: 30-60 signals/day across 50 symbols (15m/5m timeframes)'}
-                {settings.strategyMode === 'scalping' && 'Scalping: 20-100 signals/day across 50 symbols (5m: 70.1% WR, 15m: 77.5% WR ⭐, 1h: 81.3% WR)'}
-                {settings.strategyMode === 'sniper' && 'Sniper: 1-2 signals/symbol per week (ultra-selective, 1h only, 4.48 PF - HIGHEST PROFIT FACTOR)'}
+                {settings.strategyMode === 'conservative' && 'Conservative: 58.8% WR, 6.21 PF - Selective, high-quality signals (1h/4h timeframes)'}
+                {settings.strategyMode === 'moderate' && 'Moderate: 65.0% WR, 6.61 PF - Best balance of quality and volume (1h recommended)'}
+                {settings.strategyMode === 'aggressive' && 'Aggressive: 46.9% WR, 2.32 PF - Maximum volume, still profitable (15m/1h/4h)'}
+                {settings.strategyMode === 'scalping' && 'Scalping: 62.2% WR, 2.81 PF - Active trading with good win rate (15m/1h)'}
+                {settings.strategyMode === 'elite' && 'Elite: 75.0% WR, 4.67 PF - HIGHEST WIN RATE - Ultra-precision (15m only)'}
+                {settings.strategyMode === 'sniper' && 'Sniper: 0 signals - Ultra-strict filter targeting 80%+ WR (1h only)'}
               </p>
             </div>
           </>
