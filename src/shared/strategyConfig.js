@@ -53,7 +53,9 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.5,
 
     // Confluence Settings
-    minimumConfluence: 55, // BALANCED: 45 → 55 (65 without rejection)
+    // PRIORITY 5: Lowered from 55 to 40 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 40-70 confluence (was 80-100 before sweep removal)
+    minimumConfluence: 40, // PRIORITY 5: 55 → 40 (compensate for sweep removal)
     confluenceWeights: {
       liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
@@ -134,7 +136,9 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.5,
 
     // Confluence Settings
-    minimumConfluence: 40, // BALANCED: 30 → 40 (55 without rejection)
+    // PRIORITY 5: Lowered from 40 to 30 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 30-60 confluence (was 70-90 before sweep removal)
+    minimumConfluence: 30, // PRIORITY 5: 40 → 30 (compensate for sweep removal)
     confluenceWeights: {
       liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
@@ -216,7 +220,9 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.0,
 
     // Confluence Settings
-    minimumConfluence: 28, // BALANCED: 20 → 28 (43 without rejection)
+    // PRIORITY 5: Lowered from 28 to 20 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 20-50 confluence (was 60-80 before sweep removal)
+    minimumConfluence: 20, // PRIORITY 5: 28 → 20 (compensate for sweep removal)
     confluenceWeights: {
       liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
@@ -335,9 +341,11 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.0, // Default for 5m
 
     // Confluence Settings - OPTIMIZED FOR 15M
-    minimumConfluence: 38, // BALANCED: 25 → 38 (53 without rejection)
+    // PRIORITY 5: Lowered from 38 to 28 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 28-58 confluence (was 60-90 before sweep removal)
+    minimumConfluence: 28, // PRIORITY 5: 38 → 28 (compensate for sweep removal)
     confluenceWeights: {
-      liquiditySweep: 30,      // Best pattern
+      liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 20,
       bos: 15,
       validZone: 15,
@@ -444,7 +452,9 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 3.0, // 1.5x wider than normal for 15m volatility
 
     // Confluence Settings - VERY HIGH REQUIREMENT
-    minimumConfluence: 60, // Start at 60, will analyze and increase based on win rates
+    // PRIORITY 5: Lowered from 60 to 45 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 45-75 confluence (was 80-110 before sweep removal)
+    minimumConfluence: 45, // PRIORITY 5: 60 → 45 (compensate for sweep removal)
     confluenceWeights: {
       liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 25,                 // Critical pattern
@@ -551,7 +561,9 @@ export const STRATEGY_CONFIG = {
     stopLossATRMultiplier: 2.5, // Standard 1H stop
 
     // Confluence Settings - VERY HIGH (75+ for sniper precision)
-    minimumConfluence: 75, // High bar for entry
+    // PRIORITY 5: Lowered from 75 to 55 to compensate for sweep removal (30-35 points)
+    // Target optimal range: 55-85 confluence (was 90-120 before sweep removal)
+    minimumConfluence: 55, // PRIORITY 5: 75 → 55 (compensate for sweep removal)
     confluenceWeights: {
       liquiditySweep: 0,       // PRIORITY 3: Disabled (38.6% WR - poor predictor)
       fvg: 30,                 // Critical pattern
