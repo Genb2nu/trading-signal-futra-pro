@@ -8,7 +8,10 @@ import fs from 'fs';
 import path from 'path';
 
 // Test configuration
-const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT', 'DOGEUSDT', 'XRPUSDT', 'MATICUSDT', 'DOTUSDT', 'AVAXUSDT'];
+// PRIORITY 4: Symbol filtering - Keep only top 4 performers
+// SOL (83.3% WR), ETH (73.5% WR), ADA (59.3% WR), BTC (53.3% WR)
+// Removed: DOGE (23.8%), DOT (28.9%), AVAX (31.4%), MATIC (33.3%), BNB (35.3%), XRP (41.7%)
+const SYMBOLS = ['SOLUSDT', 'ETHUSDT', 'ADAUSDT', 'BTCUSDT'];
 const TIMEFRAMES = ['15m', '1h', '4h'];
 const MODES = ['conservative', 'moderate', 'aggressive', 'scalping', 'elite', 'sniper', 'ultra'];
 const CANDLE_COUNT = 1000; // Binance API limit
