@@ -4796,81 +4796,173 @@ function calculateOTE(swingHigh, swingLow, currentPrice, direction) {
  */
 
 /**
- * Detects Change of Character (ChoCh) - minor structure breaks indicating weakness
- * ChoCh = breaks intermediate swing but not major trend (early warning signal)
+ * Detects Change of Character (ChoCh) - TRUE TREND REVERSAL signal
+ * CHoCH = Confirmed shift in market structure from one direction to another
+ *
+ * CRITICAL DIFFERENCE FROM BOS:
+ * - BOS = Break of Structure = CONTINUATION of existing trend
+ * - CHoCH = Change of Character = REVERSAL of trend
+ *
+ * CORRECT METHODOLOGY (per ICT/SMC):
+ * Bearish CHoCH (Uptrend → Downtrend):
+ *   1. Market in uptrend (higher highs + higher lows)
+ *   2. Price breaks below recent higher low
+ *   3. Price makes LOWER HIGH (doesn't reach previous high)
+ *   4. Price makes ANOTHER LOWER LOW
+ *   → Pattern shift confirmed = CHoCH
+ *
+ * Bullish CHoCH (Downtrend → Uptrend):
+ *   1. Market in downtrend (lower highs + lower lows)
+ *   2. Price breaks above recent lower high
+ *   3. Price makes HIGHER LOW (doesn't fall to previous low)
+ *   4. Price makes ANOTHER HIGHER HIGH
+ *   → Pattern shift confirmed = CHoCH
  *
  * @param {Array} candles - Array of candle objects
  * @param {Object} structure - Market structure object from analyzeMarketStructure()
  * @returns {Object} ChoCh events: { bullish: [], bearish: [] }
  */
 function detectChangeOfCharacter(candles, structure) {
-  if (!candles || candles.length < 30 || !structure) {
+  if (!candles || candles.length < 50 || !structure) {
     return { bullish: [], bearish: [] };
   }
 
   const chochEvents = {
-    bullish: [],  // Bearish trend showing weakness (price breaks above intermediate high)
-    bearish: []   // Bullish trend showing weakness (price breaks below intermediate low)
+    bullish: [],  // Downtrend → Uptrend reversal
+    bearish: []   // Uptrend → Downtrend reversal
   };
 
-  // Look at recent 30 candles for ChoCh
-  const recentCandles = candles.slice(-30);
+  // Need sufficient data to detect pattern changes
+  const lookback = 50;
+  const recentCandles = candles.slice(-lookback);
 
-  // ChoCh detection logic:
-  // In downtrend: price breaks above recent lower high (not necessarily the swing high)
-  // In uptrend: price breaks below recent higher low (not necessarily the swing low)
+  // Detect swing points in recent candles for pattern analysis
+  const swingHighs = [];
+  const swingLows = [];
 
+  // Find swing points (local highs/lows)
+  for (let i = 3; i < recentCandles.length - 3; i++) {
+    const candle = recentCandles[i];
+
+    // Check if swing high
+    const isSwingHigh = candle.high > recentCandles[i - 1].high &&
+                        candle.high > recentCandles[i - 2].high &&
+                        candle.high > recentCandles[i - 3].high &&
+                        candle.high > recentCandles[i + 1].high &&
+                        candle.high > recentCandles[i + 2].high &&
+                        candle.high > recentCandles[i + 3].high;
+
+    if (isSwingHigh) {
+      swingHighs.push({
+        index: i,
+        price: candle.high,
+        timestamp: candle.timestamp,
+        candle: candle
+      });
+    }
+
+    // Check if swing low
+    const isSwingLow = candle.low < recentCandles[i - 1].low &&
+                       candle.low < recentCandles[i - 2].low &&
+                       candle.low < recentCandles[i - 3].low &&
+                       candle.low < recentCandles[i + 1].low &&
+                       candle.low < recentCandles[i + 2].low &&
+                       candle.low < recentCandles[i + 3].low;
+
+    if (isSwingLow) {
+      swingLows.push({
+        index: i,
+        price: candle.low,
+        timestamp: candle.timestamp,
+        candle: candle
+      });
+    }
+  }
+
+  // Need at least 3 swing highs and 3 swing lows to detect pattern changes
+  if (swingHighs.length < 3 || swingLows.length < 3) {
+    return chochEvents;
+  }
+
+  // BULLISH CHoCH DETECTION (Downtrend → Uptrend)
   if (structure.trend === 'downtrend') {
-    // Look for bullish ChoCh: price breaking above intermediate high
-    // Find recent lower highs in the downtrend
-    for (let i = 5; i < recentCandles.length - 1; i++) {
-      const candle = recentCandles[i];
-      const isLocalHigh = candle.high > recentCandles[i - 1].high &&
-                          candle.high > recentCandles[i + 1].high;
+    // Get last 4 swing points (need to verify pattern shift)
+    const lastSwingHighs = swingHighs.slice(-4);
+    const lastSwingLows = swingLows.slice(-4);
 
-      if (isLocalHigh) {
-        // Check if a later candle breaks above this intermediate high
-        for (let j = i + 1; j < recentCandles.length; j++) {
-          const laterCandle = recentCandles[j];
-          if (laterCandle.close > candle.high) {
-            // ChoCh detected - trend weakness
-            chochEvents.bullish.push({
-              type: 'ChoCh',
-              direction: 'bullish',
-              brokenLevel: candle.high,
-              breakCandle: laterCandle,
-              timestamp: laterCandle.timestamp,
-              significance: 'warning' // Not a full reversal yet
-            });
-            break; // Only record first break
-          }
+    if (lastSwingHighs.length >= 3 && lastSwingLows.length >= 3) {
+      // Step 1: Verify we were in downtrend (lower highs, lower lows)
+      const wasDowntrend = lastSwingHighs[1].price < lastSwingHighs[0].price &&
+                          lastSwingLows[1].price < lastSwingLows[0].price;
+
+      if (wasDowntrend) {
+        // Step 2: Check if pattern shifted to uptrend (higher low, then higher high)
+        const madeHigherLow = lastSwingLows[2].price > lastSwingLows[1].price;
+        const madeHigherHigh = lastSwingHighs[2].price > lastSwingHighs[1].price;
+
+        if (madeHigherLow && madeHigherHigh) {
+          // Step 3: Volume confirmation (optional but increases confidence)
+          const breakVolume = lastSwingHighs[2].candle.volume || 0;
+          const avgVolume = recentCandles.slice(-20).reduce((sum, c) => sum + (c.volume || 0), 0) / 20;
+          const volumeConfirmed = breakVolume > avgVolume * 1.2; // 20% above average
+
+          // CHoCH CONFIRMED: Pattern shifted from lower highs/lows to higher highs/lows
+          chochEvents.bullish.push({
+            type: 'ChoCh',
+            direction: 'bullish',
+            brokenLevel: lastSwingHighs[1].price,
+            breakCandle: lastSwingHighs[2].candle,
+            timestamp: lastSwingHighs[2].timestamp,
+            significance: 'reversal', // TRUE REVERSAL (not just warning)
+            patternConfirmed: true,
+            higherLow: lastSwingLows[2].price,
+            higherHigh: lastSwingHighs[2].price,
+            volumeConfirmed: volumeConfirmed,
+            previousTrend: 'downtrend',
+            newTrend: 'uptrend'
+          });
         }
       }
     }
+  }
 
-  } else if (structure.trend === 'uptrend') {
-    // Look for bearish ChoCh: price breaking below intermediate low
-    for (let i = 5; i < recentCandles.length - 1; i++) {
-      const candle = recentCandles[i];
-      const isLocalLow = candle.low < recentCandles[i - 1].low &&
-                         candle.low < recentCandles[i + 1].low;
+  // BEARISH CHoCH DETECTION (Uptrend → Downtrend)
+  else if (structure.trend === 'uptrend') {
+    // Get last 4 swing points (need to verify pattern shift)
+    const lastSwingHighs = swingHighs.slice(-4);
+    const lastSwingLows = swingLows.slice(-4);
 
-      if (isLocalLow) {
-        // Check if a later candle breaks below this intermediate low
-        for (let j = i + 1; j < recentCandles.length; j++) {
-          const laterCandle = recentCandles[j];
-          if (laterCandle.close < candle.low) {
-            // ChoCh detected - trend weakness
-            chochEvents.bearish.push({
-              type: 'ChoCh',
-              direction: 'bearish',
-              brokenLevel: candle.low,
-              breakCandle: laterCandle,
-              timestamp: laterCandle.timestamp,
-              significance: 'warning'
-            });
-            break;
-          }
+    if (lastSwingHighs.length >= 3 && lastSwingLows.length >= 3) {
+      // Step 1: Verify we were in uptrend (higher highs, higher lows)
+      const wasUptrend = lastSwingHighs[1].price > lastSwingHighs[0].price &&
+                        lastSwingLows[1].price > lastSwingLows[0].price;
+
+      if (wasUptrend) {
+        // Step 2: Check if pattern shifted to downtrend (lower high, then lower low)
+        const madeLowerHigh = lastSwingHighs[2].price < lastSwingHighs[1].price;
+        const madeLowerLow = lastSwingLows[2].price < lastSwingLows[1].price;
+
+        if (madeLowerHigh && madeLowerLow) {
+          // Step 3: Volume confirmation (optional but increases confidence)
+          const breakVolume = lastSwingLows[2].candle.volume || 0;
+          const avgVolume = recentCandles.slice(-20).reduce((sum, c) => sum + (c.volume || 0), 0) / 20;
+          const volumeConfirmed = breakVolume > avgVolume * 1.2; // 20% above average
+
+          // CHoCH CONFIRMED: Pattern shifted from higher highs/lows to lower highs/lows
+          chochEvents.bearish.push({
+            type: 'ChoCh',
+            direction: 'bearish',
+            brokenLevel: lastSwingLows[1].price,
+            breakCandle: lastSwingLows[2].candle,
+            timestamp: lastSwingLows[2].timestamp,
+            significance: 'reversal', // TRUE REVERSAL (not just warning)
+            patternConfirmed: true,
+            lowerHigh: lastSwingHighs[2].price,
+            lowerLow: lastSwingLows[2].price,
+            volumeConfirmed: volumeConfirmed,
+            previousTrend: 'uptrend',
+            newTrend: 'downtrend'
+          });
         }
       }
     }

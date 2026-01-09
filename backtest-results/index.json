@@ -1,6 +1,77 @@
 {
   "runs": [
     {
+      "id": "backtest-2026-01-09T05-12-03-142Z",
+      "timestamp": "2026-01-09T05:12:03.142Z",
+      "duration": "17.8s",
+      "description": "Comprehensive backtest with tuned SMC strategy",
+      "summary": {
+        "conservative": {
+          "totalTrades": 12,
+          "wins": 8,
+          "losses": 1,
+          "winRate": 66.67,
+          "profitFactor": 10.76,
+          "totalPnlR": 9.76,
+          "avgRPerTrade": 0.81
+        },
+        "moderate": {
+          "totalTrades": 13,
+          "wins": 8,
+          "losses": 1,
+          "winRate": 61.54,
+          "profitFactor": 7.07,
+          "totalPnlR": 7.86,
+          "avgRPerTrade": 0.6
+        },
+        "aggressive": {
+          "totalTrades": 62,
+          "wins": 31,
+          "losses": 13,
+          "winRate": 50,
+          "profitFactor": 3.14,
+          "totalPnlR": 31.74,
+          "avgRPerTrade": 0.51
+        },
+        "scalping": {
+          "totalTrades": 38,
+          "wins": 23,
+          "losses": 7,
+          "winRate": 60.53,
+          "profitFactor": 3.71,
+          "totalPnlR": 19.75,
+          "avgRPerTrade": 0.52
+        },
+        "elite": {
+          "totalTrades": 3,
+          "wins": 3,
+          "losses": 0,
+          "winRate": 100,
+          "profitFactor": 999,
+          "totalPnlR": 3,
+          "avgRPerTrade": 1
+        },
+        "sniper": {
+          "totalTrades": 1,
+          "wins": 0,
+          "losses": 0,
+          "winRate": 0,
+          "profitFactor": 999,
+          "totalPnlR": 0.23,
+          "avgRPerTrade": 0.23
+        },
+        "ultra": {
+          "totalTrades": 1,
+          "wins": 0,
+          "losses": 0,
+          "winRate": 0,
+          "profitFactor": 999,
+          "totalPnlR": 0.23,
+          "avgRPerTrade": 0.23
+        }
+      }
+    },
+    {
       "id": "backtest-2026-01-09T01-11-19-803Z",
       "timestamp": "2026-01-09T01:11:19.803Z",
       "duration": "20.2s",
