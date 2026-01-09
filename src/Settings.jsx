@@ -417,11 +417,11 @@ function Settings() {
                       </strong>
                     </div>
                     <p style={{ fontSize: '12px', color: '#6b7280', marginLeft: '26px' }}>
-                      {mode === 'conservative' && '58.8% WR, 6.21 PF - High quality, selective trades (17 trades, +15.63R)'}
-                      {mode === 'moderate' && '⭐ 65.0% WR, 6.61 PF - BEST BALANCE - Quality + Volume (20 trades, +16.84R)'}
-                      {mode === 'aggressive' && '46.9% WR, 2.32 PF - High volume trading (64 trades, +26.03R total)'}
-                      {mode === 'scalping' && '62.2% WR, 2.81 PF - Active trading style (37 trades, +16.31R)'}
-                      {mode === 'elite' && '🏆 75.0% WR, 4.67 PF - HIGHEST WIN RATE - Ultra-precision (12 trades, +7.34R)'}
+                      {mode === 'conservative' && '47.6% WR, 4.15 PF - High quality, selective trades (21 trades, +15.75R)'}
+                      {mode === 'moderate' && '⭐ 76.2% WR, 5.69 PF - BEST BALANCE - Quality + Volume (21 trades, +18.76R)'}
+                      {mode === 'aggressive' && '50.7% WR, 2.64 PF - High volume trading (69 trades, +33.30R total)'}
+                      {mode === 'scalping' && '63.4% WR, 3.35 PF - Active trading style (41 trades, +21.13R)'}
+                      {mode === 'elite' && '🏆 91.7% WR, 11.00 PF - HIGHEST WIN RATE - Ultra-precision (12 trades, +10.00R)'}
                       {mode === 'sniper' && '⚠️ No signals yet - Ultra-strict filter (80%+ target WR, 1h only)'}
                     </p>
                   </label>
@@ -904,11 +904,11 @@ function Settings() {
                 📊 Expected Signal Frequency
               </strong>
               <p style={{ fontSize: '13px', color: '#4b5563', lineHeight: '1.6' }}>
-                {settings.strategyMode === 'conservative' && 'Conservative: 58.8% WR, 6.21 PF - Selective, high-quality signals (1h/4h timeframes)'}
-                {settings.strategyMode === 'moderate' && 'Moderate: 65.0% WR, 6.61 PF - Best balance of quality and volume (1h recommended)'}
-                {settings.strategyMode === 'aggressive' && 'Aggressive: 46.9% WR, 2.32 PF - Maximum volume, still profitable (15m/1h/4h)'}
-                {settings.strategyMode === 'scalping' && 'Scalping: 62.2% WR, 2.81 PF - Active trading with good win rate (15m/1h)'}
-                {settings.strategyMode === 'elite' && 'Elite: 75.0% WR, 4.67 PF - HIGHEST WIN RATE - Ultra-precision (15m only)'}
+                {settings.strategyMode === 'conservative' && 'Conservative: 47.6% WR, 4.15 PF - Selective, high-quality signals (1h/4h timeframes)'}
+                {settings.strategyMode === 'moderate' && 'Moderate: 76.2% WR, 5.69 PF - Best balance of quality and volume (1h recommended)'}
+                {settings.strategyMode === 'aggressive' && 'Aggressive: 50.7% WR, 2.64 PF - Maximum volume, still profitable (15m/1h/4h)'}
+                {settings.strategyMode === 'scalping' && 'Scalping: 63.4% WR, 3.35 PF - Active trading with good win rate (15m/1h)'}
+                {settings.strategyMode === 'elite' && 'Elite: 91.7% WR, 11.00 PF - HIGHEST WIN RATE - Ultra-precision (15m only)'}
                 {settings.strategyMode === 'sniper' && 'Sniper: 0 signals - Ultra-strict filter targeting 80%+ WR (1h only)'}
               </p>
             </div>
